@@ -1,0 +1,50 @@
+rm: cannot remove 'cladded_basic-out/': No such file or directory
+Working in 2D dimensions.
+Computational cell is 20 x 10 x 0 with resolution 10
+     block, center = (0,0,0)
+          size (1e+20,1,0)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (12,12,12)
+     block, center = (0,0,0)
+          size (4,4,0)
+          axes (0.83205,0.5547,0), (0.83205,-0.5547,0), (0,0,1)
+          dielectric constant epsilon diagonal = (24,24,24)
+time for set_epsilon = 0.191307 s
+-----------
+MPB solved for omega_1(0.519615,0,0) = 0.158673 after 15 iters
+MPB solved for omega_1(0.490934,0,0) = 0.149994 after 4 iters
+MPB solved for omega_1(0.490954,0,0) = 0.15 after 1 iters
+on time step 826 (time=41.3), 0.00484617 s/step
+on time step 1680 (time=84), 0.00468926 s/step
+on time step 2533 (time=126.65), 0.00469271 s/step
+on time step 3388 (time=169.4), 0.00467894 s/step
+on time step 4244 (time=212.2), 0.00467397 s/step
+on time step 5100 (time=255), 0.00467557 s/step
+on time step 5956 (time=297.8), 0.00467313 s/step
+on time step 6811 (time=340.55), 0.00467967 s/step
+on time step 7668 (time=383.4), 0.0046701 s/step
+on time step 8524 (time=426.2), 0.0046743 s/step
+on time step 9380 (time=469), 0.00467682 s/step
+-----------
+Initializing structure...
+field decay(t = 50.050000000000004): 1.400452025485462e-12 / 1.400452025485462e-12 = 1.0
+field decay(t = 100.05000000000001): 2.5748437399085896e-10 / 2.5748437399085896e-10 = 1.0
+field decay(t = 150.1): 4.014377808740481e-09 / 4.014377808740481e-09 = 1.0
+field decay(t = 200.15): 1.7614541186696637e-09 / 4.014377808740481e-09 = 0.43878633317334015
+field decay(t = 250.20000000000002): 4.863279496736759e-10 / 4.014377808740481e-09 = 0.12114653200174556
+field decay(t = 300.2): 6.215165129287657e-11 / 4.014377808740481e-09 = 0.015482262570691317
+field decay(t = 350.25): 3.158629608078663e-11 / 4.014377808740481e-09 = 0.007868291821465827
+field decay(t = 400.3): 3.141857305041906e-11 / 4.014377808740481e-09 = 0.007826511242168484
+field decay(t = 450.35): 1.3695925573154187e-11 / 4.014377808740481e-09 = 0.003411718135581093
+field decay(t = 500.40000000000003): 3.499611559110601e-12 / 4.014377808740481e-09 = 0.0008717693565092248
+run 0 finished at t = 500.40000000000003 (10008 timesteps)
+
+Elapsed run time = 4957.1218 s
+
+Field time usage:
+     connecting chunks: 0.126435 s
+         time stepping: 21.7378 s
+         communicating: 2.14204 s
+    Fourier transforming: 21.357 s
+       everything else: 1.59521 s
+

@@ -1,0 +1,61 @@
+Working in 2D dimensions.
+Computational cell is 16 x 32 x 0 with resolution 10
+     block, center = (0,-11.5,0)
+          size (1e+20,1,1e+20)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (12,12,12)
+time for set_epsilon = 0.308971 s
+-----------
+on time step 1210 (time=60.5), 0.00330821 s/step
+on time step 2461 (time=123.05), 0.00319939 s/step
+on time step 3715 (time=185.75), 0.00319156 s/step
+
+Field time usage:
+     connecting chunks: 0.104954 s
+         time stepping: 8.71531 s
+         communicating: 0.711567 s
+    Fourier transforming: 2.86488 s
+       everything else: 0.537507 s
+
+Working in 2D dimensions.
+Computational cell is 16 x 32 x 0 with resolution 10
+     block, center = (-2,-11.5,0)
+          size (12,1,1e+20)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (12,12,12)
+     block, center = (3.5,2,0)
+          size (1,28,1e+20)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (12,12,12)
+time for set_epsilon = 0.331005 s
+-----------
+on time step 1223 (time=61.15), 0.00327296 s/step
+on time step 2480 (time=124), 0.00318344 s/step
+on time step 3736 (time=186.8), 0.00318527 s/step
+on time step 4993 (time=249.65), 0.00318342 s/step
+-----------
+Initializing structure...
+field decay(t = 50.050000000000004): 4.825189380557793e-09 / 4.825189380557793e-09 = 1.0
+field decay(t = 100.05000000000001): 0.028801809879425856 / 0.028801809879425856 = 1.0
+field decay(t = 150.1): 0.026893465093385728 / 0.028801809879425856 = 0.9337421921042772
+field decay(t = 200.15): 2.315839733669588e-13 / 0.028801809879425856 = 8.040604890333206e-12
+run 0 finished at t = 200.15 (4003 timesteps)
+-----------
+Initializing structure...
+field decay(t = 50.050000000000004): 1.6976522694449004e-10 / 1.6976522694449004e-10 = 1.0
+field decay(t = 100.05000000000001): 4.691071063910547e-07 / 4.691071063910547e-07 = 1.0
+field decay(t = 150.1): 2.992872733686027e-07 / 4.691071063910547e-07 = 0.6379934758846145
+field decay(t = 200.15): 0.003927813565272278 / 0.003927813565272278 = 1.0
+field decay(t = 250.20000000000002): 0.00015009081939073963 / 0.003927813565272278 = 0.03821230740627967
+field decay(t = 300.2): 8.806226395700877e-11 / 0.003927813565272278 = 2.24201740977755e-08
+run 0 finished at t = 300.2 (6004 timesteps)
+
+Elapsed run time = 155.3804 s
+
+Field time usage:
+     connecting chunks: 0.105407 s
+         time stepping: 12.9911 s
+         communicating: 1.06295 s
+    Fourier transforming: 4.28549 s
+       everything else: 0.783619 s
+
