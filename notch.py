@@ -7,11 +7,11 @@ from math import pi, tan, sqrt
 os.system("rm -r notch-out/")
 
 #Waveguide Math
-a = 4 # length of waveguide
+a = 4 # length of cell
 h = 0.2 # height of Waveguide
 e = 0.4 # etch fraction [0 -> 1]
 w = 0.1 # width of the notch
-H = 10 * h
+H = 10 * h #height of cell
 
 h2 = h * (1 - e) #height of the etched region
 d = 1 #spacing of the waveguides
@@ -71,6 +71,7 @@ plt.show()
 quit()
 #----------------------------------------------------
 '''
+'''
 #------------------------------------------------------
 #FOR GENERATING THE ELECTRIC FIELD GIF
 #Note: After running this program, write the following commands in Terminal:
@@ -86,3 +87,59 @@ sim.run(mp.at_beginning(mp.output_epsilon),
 
 quit()
 #---------------------------------------------------------
+'''
+#---------------------------------------------------------
+#FOR GENERATING THE TRANSMITTANCE SPECTRUM
+
+nfreq = 100  # number of frequencies at which to compute flux
+
+# reflected flux 1
+refl_fr1 = mp.FluxRegion(center=mp.Vector3(-0.9 * a/2,0), size=mp.Vector3(0,3*h))
+refl1 = sim.add_flux(fcen, df, nfreq, refl_fr1)
+
+#reflected flux 2
+refl_fr2 = mp.FluxRegion(center=mp.Vector3(-0.6 * a/2,0), size=mp.Vector3(0,3*h))
+refl2 = sim.add_flux(fcen, df, nfreq, refl_fr2)
+
+#transmitted flux
+tran_fr = mp.FluxRegion(center = mp.Vector3(0.6 * a/2,0), size = mp.Vector3(0,3*h))
+tran = sim.add_flux(fcen, df, nfreq, tran_fr)
+
+pt = mp.Vector3(9.75,0)
+
+sim.run(until_after_sources=mp.stop_when_fields_decayed(50,mp.Ez,pt,1e-3))
+
+# save incident power for reflection planes
+straight_refl1_flux = mp.get_fluxes(refl1)
+straight_refl2_flux = mp.get_fluxes(refl2)
+
+# save incident power for transmission plane
+straight_tran_flux = mp.get_fluxes(tran)
+
+wl = [] #list of wavelengths
+Rs = [] #reflectance spectrum
+Ts = [] #transmittance spectrum
+Is = [] #spectrum of incident light
+
+refl1_flux = mp.get_fluxes(refl1)
+refl2_flux = mp.get_fluxes(refl2)
+tran_flux = mp.get_fluxes(tran)
+
+flux_freqs = mp.get_flux_freqs(refl1)
+
+for i in range(nfreq):
+    wl = np.append(wl, 1/flux_freqs[i])
+    Rs = np.append(Rs, -refl1_flux[i])
+    Ts = np.append(Ts, tran_flux[i])
+    Is = np.append(Is, refl2_flux[i] - refl1_flux[i])
+
+plt.plot(wl,Rs,'bo-',label='reflectance')
+plt.plot(wl,Ts,'ro-',label='transmittance')
+plt.plot(wl,Is-Rs-Ts,'go-',label='loss')
+plt.axis([0.60, 0.65, 0.0, 100.0])
+plt.xlabel("wavelength (μm)")
+plt.legend(loc="upper right")
+plt.show()
+
+quit()
+#-------------------------------------------------------------
