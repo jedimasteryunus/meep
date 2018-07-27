@@ -8,6 +8,8 @@ from math import pi, tan, sqrt
 
 def notch(w): 
 
+	# w is the width of the notch in the waveguide
+
 	#Waveguide Math
 	a = 4 # length of cell
 	h = 0.2 # height of Waveguide
