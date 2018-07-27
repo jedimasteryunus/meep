@@ -49,7 +49,7 @@ sources = [mp.EigenModeSource(mp.GaussianSource(frequency = fcen, fwidth = df),
 
 pml_layers = [mp.PML(0.2)]
 
-resolution = 100
+resolution = 50
 
 sim = mp.Simulation(cell_size = cell,
                     boundary_layers = pml_layers,
