@@ -49,7 +49,7 @@ sources = [mp.EigenModeSource(mp.GaussianSource(frequency = fcen, fwidth = df),
 
 pml_layers = [mp.PML(0.2)]
 
-resolution = 50
+resolution = 100
 
 sim = mp.Simulation(cell_size = cell,
                     boundary_layers = pml_layers,
@@ -105,6 +105,14 @@ refl2 = sim.add_flux(fcen, df, nfreq, refl_fr2)
 tran_fr = mp.FluxRegion(center = mp.Vector3(0.6 * a/2,0), size = mp.Vector3(0,3*h))
 tran = sim.add_flux(fcen, df, nfreq, tran_fr)
 
+#flux loss above the waveguide
+su_fr = mp.FluxRegion(center = mp.Vector3(0, 3*h), size = mp.Vector3(a,0))
+su = sim.add_flux(fcen, df, nfreq, su_fr)
+
+#flux loss below the waveguide
+sd_fr = mp.FluxRegion(center = mp.Vector3(0, -3*h), size = mp.Vector3(a,0))
+sd = sim.add_flux(fcen, df, nfreq, sd_fr)
+
 pt = mp.Vector3(9.75,0)
 
 sim.run(until_after_sources=mp.stop_when_fields_decayed(50,mp.Ez,pt,1e-3))
@@ -116,11 +124,17 @@ straight_refl2_flux = mp.get_fluxes(refl2)
 # save incident power for transmission plane
 straight_tran_flux = mp.get_fluxes(tran)
 
+# save incident power for loss planes
+straight_su_flux = mp.get_fluxes(su)
+straight_sd_flux = mp.get_fluxes(sd)
+
 wl = [] #list of wavelengths
 
 refl1_flux = mp.get_fluxes(refl1)
 refl2_flux = mp.get_fluxes(refl2)
 tran_flux = mp.get_fluxes(tran)
+su_flux = mp.get_fluxes(su)
+sd_flux = mp.get_fluxes(sd)
 
 flux_freqs = mp.get_flux_freqs(refl1)
 
@@ -130,24 +144,33 @@ for i in range(nfreq):
 for ind, elt in enumerate(wl):
     #print(round(elt, 4))
     if round(elt, 3) == 0.637:
-        print("ALERT: MATCH FOUND")
+        #print("ALERT: MATCH FOUND")
         index = ind
-'''
+
 R = -refl1_flux[index] / (refl2_flux[index] - refl1_flux[index])
 T = tran_flux[index] / (refl2_flux[index] - refl1_flux[index])
 S = (refl2_flux[index] - tran_flux[index]) / (refl2_flux[index] - refl1_flux[index])
+Su = su_flux[index] / (refl2_flux[index] - refl1_flux[index])
+Sd = -sd_flux[index] / (refl2_flux[index] - refl1_flux[index])
+
+norm_Su = S * Su / (Su + Sd)
 
 NET = round((R + T + S) * 100, 0)
-if NET > 100:
-    NET = 100
+if NET > 100.0:
+    NET = 100.0
+
+NET_LOSS = round((Su + Sd) / S * 100, 0)
+if NET_LOSS > 100.0:
+    NET_LOSS = 100.0
 
 print("Reflection Percentage: ", R * 100)
 print("Transmission Percentage: ", T * 100)
 print("Total Loss Percentage: ", S * 100)
 print("Percentage of Light Accounted For: ", NET)
-print("Upper Loss Percentage: ", "Not Yet Available")
-print("Lower Loss Percentage: ", "Not Yet Availabe")
-print("Percentage of Total Loss Accounted For: ", "Not Yet Available")
-'''
+print("Upper Loss Percentage: ", Su * 100)
+print("Lower Loss Percentage: ", Sd * 100)
+print("Percentage of Total Loss Accounted For: ", NET_LOSS)
+print("Normalized Upper Loss Percentage: ", norm_Su * 100)
+
 quit()
 #-------------------------------------------------------------

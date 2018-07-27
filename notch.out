@@ -8,35 +8,57 @@ Computational cell is 4 x 2 x 0 with resolution 50
           size (0.1,0.08,0)
           axes (1,0,0), (0,1,0), (0,0,1)
           dielectric constant epsilon diagonal = (1,1,1)
-time for set_epsilon = 0.136101 s
+time for set_epsilon = 0.136057 s
 -----------
 MPB solved for omega_1(3.45449,0,0) = 1.77148 after 11 iters
 MPB solved for omega_1(2.99353,0,0) = 1.56923 after 5 iters
 MPB solved for omega_1(2.99384,0,0) = 1.56937 after 1 iters
-on time step 1343 (time=13.43), 0.00297966 s/step
-on time step 2759 (time=27.59), 0.00282639 s/step
-on time step 4175 (time=41.75), 0.00282685 s/step
-on time step 5588 (time=55.88), 0.00283149 s/step
-on time step 7002 (time=70.02), 0.00283004 s/step
-on time step 8417 (time=84.17), 0.0028283 s/step
-on time step 9832 (time=98.32), 0.00282806 s/step
-on time step 11247 (time=112.47), 0.00282757 s/step
-on time step 12663 (time=126.63), 0.00282624 s/step
-on time step 14080 (time=140.8), 0.00282315 s/step
-on time step 15496 (time=154.96), 0.00282587 s/step
-on time step 16909 (time=169.09), 0.00283198 s/step
-on time step 18327 (time=183.27), 0.00282265 s/step
-on time step 19745 (time=197.45), 0.00282276 s/step
+on time step 674 (time=6.74), 0.0059428 s/step
+on time step 1369 (time=13.69), 0.00575775 s/step
+on time step 2065 (time=20.65), 0.00574959 s/step
+on time step 2761 (time=27.61), 0.00575101 s/step
+on time step 3456 (time=34.56), 0.00575754 s/step
+on time step 4151 (time=41.51), 0.00575779 s/step
+on time step 4847 (time=48.47), 0.00575139 s/step
+on time step 5542 (time=55.42), 0.00575794 s/step
+on time step 6237 (time=62.37), 0.00575942 s/step
+on time step 6933 (time=69.33), 0.00575259 s/step
+on time step 7628 (time=76.28), 0.00575881 s/step
+on time step 8322 (time=83.22), 0.00576522 s/step
+on time step 9016 (time=90.16), 0.00576784 s/step
+on time step 9712 (time=97.12), 0.00574807 s/step
+on time step 10408 (time=104.08), 0.00574856 s/step
+on time step 11103 (time=111.03), 0.00575553 s/step
+on time step 11795 (time=117.95), 0.00578846 s/step
+on time step 12480 (time=124.8), 0.00584007 s/step
+on time step 13174 (time=131.74), 0.00577149 s/step
+on time step 13869 (time=138.69), 0.00575726 s/step
+on time step 14564 (time=145.64), 0.00576264 s/step
+on time step 15258 (time=152.58), 0.00576419 s/step
+on time step 15954 (time=159.54), 0.00575431 s/step
+on time step 16649 (time=166.49), 0.00575963 s/step
+on time step 17344 (time=173.44), 0.00575618 s/step
+on time step 18039 (time=180.39), 0.00575657 s/step
+on time step 18735 (time=187.35), 0.00575171 s/step
+on time step 19431 (time=194.31), 0.00575374 s/step
 -----------
 Initializing structure...
 run 0 finished at t = 200.03 (20003 timesteps)
+Reflection Percentage:  4.571017440195307
+Transmission Percentage:  87.00548421077977
+Total Loss Percentage:  8.423498349024918
+Percentage of Light Accounted For:  100.0
+Upper Loss Percentage:  4.536221952215404
+Lower Loss Percentage:  2.605168560881167
+Percentage of Total Loss Accounted For:  85.0
+Normalized Upper Loss Percentage:  5.350618770283222
 
-Elapsed run time = 57.2749 s
+Elapsed run time = 115.8829 s
 
 Field time usage:
-     connecting chunks: 0.126218 s
-         time stepping: 43.512 s
-         communicating: 4.07394 s
-    Fourier transforming: 6.65306 s
-       everything else: 2.41419 s
+     connecting chunks: 0.12603 s
+         time stepping: 44.4488 s
+         communicating: 4.27781 s
+    Fourier transforming: 63.2675 s
+       everything else: 3.27082 s
 
