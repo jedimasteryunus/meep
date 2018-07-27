@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from math import pi, tan, sqrt
 
-os.system("rm -r notch-out/")
+#os.system("rm -r notch-out/")
 
 #Waveguide Math
 a = 4 # length of cell
@@ -91,7 +91,7 @@ quit()
 #---------------------------------------------------------
 #FOR GENERATING THE TRANSMITTANCE SPECTRUM
 
-nfreq = 100  # number of frequencies at which to compute flux
+nfreq = 20  # number of frequencies at which to compute flux
 
 # reflected flux 1
 refl_fr1 = mp.FluxRegion(center=mp.Vector3(-0.9 * a/2,0), size=mp.Vector3(0,3*h))
@@ -117,9 +117,6 @@ straight_refl2_flux = mp.get_fluxes(refl2)
 straight_tran_flux = mp.get_fluxes(tran)
 
 wl = [] #list of wavelengths
-Rs = [] #reflectance spectrum
-Ts = [] #transmittance spectrum
-Is = [] #spectrum of incident light
 
 refl1_flux = mp.get_fluxes(refl1)
 refl2_flux = mp.get_fluxes(refl2)
@@ -129,17 +126,28 @@ flux_freqs = mp.get_flux_freqs(refl1)
 
 for i in range(nfreq):
     wl = np.append(wl, 1/flux_freqs[i])
-    Rs = np.append(Rs, -refl1_flux[i])
-    Ts = np.append(Ts, tran_flux[i])
-    Is = np.append(Is, refl2_flux[i] - refl1_flux[i])
 
-plt.plot(wl,Rs,'bo-',label='reflectance')
-plt.plot(wl,Ts,'ro-',label='transmittance')
-plt.plot(wl,Is-Rs-Ts,'go-',label='loss')
-plt.axis([0.60, 0.65, 0.0, 100.0])
-plt.xlabel("wavelength (μm)")
-plt.legend(loc="upper right")
-plt.show()
+for ind, elt in enumerate(wl):
+    #print(round(elt, 4))
+    if round(elt, 3) == 0.637:
+        print("ALERT: MATCH FOUND")
+        index = ind
+'''
+R = -refl1_flux[index] / (refl2_flux[index] - refl1_flux[index])
+T = tran_flux[index] / (refl2_flux[index] - refl1_flux[index])
+S = (refl2_flux[index] - tran_flux[index]) / (refl2_flux[index] - refl1_flux[index])
 
+NET = round((R + T + S) * 100, 0)
+if NET > 100:
+    NET = 100
+
+print("Reflection Percentage: ", R * 100)
+print("Transmission Percentage: ", T * 100)
+print("Total Loss Percentage: ", S * 100)
+print("Percentage of Light Accounted For: ", NET)
+print("Upper Loss Percentage: ", "Not Yet Available")
+print("Lower Loss Percentage: ", "Not Yet Availabe")
+print("Percentage of Total Loss Accounted For: ", "Not Yet Available")
+'''
 quit()
 #-------------------------------------------------------------

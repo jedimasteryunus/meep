@@ -1,4 +1,3 @@
-rm: cannot remove 'notch-out/': No such file or directory
 Working in 2D dimensions.
 Computational cell is 4 x 2 x 0 with resolution 50
      block, center = (0,0,0)
@@ -9,48 +8,35 @@ Computational cell is 4 x 2 x 0 with resolution 50
           size (0.1,0.08,0)
           axes (1,0,0), (0,1,0), (0,0,1)
           dielectric constant epsilon diagonal = (1,1,1)
-time for set_epsilon = 0.135611 s
+time for set_epsilon = 0.136101 s
 -----------
 MPB solved for omega_1(3.45449,0,0) = 1.77148 after 11 iters
 MPB solved for omega_1(2.99353,0,0) = 1.56923 after 5 iters
 MPB solved for omega_1(2.99384,0,0) = 1.56937 after 1 iters
-on time step 697 (time=6.97), 0.00574076 s/step
-on time step 1417 (time=14.17), 0.00556181 s/step
-on time step 2137 (time=21.37), 0.00556275 s/step
-on time step 2856 (time=28.56), 0.00556461 s/step
-on time step 3576 (time=35.76), 0.0055599 s/step
-on time step 4296 (time=42.96), 0.00556254 s/step
-on time step 5015 (time=50.15), 0.00556364 s/step
-on time step 5735 (time=57.35), 0.00555775 s/step
-on time step 6455 (time=64.55), 0.00555882 s/step
-on time step 7175 (time=71.75), 0.00555847 s/step
-on time step 7894 (time=78.94), 0.00556378 s/step
-on time step 8614 (time=86.14), 0.00555977 s/step
-on time step 9333 (time=93.33), 0.00556632 s/step
-on time step 10053 (time=100.53), 0.0055588 s/step
-on time step 10772 (time=107.72), 0.00556578 s/step
-on time step 11491 (time=114.91), 0.00556938 s/step
-on time step 12210 (time=122.1), 0.00556966 s/step
-on time step 12929 (time=129.29), 0.0055675 s/step
-on time step 13648 (time=136.48), 0.00557038 s/step
-on time step 14366 (time=143.66), 0.00557266 s/step
-on time step 15085 (time=150.85), 0.00556487 s/step
-on time step 15804 (time=158.04), 0.00557074 s/step
-on time step 16523 (time=165.23), 0.00556673 s/step
-on time step 17242 (time=172.42), 0.00556447 s/step
-on time step 17961 (time=179.61), 0.00556943 s/step
-on time step 18679 (time=186.79), 0.00557301 s/step
-on time step 19397 (time=193.97), 0.00557259 s/step
+on time step 1343 (time=13.43), 0.00297966 s/step
+on time step 2759 (time=27.59), 0.00282639 s/step
+on time step 4175 (time=41.75), 0.00282685 s/step
+on time step 5588 (time=55.88), 0.00283149 s/step
+on time step 7002 (time=70.02), 0.00283004 s/step
+on time step 8417 (time=84.17), 0.0028283 s/step
+on time step 9832 (time=98.32), 0.00282806 s/step
+on time step 11247 (time=112.47), 0.00282757 s/step
+on time step 12663 (time=126.63), 0.00282624 s/step
+on time step 14080 (time=140.8), 0.00282315 s/step
+on time step 15496 (time=154.96), 0.00282587 s/step
+on time step 16909 (time=169.09), 0.00283198 s/step
+on time step 18327 (time=183.27), 0.00282265 s/step
+on time step 19745 (time=197.45), 0.00282276 s/step
 -----------
 Initializing structure...
 run 0 finished at t = 200.03 (20003 timesteps)
 
-Elapsed run time = 940.6649 s
+Elapsed run time = 57.2749 s
 
 Field time usage:
-     connecting chunks: 0.126701 s
-         time stepping: 44.3486 s
-         communicating: 4.21085 s
-    Fourier transforming: 59.5052 s
-       everything else: 3.28321 s
+     connecting chunks: 0.126218 s
+         time stepping: 43.512 s
+         communicating: 4.07394 s
+    Fourier transforming: 6.65306 s
+       everything else: 2.41419 s
 
