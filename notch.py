@@ -6,7 +6,13 @@ from math import pi, tan, sqrt
 
 #os.system("rm -r notch-out/")
 
+f = open('notch.out', 'w')
+
 def notch(w): 
+
+	print("#----------------------------------------")
+	print("NOTCH WIDTH: %s nanometers" % (w * 1000))
+	print("#----------------------------------------")
 
 	# w is the width of the notch in the waveguide
 
@@ -166,23 +172,25 @@ def notch(w):
 	if NET_LOSS > 100.0:
 	    NET_LOSS = 100.0
 	
-	print("---------------------------------------------------")
-	print("Notch Width: ", w * 1000, "nanometers")
-	print("Reflection Percentage: ", R * 100)
-	print("Transmission Percentage: ", T * 100)
-	print("Total Loss Percentage: ", S * 100)
-	print("Percentage of Light Accounted For: ", NET)
-	print("Upper Loss Percentage: ", Su * 100)
-	print("Lower Loss Percentage: ", Sd * 100)
-	print("Percentage of Total Loss Accounted For: ", NET_LOSS)
-	print("Normalized Upper Loss Percentage: ", norm_Su * 100)
-	print("---------------------------------------------------")
-
-	#-------------------------------------------------------------
+	f.write("--------------------------------------------------- \n")
+	f.write("Notch Width: %s nanometers \n" % (w * 1000))
+	f.write("Reflection Percentage: %s \n" % (R * 100))
+	f.write("Transmission Percentage: %s \n" % (T * 100))
+	f.write("Total Loss Percentage: %s \n" % (S * 100))
+	f.write("Percentage of Light Accounted For: %s \n" % (NET))
+	f.write("Upper Loss Percentage: %s \n" % (Su * 100))
+	f.write("Lower Loss Percentage: %s \n" % (Sd * 100))
+	f.write("Percentage of Total Loss Accounted For: %s \n" % (NET_LOSS))
+	f.write("Normalized Upper Loss Percentage: %s \n" % (norm_Su * 100))
+	f.write("--------------------------------------------------- \n")
 
 	sim.reset_meep()
+
+	#-------------------------------------------------------------
 
 for notch_index in range(4, 32, 2): 
 	notch_width = notch_index / 100
 	notch(notch_width)
+
+f.close()
 
