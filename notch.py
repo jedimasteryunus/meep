@@ -178,10 +178,11 @@ def notch(w):
 	print("Normalized Upper Loss Percentage: ", norm_Su * 100)
 	print("---------------------------------------------------")
 
-	quit()
 	#-------------------------------------------------------------
 
-for notch_width in range(0.04, 0.32, 0.02): 
-	notch(notch_width)
+	sim.reset_meep()
 
+for notch_index in range(4, 32, 2): 
+	notch_width = notch_index / 100
+	notch(notch_width)
 

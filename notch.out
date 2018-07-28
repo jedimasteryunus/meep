@@ -5,60 +5,703 @@ Computational cell is 4 x 2 x 0 with resolution 50
           axes (1,0,0), (0,1,0), (0,0,1)
           dielectric constant epsilon diagonal = (4.84528,4.84528,4.84528)
      block, center = (0,0.06,0)
-          size (0.1,0.08,0)
+          size (0.04,0.08,0)
           axes (1,0,0), (0,1,0), (0,0,1)
           dielectric constant epsilon diagonal = (1,1,1)
-time for set_epsilon = 0.136057 s
+time for set_epsilon = 0.0675869 s
 -----------
 MPB solved for omega_1(3.45449,0,0) = 1.77148 after 11 iters
 MPB solved for omega_1(2.99353,0,0) = 1.56923 after 5 iters
 MPB solved for omega_1(2.99384,0,0) = 1.56937 after 1 iters
-on time step 674 (time=6.74), 0.0059428 s/step
-on time step 1369 (time=13.69), 0.00575775 s/step
-on time step 2065 (time=20.65), 0.00574959 s/step
-on time step 2761 (time=27.61), 0.00575101 s/step
-on time step 3456 (time=34.56), 0.00575754 s/step
-on time step 4151 (time=41.51), 0.00575779 s/step
-on time step 4847 (time=48.47), 0.00575139 s/step
-on time step 5542 (time=55.42), 0.00575794 s/step
-on time step 6237 (time=62.37), 0.00575942 s/step
-on time step 6933 (time=69.33), 0.00575259 s/step
-on time step 7628 (time=76.28), 0.00575881 s/step
-on time step 8322 (time=83.22), 0.00576522 s/step
-on time step 9016 (time=90.16), 0.00576784 s/step
-on time step 9712 (time=97.12), 0.00574807 s/step
-on time step 10408 (time=104.08), 0.00574856 s/step
-on time step 11103 (time=111.03), 0.00575553 s/step
-on time step 11795 (time=117.95), 0.00578846 s/step
-on time step 12480 (time=124.8), 0.00584007 s/step
-on time step 13174 (time=131.74), 0.00577149 s/step
-on time step 13869 (time=138.69), 0.00575726 s/step
-on time step 14564 (time=145.64), 0.00576264 s/step
-on time step 15258 (time=152.58), 0.00576419 s/step
-on time step 15954 (time=159.54), 0.00575431 s/step
-on time step 16649 (time=166.49), 0.00575963 s/step
-on time step 17344 (time=173.44), 0.00575618 s/step
-on time step 18039 (time=180.39), 0.00575657 s/step
-on time step 18735 (time=187.35), 0.00575171 s/step
-on time step 19431 (time=194.31), 0.00575374 s/step
+on time step 1426 (time=14.26), 0.00280639 s/step
+on time step 2880 (time=28.8), 0.00275267 s/step
+on time step 4355 (time=43.55), 0.00271254 s/step
+on time step 5719 (time=57.19), 0.00293373 s/step
+on time step 7150 (time=71.5), 0.00279666 s/step
+on time step 8586 (time=85.86), 0.00278719 s/step
+on time step 9964 (time=99.64), 0.00290466 s/step
+on time step 11395 (time=113.95), 0.00279697 s/step
+on time step 12825 (time=128.25), 0.00279828 s/step
+on time step 14288 (time=142.88), 0.00273568 s/step
+on time step 15751 (time=157.51), 0.00273524 s/step
+on time step 17186 (time=171.86), 0.00278834 s/step
+on time step 18625 (time=186.25), 0.00278108 s/step
+
+Field time usage:
+     connecting chunks: 0.0763659 s
+         time stepping: 19.471 s
+         communicating: 1.88133 s
+    Fourier transforming: 33.743 s
+       everything else: 0.598092 s
+
+Working in 2D dimensions.
+Computational cell is 4 x 2 x 0 with resolution 50
+     block, center = (0,0,0)
+          size (4.4,0.2,0)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (4.84528,4.84528,4.84528)
+     block, center = (0,0.06,0)
+          size (0.06,0.08,0)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (1,1,1)
+time for set_epsilon = 0.0663381 s
+-----------
+MPB solved for omega_1(3.45449,0,0) = 1.77148 after 13 iters
+MPB solved for omega_1(2.99353,0,0) = 1.56923 after 5 iters
+MPB solved for omega_1(2.99384,0,0) = 1.56937 after 1 iters
+on time step 1423 (time=14.23), 0.00281214 s/step
+on time step 2885 (time=28.85), 0.00273756 s/step
+on time step 4371 (time=43.71), 0.00269336 s/step
+on time step 5848 (time=58.48), 0.00270985 s/step
+on time step 7288 (time=72.88), 0.00277861 s/step
+on time step 8765 (time=87.65), 0.00270914 s/step
+on time step 10227 (time=102.27), 0.00273637 s/step
+on time step 11704 (time=117.04), 0.00270844 s/step
+on time step 13143 (time=131.43), 0.00278022 s/step
+on time step 14605 (time=146.05), 0.00273793 s/step
+on time step 16067 (time=160.67), 0.00273728 s/step
+on time step 17530 (time=175.3), 0.00273552 s/step
+on time step 19015 (time=190.15), 0.00269482 s/step
+
+Field time usage:
+     connecting chunks: 0.104411 s
+         time stepping: 18.8861 s
+         communicating: 1.83207 s
+    Fourier transforming: 33.3465 s
+       everything else: 0.587591 s
+
+Working in 2D dimensions.
+Computational cell is 4 x 2 x 0 with resolution 50
+     block, center = (0,0,0)
+          size (4.4,0.2,0)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (4.84528,4.84528,4.84528)
+     block, center = (0,0.06,0)
+          size (0.08,0.08,0)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (1,1,1)
+time for set_epsilon = 0.066479 s
+-----------
+MPB solved for omega_1(3.45449,0,0) = 1.77148 after 12 iters
+MPB solved for omega_1(2.99353,0,0) = 1.56923 after 5 iters
+MPB solved for omega_1(2.99384,0,0) = 1.56937 after 1 iters
+on time step 1413 (time=14.13), 0.00283213 s/step
+on time step 2873 (time=28.73), 0.00274009 s/step
+on time step 4354 (time=43.54), 0.00270138 s/step
+on time step 5814 (time=58.14), 0.00274138 s/step
+on time step 7272 (time=72.72), 0.00274497 s/step
+on time step 8732 (time=87.32), 0.00273981 s/step
+on time step 10215 (time=102.15), 0.00269738 s/step
+on time step 11675 (time=116.75), 0.00274085 s/step
+on time step 13136 (time=131.36), 0.00273966 s/step
+on time step 14596 (time=145.96), 0.00274048 s/step
+on time step 16076 (time=160.76), 0.00270403 s/step
+on time step 17536 (time=175.36), 0.00274003 s/step
+on time step 19013 (time=190.13), 0.00270905 s/step
+
+Field time usage:
+     connecting chunks: 0.104433 s
+         time stepping: 18.8126 s
+         communicating: 1.83043 s
+    Fourier transforming: 33.3679 s
+       everything else: 0.583095 s
+
+Working in 2D dimensions.
+Computational cell is 4 x 2 x 0 with resolution 50
+     block, center = (0,0,0)
+          size (4.4,0.2,0)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (4.84528,4.84528,4.84528)
+     block, center = (0,0.06,0)
+          size (0.1,0.08,0)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (1,1,1)
+time for set_epsilon = 0.0669072 s
+-----------
+MPB solved for omega_1(3.45449,0,0) = 1.77148 after 12 iters
+MPB solved for omega_1(2.99353,0,0) = 1.56923 after 5 iters
+MPB solved for omega_1(2.99384,0,0) = 1.56937 after 1 iters
+on time step 1419 (time=14.19), 0.00281895 s/step
+on time step 2879 (time=28.79), 0.0027407 s/step
+on time step 4340 (time=43.4), 0.00273926 s/step
+on time step 5800 (time=58), 0.00274045 s/step
+on time step 7260 (time=72.6), 0.00274153 s/step
+on time step 8720 (time=87.2), 0.00274125 s/step
+on time step 10180 (time=101.8), 0.00273977 s/step
+on time step 11630 (time=116.3), 0.00276002 s/step
+on time step 13113 (time=131.13), 0.00269778 s/step
+on time step 14594 (time=145.94), 0.00270207 s/step
+on time step 16055 (time=160.55), 0.00273964 s/step
+on time step 17527 (time=175.27), 0.00271865 s/step
+on time step 18980 (time=189.8), 0.00275428 s/step
+
+Field time usage:
+     connecting chunks: 0.104429 s
+         time stepping: 18.8736 s
+         communicating: 1.83766 s
+    Fourier transforming: 33.4051 s
+       everything else: 0.585371 s
+
+Working in 2D dimensions.
+Computational cell is 4 x 2 x 0 with resolution 50
+     block, center = (0,0,0)
+          size (4.4,0.2,0)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (4.84528,4.84528,4.84528)
+     block, center = (0,0.06,0)
+          size (0.12,0.08,0)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (1,1,1)
+time for set_epsilon = 0.066695 s
+-----------
+MPB solved for omega_1(3.45449,0,0) = 1.77148 after 12 iters
+MPB solved for omega_1(2.99353,0,0) = 1.56923 after 5 iters
+MPB solved for omega_1(2.99384,0,0) = 1.56937 after 1 iters
+on time step 1425 (time=14.25), 0.00280786 s/step
+on time step 2879 (time=28.79), 0.00275329 s/step
+on time step 4341 (time=43.41), 0.00273803 s/step
+on time step 5815 (time=58.15), 0.00271519 s/step
+on time step 7297 (time=72.97), 0.00270017 s/step
+on time step 8770 (time=87.7), 0.00271555 s/step
+on time step 10234 (time=102.34), 0.00273421 s/step
+on time step 11688 (time=116.88), 0.00275199 s/step
+on time step 13151 (time=131.51), 0.00273454 s/step
+on time step 14604 (time=146.04), 0.00275403 s/step
+on time step 16073 (time=160.73), 0.00272363 s/step
+on time step 17528 (time=175.28), 0.00274932 s/step
+on time step 19010 (time=190.1), 0.00270046 s/step
+
+Field time usage:
+     connecting chunks: 0.104602 s
+         time stepping: 18.8368 s
+         communicating: 1.83245 s
+    Fourier transforming: 33.3732 s
+       everything else: 0.585856 s
+
+Working in 2D dimensions.
+Computational cell is 4 x 2 x 0 with resolution 50
+     block, center = (0,0,0)
+          size (4.4,0.2,0)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (4.84528,4.84528,4.84528)
+     block, center = (0,0.06,0)
+          size (0.14,0.08,0)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (1,1,1)
+time for set_epsilon = 0.0664668 s
+-----------
+MPB solved for omega_1(3.45449,0,0) = 1.77148 after 15 iters
+MPB solved for omega_1(2.99353,0,0) = 1.56923 after 5 iters
+MPB solved for omega_1(2.99384,0,0) = 1.56937 after 1 iters
+on time step 1436 (time=14.36), 0.00278658 s/step
+on time step 2912 (time=29.12), 0.00271037 s/step
+on time step 4388 (time=43.88), 0.00271075 s/step
+on time step 5862 (time=58.62), 0.00271418 s/step
+on time step 7338 (time=73.38), 0.00271188 s/step
+on time step 8814 (time=88.14), 0.002711 s/step
+on time step 10290 (time=102.9), 0.00271188 s/step
+on time step 11767 (time=117.67), 0.00270965 s/step
+on time step 13242 (time=132.42), 0.00271187 s/step
+on time step 14719 (time=147.19), 0.00270965 s/step
+on time step 16195 (time=161.95), 0.00271054 s/step
+on time step 17671 (time=176.71), 0.00271039 s/step
+on time step 19116 (time=191.16), 0.00276945 s/step
+
+Field time usage:
+     connecting chunks: 0.104499 s
+         time stepping: 18.5552 s
+         communicating: 1.80707 s
+    Fourier transforming: 33.4657 s
+       everything else: 0.585143 s
+
+Working in 2D dimensions.
+Computational cell is 4 x 2 x 0 with resolution 50
+     block, center = (0,0,0)
+          size (4.4,0.2,0)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (4.84528,4.84528,4.84528)
+     block, center = (0,0.06,0)
+          size (0.16,0.08,0)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (1,1,1)
+time for set_epsilon = 0.06651 s
+-----------
+MPB solved for omega_1(3.45449,0,0) = 1.77148 after 14 iters
+MPB solved for omega_1(2.99353,0,0) = 1.56923 after 5 iters
+MPB solved for omega_1(2.99384,0,0) = 1.56937 after 1 iters
+on time step 1445 (time=14.45), 0.00276946 s/step
+on time step 2898 (time=28.98), 0.0027535 s/step
+on time step 4351 (time=43.51), 0.00275349 s/step
+on time step 5807 (time=58.07), 0.00274798 s/step
+on time step 7260 (time=72.6), 0.00275331 s/step
+on time step 8714 (time=87.14), 0.00275116 s/step
+on time step 10168 (time=101.68), 0.00275225 s/step
+on time step 11619 (time=116.19), 0.00275841 s/step
+on time step 13071 (time=130.71), 0.00275502 s/step
+on time step 14523 (time=145.23), 0.00275578 s/step
+on time step 15976 (time=159.76), 0.00275318 s/step
+on time step 17400 (time=174), 0.00280953 s/step
+on time step 18798 (time=187.98), 0.00286136 s/step
+
+Field time usage:
+     connecting chunks: 0.0711992 s
+         time stepping: 19.2406 s
+         communicating: 1.8549 s
+    Fourier transforming: 33.6449 s
+       everything else: 0.594765 s
+
+Working in 2D dimensions.
+Computational cell is 4 x 2 x 0 with resolution 50
+     block, center = (0,0,0)
+          size (4.4,0.2,0)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (4.84528,4.84528,4.84528)
+     block, center = (0,0.06,0)
+          size (0.18,0.08,0)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (1,1,1)
+time for set_epsilon = 0.0663619 s
+-----------
+MPB solved for omega_1(3.45449,0,0) = 1.77148 after 14 iters
+MPB solved for omega_1(2.99353,0,0) = 1.56923 after 5 iters
+MPB solved for omega_1(2.99384,0,0) = 1.56937 after 1 iters
+on time step 1414 (time=14.14), 0.00283042 s/step
+on time step 2844 (time=28.44), 0.00279897 s/step
+on time step 4227 (time=42.27), 0.00289376 s/step
+on time step 5696 (time=56.96), 0.00272506 s/step
+on time step 7101 (time=71.01), 0.00284815 s/step
+on time step 8528 (time=85.28), 0.00280503 s/step
+on time step 9911 (time=99.11), 0.00289294 s/step
+on time step 11348 (time=113.48), 0.00278527 s/step
+on time step 12715 (time=127.15), 0.00292846 s/step
+on time step 14087 (time=140.87), 0.00291713 s/step
+on time step 15473 (time=154.73), 0.00288639 s/step
+on time step 16949 (time=169.49), 0.00271022 s/step
+on time step 18394 (time=183.94), 0.00276974 s/step
+on time step 19760 (time=197.6), 0.00292989 s/step
+
+Field time usage:
+     connecting chunks: 0.104505 s
+         time stepping: 19.9841 s
+         communicating: 1.91732 s
+    Fourier transforming: 34.1464 s
+       everything else: 0.609649 s
+
+Working in 2D dimensions.
+Computational cell is 4 x 2 x 0 with resolution 50
+     block, center = (0,0,0)
+          size (4.4,0.2,0)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (4.84528,4.84528,4.84528)
+     block, center = (0,0.06,0)
+          size (0.2,0.08,0)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (1,1,1)
+time for set_epsilon = 0.0666649 s
+-----------
+MPB solved for omega_1(3.45449,0,0) = 1.77148 after 14 iters
+MPB solved for omega_1(2.99353,0,0) = 1.56923 after 5 iters
+MPB solved for omega_1(2.99384,0,0) = 1.56937 after 1 iters
+on time step 1414 (time=14.14), 0.0028305 s/step
+on time step 2850 (time=28.5), 0.00278691 s/step
+on time step 4256 (time=42.56), 0.00284598 s/step
+on time step 5699 (time=56.99), 0.0027734 s/step
+on time step 7151 (time=71.51), 0.00275503 s/step
+on time step 8604 (time=86.04), 0.00275437 s/step
+on time step 10055 (time=100.55), 0.00275702 s/step
+on time step 11430 (time=114.3), 0.00290915 s/step
+on time step 12830 (time=128.3), 0.00285815 s/step
+on time step 14281 (time=142.81), 0.00275729 s/step
+on time step 15691 (time=156.91), 0.00283788 s/step
+on time step 17138 (time=171.38), 0.00276585 s/step
+on time step 18575 (time=185.75), 0.00278524 s/step
+on time step 19967 (time=199.67), 0.00287416 s/step
+
+Field time usage:
+     connecting chunks: 0.104457 s
+         time stepping: 19.6135 s
+         communicating: 1.90433 s
+    Fourier transforming: 33.9037 s
+       everything else: 0.601608 s
+
+Working in 2D dimensions.
+Computational cell is 4 x 2 x 0 with resolution 50
+     block, center = (0,0,0)
+          size (4.4,0.2,0)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (4.84528,4.84528,4.84528)
+     block, center = (0,0.06,0)
+          size (0.22,0.08,0)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (1,1,1)
+time for set_epsilon = 0.0667911 s
+-----------
+MPB solved for omega_1(3.45449,0,0) = 1.77148 after 14 iters
+MPB solved for omega_1(2.99353,0,0) = 1.56923 after 5 iters
+MPB solved for omega_1(2.99384,0,0) = 1.56937 after 1 iters
+on time step 1323 (time=13.23), 0.00302524 s/step
+on time step 2794 (time=27.94), 0.0027202 s/step
+on time step 4265 (time=42.65), 0.00272085 s/step
+on time step 5734 (time=57.34), 0.00272348 s/step
+on time step 7153 (time=71.53), 0.00281902 s/step
+on time step 8620 (time=86.2), 0.00272765 s/step
+on time step 10090 (time=100.9), 0.00272143 s/step
+on time step 11565 (time=115.65), 0.00271329 s/step
+on time step 13035 (time=130.35), 0.00272146 s/step
+on time step 14513 (time=145.13), 0.00270741 s/step
+on time step 15988 (time=159.88), 0.00271367 s/step
+on time step 17457 (time=174.57), 0.00272305 s/step
+on time step 18926 (time=189.26), 0.00272419 s/step
+
+Field time usage:
+     connecting chunks: 0.104428 s
+         time stepping: 18.8452 s
+         communicating: 1.82769 s
+    Fourier transforming: 33.5794 s
+       everything else: 0.588814 s
+
+Working in 2D dimensions.
+Computational cell is 4 x 2 x 0 with resolution 50
+     block, center = (0,0,0)
+          size (4.4,0.2,0)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (4.84528,4.84528,4.84528)
+     block, center = (0,0.06,0)
+          size (0.24,0.08,0)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (1,1,1)
+time for set_epsilon = 0.0664201 s
+-----------
+MPB solved for omega_1(3.45449,0,0) = 1.77148 after 11 iters
+MPB solved for omega_1(2.99353,0,0) = 1.56923 after 5 iters
+MPB solved for omega_1(2.99384,0,0) = 1.56937 after 1 iters
+on time step 1432 (time=14.32), 0.00279476 s/step
+on time step 2903 (time=29.03), 0.0027202 s/step
+on time step 4374 (time=43.74), 0.00272092 s/step
+on time step 5845 (time=58.45), 0.00272075 s/step
+on time step 7314 (time=73.14), 0.00272316 s/step
+on time step 8792 (time=87.92), 0.00270674 s/step
+on time step 10262 (time=102.62), 0.00272139 s/step
+on time step 11734 (time=117.34), 0.00271749 s/step
+on time step 13204 (time=132.04), 0.00272117 s/step
+on time step 14675 (time=146.75), 0.00272019 s/step
+on time step 16146 (time=161.46), 0.00272014 s/step
+on time step 17617 (time=176.17), 0.00272104 s/step
+on time step 19091 (time=190.91), 0.0027141 s/step
+
+Field time usage:
+     connecting chunks: 0.10447 s
+         time stepping: 18.6186 s
+         communicating: 1.81484 s
+    Fourier transforming: 33.3942 s
+       everything else: 0.581458 s
+
+Working in 2D dimensions.
+Computational cell is 4 x 2 x 0 with resolution 50
+     block, center = (0,0,0)
+          size (4.4,0.2,0)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (4.84528,4.84528,4.84528)
+     block, center = (0,0.06,0)
+          size (0.26,0.08,0)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (1,1,1)
+time for set_epsilon = 0.0665901 s
+-----------
+MPB solved for omega_1(3.45449,0,0) = 1.77148 after 11 iters
+MPB solved for omega_1(2.99353,0,0) = 1.56923 after 5 iters
+MPB solved for omega_1(2.99384,0,0) = 1.56937 after 1 iters
+on time step 1436 (time=14.36), 0.00278567 s/step
+on time step 2849 (time=28.49), 0.00283253 s/step
+on time step 4253 (time=42.53), 0.00285091 s/step
+on time step 5672 (time=56.72), 0.00282011 s/step
+on time step 7082 (time=70.82), 0.00283695 s/step
+on time step 8538 (time=85.38), 0.00274736 s/step
+on time step 9953 (time=99.53), 0.00282756 s/step
+on time step 11361 (time=113.61), 0.00284206 s/step
+on time step 12827 (time=128.27), 0.00273032 s/step
+on time step 14291 (time=142.91), 0.00273297 s/step
+on time step 15696 (time=156.96), 0.00284788 s/step
+on time step 17109 (time=171.09), 0.00283245 s/step
+on time step 18513 (time=185.13), 0.0028492 s/step
+on time step 19923 (time=199.23), 0.00283831 s/step
+
+Field time usage:
+     connecting chunks: 0.104507 s
+         time stepping: 19.7073 s
+         communicating: 1.89536 s
+    Fourier transforming: 33.9362 s
+       everything else: 0.603231 s
+
+Working in 2D dimensions.
+Computational cell is 4 x 2 x 0 with resolution 50
+     block, center = (0,0,0)
+          size (4.4,0.2,0)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (4.84528,4.84528,4.84528)
+     block, center = (0,0.06,0)
+          size (0.28,0.08,0)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (1,1,1)
+time for set_epsilon = 0.0780289 s
+-----------
+MPB solved for omega_1(3.45449,0,0) = 1.77148 after 14 iters
+MPB solved for omega_1(2.99353,0,0) = 1.56923 after 5 iters
+MPB solved for omega_1(2.99384,0,0) = 1.56937 after 1 iters
+on time step 1375 (time=13.75), 0.00291084 s/step
+on time step 2776 (time=27.76), 0.0028555 s/step
+on time step 4181 (time=41.81), 0.00284897 s/step
+on time step 5589 (time=55.89), 0.00284144 s/step
+on time step 7011 (time=70.11), 0.00281404 s/step
+on time step 8410 (time=84.1), 0.00285926 s/step
+on time step 9816 (time=98.16), 0.00284537 s/step
+on time step 11284 (time=112.84), 0.00272509 s/step
+on time step 12680 (time=126.8), 0.00286675 s/step
+on time step 14075 (time=140.75), 0.00286912 s/step
+on time step 15527 (time=155.27), 0.00275572 s/step
+on time step 16921 (time=169.21), 0.00286986 s/step
+on time step 18322 (time=183.22), 0.00285546 s/step
+on time step 19738 (time=197.38), 0.00282575 s/step
+
+Field time usage:
+     connecting chunks: 0.104714 s
+         time stepping: 19.9833 s
+         communicating: 1.91306 s
+    Fourier transforming: 34.1347 s
+       everything else: 0.608877 s
+
+Working in 2D dimensions.
+Computational cell is 4 x 2 x 0 with resolution 50
+     block, center = (0,0,0)
+          size (4.4,0.2,0)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (4.84528,4.84528,4.84528)
+     block, center = (0,0.06,0)
+          size (0.3,0.08,0)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (1,1,1)
+time for set_epsilon = 0.0665569 s
+-----------
+MPB solved for omega_1(3.45449,0,0) = 1.77148 after 11 iters
+MPB solved for omega_1(2.99353,0,0) = 1.56923 after 5 iters
+MPB solved for omega_1(2.99384,0,0) = 1.56937 after 1 iters
+on time step 1416 (time=14.16), 0.00282577 s/step
+on time step 2834 (time=28.34), 0.00282251 s/step
+on time step 4281 (time=42.81), 0.00276552 s/step
+on time step 5670 (time=56.7), 0.00288167 s/step
+on time step 7087 (time=70.87), 0.0028229 s/step
+on time step 8532 (time=85.32), 0.00276876 s/step
+on time step 9925 (time=99.25), 0.00287157 s/step
+on time step 11339 (time=113.39), 0.00282902 s/step
+on time step 12661 (time=126.61), 0.00302766 s/step
+on time step 14052 (time=140.52), 0.00287633 s/step
+on time step 15469 (time=154.69), 0.00282343 s/step
+on time step 16909 (time=169.09), 0.00277894 s/step
+on time step 18298 (time=182.98), 0.00288056 s/step
+on time step 19678 (time=196.78), 0.00289863 s/step
+
+Field time usage:
+     connecting chunks: 0.104875 s
+         time stepping: 20.1499 s
+         communicating: 1.93487 s
+    Fourier transforming: 34.2588 s
+       everything else: 0.611516 s
+
 -----------
 Initializing structure...
 run 0 finished at t = 200.03 (20003 timesteps)
-Reflection Percentage:  4.571017440195307
-Transmission Percentage:  87.00548421077977
-Total Loss Percentage:  8.423498349024918
+---------------------------------------------------
+Notch Width:  40.0 nanometers
+Reflection Percentage:  2.8356867006342634
+Transmission Percentage:  93.8498851229105
+Total Loss Percentage:  3.314428176455248
 Percentage of Light Accounted For:  100.0
-Upper Loss Percentage:  4.536221952215404
-Lower Loss Percentage:  2.605168560881167
+Upper Loss Percentage:  1.8211922832622063
+Lower Loss Percentage:  0.9743496531792115
+Percentage of Total Loss Accounted For:  84.0
+Normalized Upper Loss Percentage:  2.159227497073756
+---------------------------------------------------
+-----------
+Initializing structure...
+run 0 finished at t = 200.03 (20003 timesteps)
+---------------------------------------------------
+Notch Width:  60.0 nanometers
+Reflection Percentage:  3.315340459496535
+Transmission Percentage:  92.90055006300459
+Total Loss Percentage:  3.7841094774988893
+Percentage of Light Accounted For:  100.0
+Upper Loss Percentage:  2.086981213126794
+Lower Loss Percentage:  1.1180257853330706
 Percentage of Total Loss Accounted For:  85.0
-Normalized Upper Loss Percentage:  5.350618770283222
+Normalized Upper Loss Percentage:  2.46407118354195
+---------------------------------------------------
+-----------
+Initializing structure...
+run 0 finished at t = 200.03 (20003 timesteps)
+---------------------------------------------------
+Notch Width:  80.0 nanometers
+Reflection Percentage:  4.362016471103813
+Transmission Percentage:  87.78761299823734
+Total Loss Percentage:  7.850370530658858
+Percentage of Light Accounted For:  100.0
+Upper Loss Percentage:  4.246839556416161
+Lower Loss Percentage:  2.397799965114984
+Percentage of Total Loss Accounted For:  85.0
+Normalized Upper Loss Percentage:  5.017467688667526
+---------------------------------------------------
+-----------
+Initializing structure...
+run 0 finished at t = 200.03 (20003 timesteps)
+---------------------------------------------------
+Notch Width:  100.0 nanometers
+Reflection Percentage:  4.571018290452245
+Transmission Percentage:  87.00548002303852
+Total Loss Percentage:  8.423501686509235
+Percentage of Light Accounted For:  100.0
+Upper Loss Percentage:  4.536227121118811
+Lower Loss Percentage:  2.605166584157027
+Percentage of Total Loss Accounted For:  85.0
+Normalized Upper Loss Percentage:  5.350624595434952
+---------------------------------------------------
+-----------
+Initializing structure...
+run 0 finished at t = 200.03 (20003 timesteps)
+---------------------------------------------------
+Notch Width:  120.0 nanometers
+Reflection Percentage:  3.7347126729430413
+Transmission Percentage:  84.2040755547991
+Total Loss Percentage:  12.06121177225785
+Percentage of Light Accounted For:  100.0
+Upper Loss Percentage:  6.393764996644485
+Lower Loss Percentage:  3.8162403419540873
+Percentage of Total Loss Accounted For:  85.0
+Normalized Upper Loss Percentage:  7.553037543970929
+---------------------------------------------------
+-----------
+Initializing structure...
+run 0 finished at t = 200.03 (20003 timesteps)
+---------------------------------------------------
+Notch Width:  140.0 nanometers
+Reflection Percentage:  3.6957213683696954
+Transmission Percentage:  83.747087078401
+Total Loss Percentage:  12.557191553229305
+Percentage of Light Accounted For:  100.0
+Upper Loss Percentage:  6.620600391913256
+Lower Loss Percentage:  4.013650264966138
+Percentage of Total Loss Accounted For:  85.0
+Normalized Upper Loss Percentage:  7.817772027487262
+---------------------------------------------------
+-----------
+Initializing structure...
+run 0 finished at t = 200.03 (20003 timesteps)
+---------------------------------------------------
+Notch Width:  160.0 nanometers
+Reflection Percentage:  2.6051655926075754
+Transmission Percentage:  82.80746670579093
+Total Loss Percentage:  14.587367701601483
+Percentage of Light Accounted For:  100.0
+Upper Loss Percentage:  7.5356632282181994
+Lower Loss Percentage:  4.723107437322467
+Percentage of Total Loss Accounted For:  84.0
+Normalized Upper Loss Percentage:  8.967089228160214
+---------------------------------------------------
+-----------
+Initializing structure...
+run 0 finished at t = 200.03 (20003 timesteps)
+---------------------------------------------------
+Notch Width:  180.0 nanometers
+Reflection Percentage:  2.580817112754943
+Transmission Percentage:  82.48103817698859
+Total Loss Percentage:  14.938144710256454
+Percentage of Light Accounted For:  100.0
+Upper Loss Percentage:  7.703094023219818
+Lower Loss Percentage:  4.8323055789674125
+Percentage of Total Loss Accounted For:  84.0
+Normalized Upper Loss Percentage:  9.179598328520084
+---------------------------------------------------
+-----------
+Initializing structure...
+run 0 finished at t = 200.03 (20003 timesteps)
+---------------------------------------------------
+Notch Width:  200.0 nanometers
+Reflection Percentage:  2.3929635102106417
+Transmission Percentage:  82.59342996834921
+Total Loss Percentage:  15.013606521440154
+Percentage of Light Accounted For:  100.0
+Upper Loss Percentage:  7.492955837616864
+Lower Loss Percentage:  4.864330547222344
+Percentage of Total Loss Accounted For:  82.0
+Normalized Upper Loss Percentage:  9.103640324021788
+---------------------------------------------------
+-----------
+Initializing structure...
+run 0 finished at t = 200.03 (20003 timesteps)
+---------------------------------------------------
+Notch Width:  220.0 nanometers
+Reflection Percentage:  2.5616623890411465
+Transmission Percentage:  82.40923653994938
+Total Loss Percentage:  15.029101071009467
+Percentage of Light Accounted For:  100.0
+Upper Loss Percentage:  7.47285558853221
+Lower Loss Percentage:  4.850266019822829
+Percentage of Total Loss Accounted For:  82.0
+Normalized Upper Loss Percentage:  9.113786709121046
+---------------------------------------------------
+-----------
+Initializing structure...
+run 0 finished at t = 200.03 (20003 timesteps)
+---------------------------------------------------
+Notch Width:  240.0 nanometers
+Reflection Percentage:  2.8718603199883006
+Transmission Percentage:  83.00824500447152
+Total Loss Percentage:  14.119894675540188
+Percentage of Light Accounted For:  100.0
+Upper Loss Percentage:  6.7413414562322735
+Lower Loss Percentage:  4.437398787215764
+Percentage of Total Loss Accounted For:  79.0
+Normalized Upper Loss Percentage:  8.515005202812759
+---------------------------------------------------
+-----------
+Initializing structure...
+run 0 finished at t = 200.03 (20003 timesteps)
+---------------------------------------------------
+Notch Width:  260.0 nanometers
+Reflection Percentage:  3.0812258773670087
+Transmission Percentage:  82.86023624453321
+Total Loss Percentage:  14.058537878099777
+Percentage of Light Accounted For:  100.0
+Upper Loss Percentage:  6.690251427195772
+Lower Loss Percentage:  4.360300919682924
+Percentage of Total Loss Accounted For:  79.0
+Normalized Upper Loss Percentage:  8.511353111666802
+---------------------------------------------------
+-----------
+Initializing structure...
+run 0 finished at t = 200.03 (20003 timesteps)
+---------------------------------------------------
+Notch Width:  280.0 nanometers
+Reflection Percentage:  3.135603570733138
+Transmission Percentage:  83.84314416154862
+Total Loss Percentage:  13.021252267718245
+Percentage of Light Accounted For:  100.0
+Upper Loss Percentage:  5.939046434937338
+Lower Loss Percentage:  3.876241917603345
+Percentage of Total Loss Accounted For:  75.0
+Normalized Upper Loss Percentage:  7.878914921434167
+---------------------------------------------------
+-----------
+Initializing structure...
+run 0 finished at t = 200.03 (20003 timesteps)
+---------------------------------------------------
+Notch Width:  300.0 nanometers
+Reflection Percentage:  3.2652029775472857
+Transmission Percentage:  83.71369939671303
+Total Loss Percentage:  13.021097625739678
+Percentage of Light Accounted For:  100.0
+Upper Loss Percentage:  5.9250601643894605
+Lower Loss Percentage:  3.8083039011736166
+Percentage of Total Loss Accounted For:  75.0
+Normalized Upper Loss Percentage:  7.9264256755645315
+---------------------------------------------------
 
-Elapsed run time = 115.8829 s
-
-Field time usage:
-     connecting chunks: 0.12603 s
-         time stepping: 44.4488 s
-         communicating: 4.27781 s
-    Fourier transforming: 63.2675 s
-       everything else: 3.27082 s
-
+Elapsed run time = 778.2456 s
