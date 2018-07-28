@@ -181,7 +181,7 @@ def notch(w):
 	quit()
 	#-------------------------------------------------------------
 
-for notch_width in range(0.04, 0.30, 0.02): 
+for notch_width in range(0.04, 0.32, 0.02): 
 	notch(notch_width)
 
 
