@@ -6,7 +6,8 @@ from math import pi, tan, sqrt
 
 #os.system("rm -r notch-out/")
 
-f = open('notch.out', 'w')
+f1 = open('notch.out', 'w')
+f2 = open('notch.txt', 'w')
 
 ws = []
 Rs = []
@@ -204,17 +205,17 @@ def notch(w):
 	NET_LOSS_LIST.append(NET_LOSS)
 	norm_Sus.append(norm_Su)
 
-	f.write("--------------------------------------------------- \n")
-	f.write("Notch Width: %s nanometers \n" % (w * 1000))
-	f.write("Reflection Percentage: %s \n" % (R * 100))
-	f.write("Transmission Percentage: %s \n" % (T * 100))
-	f.write("Total Loss Percentage: %s \n" % (S * 100))
-	f.write("Percentage of Light Accounted For: %s \n" % (NET))
-	f.write("Upper Loss Percentage: %s \n" % (Su * 100))
-	f.write("Lower Loss Percentage: %s \n" % (Sd * 100))
-	f.write("Percentage of Total Loss Accounted For: %s \n" % (NET_LOSS))
-	f.write("Normalized Upper Loss Percentage: %s \n" % (norm_Su * 100))
-	f.write("--------------------------------------------------- \n")
+	f1.write("--------------------------------------------------- \n")
+	f1.write("Notch Width: %s nanometers \n" % (w * 1000))
+	f1.write("Reflection Percentage: %s \n" % (R * 100))
+	f1.write("Transmission Percentage: %s \n" % (T * 100))
+	f1.write("Total Loss Percentage: %s \n" % (S * 100))
+	f1.write("Percentage of Light Accounted For: %s \n" % (NET))
+	f1.write("Upper Loss Percentage: %s \n" % (Su * 100))
+	f1.write("Lower Loss Percentage: %s \n" % (Sd * 100))
+	f1.write("Percentage of Total Loss Accounted For: %s \n" % (NET_LOSS))
+	f1.write("Normalized Upper Loss Percentage: %s \n" % (norm_Su * 100))
+	f1.write("--------------------------------------------------- \n")
 
 	sim.reset_meep()
 
@@ -224,7 +225,16 @@ for notch_index in range(4, 32, 2):
 	notch_width = notch_index / 100
 	notch(notch_width)
 
-f.close()
+f2.write("%s \n" % (ws))
+f2.write("%s \n" % (Rs))
+f2.write("%s \n" % (Ts))
+f2.write("%s \n" % (Ss))
+f2.write("%s \n" % (Sus))
+f2.write("%s \n" % (Sds))
+f2.write("%s \n" % (norm_Sus))
+
+f1.close()
+f2.close()
 
 plt.plot(ws, Rs,'bo-',label='reflectance')
 plt.plot(ws, Ts,'ro-',label='transmittance')
