@@ -1,3 +1,4 @@
+from math import pi, sqrt
 import ast
 import numpy as np
 import matplotlib.pyplot as plt
@@ -21,12 +22,12 @@ data = importData(fname)
 
 def transmission(width): 
 	index = widthToIndex(width)
-	t = data[2][index]
+	t = sqrt(data[2][index])
 	return t
 
 def reflection(width): 
 	index = widthToIndex(width)
-	r = data[1][index]
+	r = sqrt(data[1][index])
 	return r
 
 def scatter(width): 
@@ -37,8 +38,8 @@ def scatter(width):
                             [ r/t,   (r*r + t*t)/t   ]  ], dtype=complex)
 
 def propagate(length): 
-	return np.matrix([  [ exp(1j*neff*length/wavelength),    0                               ],
-                            [ 0,                                 exp(1j*neff*length/wavelength)  ]  ], dtype=complex)
+	return np.matrix([  [ exp(-pi*2j*neff*length/wavelength),    0                               ],
+                            [ 0,                                 exp(pi*2j*neff*length/wavelength)  ]  ], dtype=complex)
 
 
 def getAmplitudes(widths, lengths):
@@ -46,12 +47,12 @@ def getAmplitudes(widths, lengths):
 
     a = np.zeros((2, 2*N))                              # N times [[ a  b  ]; [ b' a' ]].
 
-    a[2*N-1, 0] = 1                                     # Set the initial vector (b = 1, a' = 0).
-    a[2*N-2, :] = scatter(widths[N-1]) * a[2*N-1, :]    # And find a, b' for the first grate.
+    a[0, 2*N-1] = 1                                     # Set the initial vector (b = 1, a' = 0).
+    a[:, 2*N-2] = scatter(widths[N-1]) * a[:, 2*N-1]    # And find a, b' for the first grate.
 
     for ii in range(N-1):                               # Now do this for the rest of the grates.
-        a[2*ii+1, :] = propogate(lengths[ii]) * a[2*ii+2, :] 
-        a[2*ii,   :] = scatter(   widths[ii]) * a[2*ii+1, :] 
+        a[:, 2*ii+1] = propogate(lengths[ii]) * a[:, 2*ii+2] 
+        a[:, 2*ii] = scatter(   widths[ii]) * a[:, 2*ii+1] 
 
     return a 
 
