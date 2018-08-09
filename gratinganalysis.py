@@ -1,12 +1,13 @@
-from math import pi, sqrt
+from math import pi, sqrt, exp
 import ast
 import numpy as np
 import matplotlib.pyplot as plt
 
 wavelength = 0.637
+neff = 2.2012 # refractive index inside waveguide (at wavelength 0.6372)
 
 def widthToIndex(width): 
-	return width / 20 - 2
+	return int(width / 20 - 2)
 
 def importData(fname): 
 	f = open(fname, "r")
@@ -35,35 +36,40 @@ def scatter(width):
 	r = reflection(width)
 
 	return np.matrix([  [ 1/t,   r/t             ],
-                            [ r/t,   (r*r + t*t)/t   ]  ], dtype=complex)
+                        [ r/t,   (r*r + t*t)/t   ]  ], 
+                        dtype=complex)
 
 def propagate(length): 
-	return np.matrix([  [ exp(-pi*2j*neff*length/wavelength),    0                               ],
-                            [ 0,                                 exp(pi*2j*neff*length/wavelength)  ]  ], dtype=complex)
+    return np.matrix([  [ np.exp(-pi*2j*neff*length/wavelength),              0                     ],
+                        [ 0,                                 np.exp(pi*2j*neff*length/wavelength)   ]  ], 
+                        dtype=complex)
 
 
 def getAmplitudes(widths, lengths):
     N = widths.shape[0]                                 # N grates.
 
-    a = np.zeros((2, 2*N))                              # N times [[ a  b  ]; [ b' a' ]].
+    a = np.zeros((2, 2*N), dtype=complex)                              # N times [[ a  b  ]; [ b' a' ]].
 
     a[0, 2*N-1] = 1                                     # Set the initial vector (b = 1, a' = 0).
-    a[:, 2*N-2] = scatter(widths[N-1]) * a[:, 2*N-1]    # And find a, b' for the first grate.
+    a[:, 2*N-2] = a[:, 2*N-1] * scatter(widths[N-1])   # And find a, b' for the first grate.
 
     for ii in range(N-1):                               # Now do this for the rest of the grates.
-        a[:, 2*ii+1] = propogate(lengths[ii]) * a[:, 2*ii+2] 
-        a[:, 2*ii] = scatter(   widths[ii]) * a[:, 2*ii+1] 
+        a[:, 2*ii+1] = a[:, 2*ii+2] * propagate(lengths[ii])
+        a[:, 2*ii] = a[:, 2*ii+1]  * scatter(widths[ii])
 
     return a 
 
 
-def getOverlap(widths, lengths, amplitudes, NA):
+def getOverlap(widths, lengths, amplitudes, W):
     gamma = 0  # Finish me...
 
     return gamma 
 
 def main():
     N = 10
+    NA = 0.2 #Numerical Aperture
+    W = wavelength / (pi * NA) #mode field diameter
+
 
     widths =    .1 * np.ones(N)
     lengths =   .3 * np.ones(N)
@@ -74,7 +80,7 @@ def main():
 
     while optimize:
         a =  getAmplitudes(widths, lengths)
-        gamma = getOverlap(widths, lengths, a, NA)
+        gamma = getOverlap(widths, lengths, a, W)
 
         if gamma < gammaprev:               # If our figure of merit got worse...
             widths =        widthsprev      # ...then revert the widths and lengths.
