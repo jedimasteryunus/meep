@@ -60,15 +60,25 @@ def getAmplitudes(widths, lengths):
     return a 
 
 
-def getOverlap(widths, lengths, amplitudes, W):
-    gamma = 0  # Finish me...
+def E(x,W):
+    return np.exp(-x**2 / W**2)
 
-    return gamma 
+def getOverlap(widths, lengths, amplitudes, W, grating_length, num_notches):
+    final_gamma = 0
+    for X in range(0, grating_length + 100, 100):
+        gamma = 0
+        for i in range(0, num_notches): 
+            gamma += amplitudes[i] * E(lengths[i] - X, W)
+        gamma = gamma**2 
+        final_gamma = max(gamma, final_gamma)
+    return final_gamma
+
 
 def main():
     N = 10
     NA = 0.2 #Numerical Aperture
     W = wavelength / (pi * NA) #mode field diameter
+    grating_length = 500
 
 
     widths =    .1 * np.ones(N)
@@ -80,7 +90,7 @@ def main():
 
     while optimize:
         a =  getAmplitudes(widths, lengths)
-        gamma = getOverlap(widths, lengths, a, W)
+        gamma = getOverlap(widths, lengths, a, W, grating_length, N)
 
         if gamma < gammaprev:               # If our figure of merit got worse...
             widths =        widthsprev      # ...then revert the widths and lengths.
