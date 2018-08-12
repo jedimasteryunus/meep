@@ -74,10 +74,10 @@ def getOverlap(widths, lengths, amplitudes, W, grating_length, num_notches):
 
     for i in range(0, num_notches): 
         print("Scatter:", scatter(widths[i]))
-        print("Amplitudes:", amplitudes[2*i,0] + amplitudes[2*i+1,1])
+        print("Amplitudes:", amplitudes[0,2*i] + amplitudes[1,2*i+1])
 
     for i in range(0, num_notches): 
-        s[i] = scatter(widths[i])*(amplitudes[2*i,0] + amplitudes[2*i+1,1])
+        s[i] = scatter(widths[i])*(amplitudes[0,2*i] + amplitudes[1,2*i+1])
 
     final_gamma = 0
     for X in range(0, grating_length + 100, 100):
