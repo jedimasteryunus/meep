@@ -203,7 +203,7 @@ def notch(w):
 	Sus.append(Su*100)
 	Sds.append(Sd*100)
 	NET_LOSS_LIST.append(NET_LOSS)
-	norm_Sus.append(norm_Su)
+	norm_Sus.append(norm_Su*100)
 
 	f1.write("--------------------------------------------------- \n")
 	f1.write("Notch Width: %s nanometers \n" % (w * 1000))

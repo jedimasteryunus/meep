@@ -1,9 +1,11 @@
-from math import pi, sqrt, exp
+from math import pi, sqrt
+from random import random, randint
+import time
 import ast
 import numpy as np
 import matplotlib.pyplot as plt
 
-wavelength = 0.637
+wavelength = 637
 neff = 2.2012 # refractive index inside waveguide (at wavelength 0.6372)
 
 def widthToIndex(width): 
@@ -20,20 +22,21 @@ def importData(fname):
 
 fname = "notch.txt"
 data = importData(fname)
+print(data)
 
 def transmission(width): 
 	index = widthToIndex(width)
-	t = sqrt(data[2][index])
+	t = sqrt(data[2][index] / 100)
 	return t
 
 def reflection(width): 
 	index = widthToIndex(width)
-	r = sqrt(data[1][index])
+	r = sqrt(data[1][index] / 100)
 	return r
 
 def scatter(width): 
     index = widthToIndex(width)
-    s = sqrt(data[-1][index])
+    s = sqrt(data[-1][index] / 100)
     return s
 
 def scatter_matrix(width): 
@@ -72,9 +75,9 @@ def getOverlap(widths, lengths, amplitudes, W, grating_length, num_notches):
     
     s = np.zeros(num_notches, dtype = complex)
 
-    for i in range(0, num_notches): 
-        print("Scatter:", scatter(widths[i]))
-        print("Amplitudes:", amplitudes[0,2*i] + amplitudes[1,2*i+1])
+    #for i in range(0, num_notches): 
+        #print("Scatter:", scatter(widths[i]))
+        #print("Amplitudes:", amplitudes[0,2*i] + amplitudes[1,2*i+1])
 
     for i in range(0, num_notches): 
         s[i] = scatter(widths[i])*(amplitudes[0,2*i] + amplitudes[1,2*i+1])
@@ -88,17 +91,70 @@ def getOverlap(widths, lengths, amplitudes, W, grating_length, num_notches):
         final_gamma = max(gamma, final_gamma)
     return final_gamma
 
+def neighbor(lengths):
+    N = len(lengths)
+    sensitivity = 20
+    rand_index = randint(0, N - 1)
+    rand_val = randint(5, 25) * sensitivity
+    new_lengths = lengths.copy()
+    new_lengths[rand_index] = rand_val
+    return new_lengths
+
+def acceptance_probability(c_old, c_new, T):
+    frac = (c_old - c_new) / T
+    prob = np.exp(frac)
+    return prob
+
+def anneal(widths, lengths, amplitudes, W, grating_length, num_notches):
+    gamma = getOverlap(widths, lengths, amplitudes, W, grating_length, num_notches)
+
+    T = 1.0
+    T_min = 0.00001
+    alpha = 0.9
+
+    while T > T_min:
+        i = 1
+
+        while i <= 100:
+            new_lengths = neighbor(lengths)
+            gamma_new = getOverlap(widths, lengths, amplitudes, W, grating_length, num_notches)
+            #print(gamma_new)
+            ap = acceptance_probability(gamma, gamma_new, T)
+
+            if ap > random():
+                lengths = new_lengths
+                gamma = gamma_new
+
+            i += 1
+
+        T = T*alpha
+
+    return lengths, gamma
 
 def main():
     N = 10
-    NA = 0.2 #Numerical Aperture
+    NA = 200 #Numerical Aperture
     W = wavelength / (pi * NA) #mode field diameter
     grating_length = 500
 
+    widths =    100 * np.ones(N)
+    lengths =   100 * np.ones(N)
 
-    widths =    .1 * np.ones(N)
-    lengths =   .3 * np.ones(N)
+    amplitudes = getAmplitudes(widths, lengths)
 
+    #gamma = getOverlap(widths, lengths, amplitudes, W, grating_length, N) #Test for getOverlap function
+
+    start = time.time()
+
+    #print(gamma) #Test for getOverlap function
+
+    print(anneal(widths, lengths, amplitudes, W, grating_length, N))
+
+    end = time.time()
+
+    print("Run Time: ", end - start)
+
+'''
     gammaprev = 0
 
     optimize = 1
@@ -116,5 +172,5 @@ def main():
 
         widths =    evolve(widths)      # Do something to change the widths (perhaps annealing process)
         lengths =   evolve(lengths)
-
+'''
 main() 
