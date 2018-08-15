@@ -1,0 +1,5 @@
+*.aux
+*.h5
+*.log
+*.synctex.gz
+*.DS_Store
