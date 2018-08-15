@@ -177,14 +177,14 @@ def anneal(widths, lengths, W, grating_length, num_notches):
 
             if ap > r:
                 if gtrx[0] < new_gtrx[0]:
-                    print(" +\t",)
+                    print("Gamma INCREASED this step \n",)
                 else:
-                    print(" -\t",)
+                    print("Gamma DECREASED this step \n",)
 
                 lengths = new_lengths
                 gtrx = new_gtrx
             else:
-                print("  \t",)
+                print("Gamma DID NOT CHANGE this step \n",)
 
             print(    "S = {:.2f}%,\tT = {:.2f}%,\tR = {:.2f}%,\tX = {};".format(gtrx[0]*100, gtrx[1]*100, gtrx[2]*100, gtrx[3]))
             print(    "S'= {:.2f}%,\tT'= {:.2f}%,\tR'= {:.2f}%,\tX'= {}.".format(new_gtrx[0]*100, new_gtrx[1]*100, new_gtrx[2]*100, new_gtrx[3]))
