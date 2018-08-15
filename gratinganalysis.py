@@ -167,7 +167,10 @@ def anneal(widths, lengths, W, grating_length, num_notches):
         i = 1
 
         while i <= 100:
-            print("log(T): ", np.log10(T))
+            if np.log10(T) == -2.0:
+                print("Progress:  0.0%")
+            else:
+                print("Progress: ", -(np.log10(T) + 2) * 100, "%")
 
             new_lengths = neighbor(lengths)
             new_gtrx = getOverlap(widths, new_lengths, getAmplitudes(widths, new_lengths), W, grating_length, num_notches)
@@ -177,17 +180,17 @@ def anneal(widths, lengths, W, grating_length, num_notches):
 
             if ap > r:
                 if gtrx[0] < new_gtrx[0]:
-                    print("Gamma INCREASED this step \n",)
+                    print("Gamma INCREASED this step",)
                 else:
-                    print("Gamma DECREASED this step \n",)
+                    print("Gamma DECREASED this step",)
 
                 lengths = new_lengths
                 gtrx = new_gtrx
             else:
-                print("Gamma DID NOT CHANGE this step \n",)
+                print("Gamma DID NOT CHANGE this step",)
 
             print(    "S = {:.2f}%,\tT = {:.2f}%,\tR = {:.2f}%,\tX = {};".format(gtrx[0]*100, gtrx[1]*100, gtrx[2]*100, gtrx[3]))
-            print(    "S'= {:.2f}%,\tT'= {:.2f}%,\tR'= {:.2f}%,\tX'= {}.".format(new_gtrx[0]*100, new_gtrx[1]*100, new_gtrx[2]*100, new_gtrx[3]))
+            print(    "S'= {:.2f}%,\tT'= {:.2f}%,\tR'= {:.2f}%,\tX'= {}.".format(new_gtrx[0]*100, new_gtrx[1]*100, new_gtrx[2]*100, new_gtrx[3]), "\n")
 
             i += 1
 
@@ -207,7 +210,7 @@ def main():
     W = wavelength / (pi * NA) #mode field diameter
     grating_length = 2000
 
-    widths =    100 * np.ones(N)
+    widths = 100 * np.ones(N)
     # lengths =   300 * np.ones(N)
     lengths = np.array([590., 630., 600., 580., 290., 290., 290., 290., 670., 300.]);
 
@@ -227,10 +230,13 @@ def main():
 
     #print(gamma) #Test for getOverlap function
 
-    print(anneal(widths, lengths, W, grating_length, N))
+    anneal_tup = anneal(widths, lengths, W, grating_length, N)
+
+    print("Lengths: ", anneal_tup[0])
+    print("GTRX List: ", anneal_tup[1])
 
     end = time.time()
 
     print("Run Time: ", end - start)
-    
+
 main()
