@@ -3,6 +3,7 @@ import meep as mp
 import numpy as np
 import matplotlib.pyplot as plt
 from math import pi, tan, sqrt
+from scipy.optimize import fsolve
 
 #os.system("rm -r notch-out/")
 
@@ -133,9 +134,42 @@ def notch(w):
 	sd_fr = mp.FluxRegion(center = mp.Vector3(0, -3*h), size = mp.Vector3(a,0))
 	sd = sim.add_flux(fcen, df, nfreq, sd_fr)
 
+	refl_vals = []
+	tran_vals = []
+
+	def get_refl_slice(sim):
+	    center = mp.Vector3(-0.9 * a/2,0)
+	    size = mp.Vector3(0,3*h)
+	    refl_vals.append(sim.get_array(center=center, size=size, component=mp.Ez))
+
+	def get_tran_slice(sim): 
+		center = mp.Vector3(0.6 * a/2,0)
+		size = mp.Vector3(0,3*h)
+		tran_vals.append(sim.get_array(center=center, size=size, component=mp.Ez))
+
 	pt = mp.Vector3(9.75,0)
 
-	sim.run(until_after_sources=mp.stop_when_fields_decayed(50,mp.Ez,pt,1e-3))
+	sim.run(mp.at_beginning(mp.output_epsilon), 
+			mp.at_time(100, get_refl_slice), 
+			mp.at_time(100, get_tran_slice), 
+			until_after_sources=mp.stop_when_fields_decayed(50,mp.Ez,pt,1e-3))
+
+	refl_val = refl_vals[0]
+	tran_val = tran_vals[0]
+
+	fund_func = lambda n_eff: sqrt(n_eff**2 - n_c**2) - sqrt(n_e**2 - n_eff**2) * tan(pi * h / wavelength * sqrt(n_e**2 - n_eff**2))
+	first_order_func = lambda n_eff: sqrt(n_eff**2 - n_c**2) - sqrt(n_e**2 - n_eff**2) * tan(pi * h / wavelength * sqrt(n_e**2 - n_eff**2) - pi / 2)
+
+	initial_guess = n_e
+
+	n_eff0 = fsolve(fund_func, initial_guess)
+	n_eff1 = fsolve(first_order_func, initial_guess)
+
+	ky0 = np.absolute(2 * pi / wavelength * sqrt(n_e**2 - n_eff**2))
+	ky1 = np.absolute(2 * pi / wavelength * sqrt(n_c**2 - n_eff**2))
+
+	E_fund = lambda y : cos(ky0 * y) if np.absolute(y) < h / 2 else exp(-ky1 * (np.absolute(y) - h / 2))
+	E_first_order = lambda y : sin(ky0 * y) if np.absolute(y) < h / 2 else exp(-ky1 * (np.absolute(y) - h / 2))
 
 	# save incident power for reflection planes
 	straight_refl1_flux = mp.get_fluxes(refl1)

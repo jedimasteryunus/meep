@@ -171,7 +171,7 @@ def validation(w):
 
     NET_LOSS = round((Su + Sd) / S * 100, 0)
     if NET_LOSS > 100.0:
-    	NET_LOSS = 100.0
+        NET_LOSS = 100.0
 
     f1.write("--------------------------------------------------- \n")
     f1.write("Notch Width: %s nanometers \n" % (w * 1000))
