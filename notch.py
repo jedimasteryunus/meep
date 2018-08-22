@@ -134,6 +134,8 @@ def notch(w):
 	sd_fr = mp.FluxRegion(center = mp.Vector3(0, -3*h), size = mp.Vector3(a,0))
 	sd = sim.add_flux(fcen, df, nfreq, sd_fr)
 
+	# ------------------------ CODE FOR SEPARATING FUND AND FIRST ORDER MODE STARTS HERE ------------------------
+
 	refl_vals = []
 	tran_vals = []
 
@@ -170,6 +172,34 @@ def notch(w):
 
 	E_fund = lambda y : cos(ky0 * y) if np.absolute(y) < h / 2 else exp(-ky1 * (np.absolute(y) - h / 2))
 	E_first_order = lambda y : sin(ky0 * y) if np.absolute(y) < h / 2 else exp(-ky1 * (np.absolute(y) - h / 2))
+
+	y_list = np.arange(-H/2, H/2 + 1/50, 1/50)
+
+	E_fund_vec = np.zeros(y_list.size)
+	E_first_order_vec = np.zeros(y_list.size)
+
+	for index in range(y_list.size): 
+		y = y_list[index]
+		E_fund_vec[index] = E_fund(y)
+		E_first_order_vec[index] = E_first_order(y)
+
+	fund_refl_power = (refl_val * E_fund_vec / (E_fund_vec * E_fund_vec)) ** 2
+	first_order_refl_power = (refl_val * E_first_order_vec / (E_first_order_vec * E_first_order_vec)) ** 2
+
+	fund_tran_power = (tran_val * E_fund_vec / (E_fund_vec * E_fund_vec)) ** 2
+	first_order_tran_power = (tran_val * E_first_order_vec / (E_first_order_vec * E_first_order_vec)) ** 2
+
+	fund_refl_percentage = fund_refl_power * 100 / (fund_refl_power + first_order_refl_power)
+	print("Percentage of reflected light in fundamental mode: ", fund_refl_percentage)
+	first_order_refl_percentage = first_order_refl_power * 100 / (fund_refl_power + first_order_refl_power)
+	print("Percentage of reflected light in first order mode: ", first_order_refl_percentage)
+
+	fund_tran_percentage = fund_tran_power * 100 / (fund_tran_power + first_order_tran_power)
+	print("Percentage of transmitted light in fundamental mode: ", fund_tran_percentage)
+	first_order_tran_percentage = first_order_tran_power * 100 / (fund_tran_power + first_order_tran_power)
+	print("Percentage of transmitted light in first order mode: ", first_order_tran_percentage)
+
+	# ------------------------ CODE FOR SEPARATING FUND AND FIRST ORDER MODE ENDS HERE ------------------------
 
 	# save incident power for reflection planes
 	straight_refl1_flux = mp.get_fluxes(refl1)
