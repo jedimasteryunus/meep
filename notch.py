@@ -162,14 +162,12 @@ def notch(w):
 	#In the fsolve we need to somehow ensure that n_eff satisfies n_e <= n_eff <= n_c
 
 	def fund_func(n_eff):
-		if n_eff < n_c or n_eff > n_e:
-			return 1
-		return sqrt(n_eff**2 - n_c**2) - sqrt(n_e**2 - n_eff**2) * tan(pi * h / wavelength * sqrt(n_e**2 - n_eff**2))
+		if n_eff > n_c and n_eff < n_e:
+			return sqrt(n_eff**2 - n_c**2) - sqrt(n_e**2 - n_eff**2) * tan(pi * h / wavelength * sqrt(n_e**2 - n_eff**2))
 
 	def first_order_func(n_eff):
-		if n_eff < n_c or n_eff > n_e:
-			return 1
-		return sqrt(n_eff**2 - n_c**2) - sqrt(n_e**2 - n_eff**2) * tan(pi * h / wavelength * sqrt(n_e**2 - n_eff**2) - pi / 2)
+		if n_eff > n_c and n_eff < n_e:
+			return sqrt(n_eff**2 - n_c**2) - sqrt(n_e**2 - n_eff**2) * tan(pi * h / wavelength * sqrt(n_e**2 - n_eff**2) - pi / 2)
 
 	initial_guess = (n_c + n_e) / 2
 
