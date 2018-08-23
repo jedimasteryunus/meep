@@ -141,12 +141,12 @@ def notch(w):
 
 	def get_refl_slice(sim):
 	    center = mp.Vector3(-0.9 * a/2,0)
-	    size = mp.Vector3(0,3*h)
+	    size = mp.Vector3(0,H)
 	    refl_vals.append(sim.get_array(center=center, size=size, component=mp.Ez))
 
 	def get_tran_slice(sim):
 		center = mp.Vector3(0.6 * a/2,0)
-		size = mp.Vector3(0,3*h)
+		size = mp.Vector3(0,H)
 		tran_vals.append(sim.get_array(center=center, size=size, component=mp.Ez))
 
 	pt = mp.Vector3(9.75,0)
