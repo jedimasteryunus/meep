@@ -183,7 +183,10 @@ def notch(w):
 	E_fund = 		lambda y : cos(ky0_fund * y)  if np.absolute(y) < h / 2 else np.exp(-ky1_fund * (np.absolute(y) - h / 2))
 	E_first_order = lambda y : sin(ky0_first * y) if np.absolute(y) < h / 2 else np.exp(-ky1_first * (np.absolute(y) - h / 2))
 
-	y_list = np.arange(-H/2, H/2 + 1/50, 1/50)
+	y_list = np.arange(-H/2, H/2, 1/50)
+
+	#print("Y LIST: ", y_list)
+	#print("SIZE OF Y LIST: ", y_list.size)
 
 	E_fund_vec = np.zeros(y_list.size)
 	E_first_order_vec = np.zeros(y_list.size)
@@ -193,11 +196,14 @@ def notch(w):
 		E_fund_vec[index] = E_fund(y)
 		E_first_order_vec[index] = E_first_order(y)
 
-	fund_refl_power = (np.dot(refl_val, E_fund_vec) / (E_fund_vec * E_fund_vec)) ** 2
-	first_order_refl_power = (np.dot(refl_val, E_first_order_vec) / (E_first_order_vec * E_first_order_vec)) ** 2
+	#print("E VECTOR: ", refl_val)
+	#print("E0 VECTOR: ", E_fund_vec)
 
-	fund_tran_power = (np.dot(tran_val, E_fund_vec) / (E_fund_vec * E_fund_vec)) ** 2
-	first_order_tran_power = (np.dot(tran_val, E_first_order_vec) / (E_first_order_vec * E_first_order_vec)) ** 2
+	fund_refl_power = (np.dot(refl_val, E_fund_vec) / np.dot(E_fund_vec, E_fund_vec)) ** 2
+	first_order_refl_power = (np.dot(refl_val, E_first_order_vec) / np.dot(E_first_order_vec, E_first_order_vec)) ** 2
+
+	fund_tran_power = (np.dot(tran_val, E_fund_vec) / np.dot(E_fund_vec, E_fund_vec)) ** 2
+	first_order_tran_power = (np.dot(tran_val, E_first_order_vec) / np.dot(E_first_order_vec, E_first_order_vec)) ** 2
 
 	fund_refl_percentage = fund_refl_power * 100 / (fund_refl_power + first_order_refl_power)
 	print("Percentage of reflected light in fundamental mode: ", fund_refl_percentage)
@@ -295,7 +301,7 @@ def notch(w):
 
 	#-------------------------------------------------------------
 
-for notch_index in range(4, 6, 2):
+for notch_index in range(4, 32, 2):
 	notch_width = notch_index / 100
 	notch(notch_width)
 
