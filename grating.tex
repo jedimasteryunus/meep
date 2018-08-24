@@ -38,53 +38,55 @@
 \bibliographystyle{abbrv}
 
 \begin{document}
+\subsection{Introduction}
 We have an infinite slab with height $z = h$ and index $n_0$ cladded with index $n_1 < n_0$. A wave with frequency $f = c/\lambda$ propagates in the $x$ direction and encounters a perturbation---a notch cut into the infinite slab defined in the $x$-$z$ plane and constant for all $y$ (approximately). This notch is defined by a width $w$, a depth $e$, and sidewall angle $\theta$. The behavior of the wave and the notch is a function of all variables, but in general $h$, $n_0$, $n_1$, $\lambda$, $e$, and $\theta$ are dependent upon our goal, material, and process, and thus can be considered `fixed' variables that we have no control over. We do, however, have control over $w$, along with the position of the notch $x$, and we will use this to optimize the properties of our sequence of notches: our grating coupler.
 
-The behavior of a single notch is defined by four quantities, as a function of $w$: 
+\subsection{Single Notch}
+The behavior of a single notch is defined by four quantities, as a function of $w$:
 \begin{itemize}
-\item the transmission of the notch $T = t^2$, 
-\item the reflection of the notch $R = r^2$,
-\item the downward scatter from the notch $S_d = s_d^2$, and 
-\item the upward scatter from the notch $S_u = s_u^2$. 
+    \item the transmission of the notch $T = t^2$,
+    \item the reflection of the notch $R = r^2$,
+    \item the downward scatter from the notch $S_d = s_d^2$, and
+    \item the upward scatter from the notch $S_u = s_u^2$.
 \end{itemize}
-The uppercase and lowercase variables represent power and amplitude, respectively. We measure power in experiment and simulation, but to fully understand the interference properties of a grating, we must consider the amplitude of our wave. If we have a wave propagating in the forward direction with amplitude $a_i$ incident on a notch with width $w_i$, 
+The uppercase and lowercase variables represent power and amplitude, respectively. We measure power in experiment and simulation, but to fully understand the interference properties of a grating, we must consider the amplitude of our wave. If we have a wave propagating in the forward direction with amplitude $a_i$ incident on a notch with width $w_i$,
 %the reflection will be $b_i = ra_i$,
 \begin{itemize}
-\item the forward propagating amplitude will be $b_i = ta_i$,
-\item the backward propagating amplitude will be $b_i' = ra_i$,
-\item the amplitude scattered upward will be $c_i = s_ua_i$, and
-\item the amplitude scattered downward will be $d_i = s_da_i$.
+    \item the forward propagating amplitude will be $b_i = ta_i$,
+    \item the backward propagating amplitude will be $b_i' = ra_i$,
+    \item the amplitude scattered upward will be $c_i = s_ua_i$, and
+    \item the amplitude scattered downward will be $d_i = s_da_i$.
 \end{itemize}
 Now let's consider that we also have a backward propagating wave $a_i'$ incident on the notch.
 In this case,
 \begin{itemize}
-\item the forward propagating amplitude will be $b_i = ta_i + r^*a_i'$,
-\item the backward propagating amplitude will be $b_i' = ra_i + t^*a_i'$,
-\item the amplitude scattered upward will be $c_i = s_u(a_i + a_i')$, and
-\item the amplitude scattered downward will be $d_i = s_d(a_i + a_i')$.
+    \item the forward propagating amplitude will be $b_i = ta_i + r^*a_i'$,
+    \item the backward propagating amplitude will be $b_i' = ra_i + t^*a_i'$,
+    \item the amplitude scattered upward will be $s_i = s_u(a_i + a_i')$, and
+    \item the amplitude scattered downward will be $s_i' = s_d(a_i + a_i')$.
 \end{itemize}
 \newcommand{\x}{2.5}
-\newcommand{\y}{1}
-\newcommand{\yp}{.55}
+\newcommand{\y}{1.2}
+\newcommand{\yp}{.8}
 \newcommand{\aw}{.75}
 \newcommand{\yt}{1.6}
 \newcommand{\xt}{.4}
 \newcommand{\xtt}{.25}
 \begin{center}
-\begin{tikzpicture}[scale=.5]
-\node[] at ( \x, -\y) {$a_i'$};
-\node[] at ( \x,  \y) {$b_i$};
-\node[] at (-\x, -\y) {$b_i'$};
-\node[] at (-\x,  \y) {$a_i$};
+    \begin{tikzpicture}[scale=.5]
+    \node[] at ( \x, -\y) {$a_i'$};
+    \node[] at ( \x,  \y) {$b_i$};
+    \node[] at (-\x, -\y) {$b_i'$};
+    \node[] at (-\x,  \y) {$a_i$};
 
-\draw[-latex] (-\x-\aw,  \y-\yp) -- (-\x+\aw,  \y-\yp);
-\draw[-latex] ( \x+\aw, -\y+\yp) -- ( \x-\aw, -\y+\yp);
-\draw[-latex] (-\x+\aw, -\y+\yp) -- (-\x-\aw, -\y+\yp);
-\draw[-latex] ( \x-\aw,  \y-\yp) -- ( \x+\aw,  \y-\yp);
+    \draw[-latex] (-\x-\aw,  \y-\yp) -- (-\x+\aw,  \y-\yp);
+    \draw[-latex] ( \x+\aw, -\y+\yp) -- ( \x-\aw, -\y+\yp);
+    \draw[-latex] (-\x+\aw, -\y+\yp) -- (-\x-\aw, -\y+\yp);
+    \draw[-latex] ( \x-\aw,  \y-\yp) -- ( \x+\aw,  \y-\yp);
 
-\draw[thick] (-10,  \yt*\y) -- (-\xt*\x,  \yt*\y) -- (-\xtt*\x, 0) -- (\xtt*\x, 0) -- (\xt*\x,  \yt*\y) -- (10,  \yt*\y);
-\draw[thick] (-10, -\yt*\y) -- (10, -\yt*\y);
-\end{tikzpicture}
+    \draw[thick] (-10,  \yt*\y) -- (-\xt*\x,  \yt*\y) -- (-\xtt*\x, 0) -- (\xtt*\x, 0) -- (\xt*\x,  \yt*\y) -- (10,  \yt*\y);
+    \draw[thick] (-10, -\yt*\y) -- (10, -\yt*\y);
+    \end{tikzpicture}
 \end{center}
 Notice that this can be represented by a matrix:
 \begin{align*}
@@ -112,7 +114,8 @@ b_i \\ a_i'
 \end{align*}
 where $b_i$ and $a_i'$ are the forward- and backward- propagating amplitudes to the right of the notch and $a_i$ and $b_i'$ are that of the left of the notch\footnote{The proof is left as an exercise for the reader... :)}. As a rule of thumb in this notation, $a$s are incident and $b$s are outgoing while primes are backward propagating and nonprimes are forward propagating.
 
-Now let us consider multiple notches. %The $(i+1)$th notch will obey the same matrix equation, except with $b_{i+1}$, $a_{i+1}'$, $a_{i+1}$, and $b_{i+1}'$. 
+\subsection{Multiple Notches}
+Now let us consider multiple notches. %The $(i+1)$th notch will obey the same matrix equation, except with $b_{i+1}$, $a_{i+1}'$, $a_{i+1}$, and $b_{i+1}'$.
 Suppose that the $i$th and $(i+1)$th notches are separated by a distance $L_i$. Then, the amplitudes will obey the equation
 \begin{align*}
 a_{i+1} &= \varphi(L_i) b_{i}, \\
@@ -181,9 +184,9 @@ x_m = \left[\sum_{i = 1}^{m-1} L_i + w_i\right] + w_m/2
 \end{align*}
 and has a `domain' of length
 \begin{align*}
-d_m = w_m + (L_{m-1} + L_m)/2
+l_m = w_m + (L_{m-1} + L_m)/2
 \end{align*}
-where $L_0 = L_1$ and $L_N = L_{N-1}$ and $x_0 = -d_1/2$.
+where $L_0 = L_1$ and $L_N = L_{N-1}$ and $x_0 = -l_1/2$.
 
 Now, we want to evaluate the performance of the grating. For best results, the scattered amplitude will be in the shape of a gaussian
 \begin{align*}
@@ -196,10 +199,12 @@ W = \frac{\lambda}{\pi \, \text{NA}}
 is the waist of gaussian beam with wavelength $\lambda$ and numerical aperture $\text{NA} = n_0\sin\Theta$ where $\Theta$ is the divergence angle of the beam. For early simulations, we will match to an objective with $\text{NA} = .2$.
 We can approximate the overlap between our arrayed scatterers and the ideal gaussian via
 \begin{align*}
-\gamma 
+\gamma
 %&= \left. \left| \sum_{i=1}^N \frac{s_i}{d_i}\int_{(x_{i-1}+x_i)/2}^{(x_i+x_{i+1})/2}E(x-X)\,dx \right|^2 \right/ W\pi
 %&= \left. \left| \left[ \sum_{i=1}^N \frac{s_i}{d_i}E(x_i-X)d_i \right] \right/ \left[ \sum_{i=1}^N E(x_i-X)E(x_i-X)d_i \right] \right|^2. \\
-&= \left| \sum_{i=1}^N \frac{s_i}{d_i}E(x_i-X)d_i \right|^2
+&= \int s(x)E(x-X)\,dx
+\sim \left| \sum_{i=1}^N \frac{s_i}{l_i}E(x_i-X)l_i \right|^2
+= \left| \sum_{i=1}^N s_iE(x_i-X) \right|^2
 %&= \left. \left| \left[ \sum_{i=1}^N s_iE(x_i-X) \right] \right/ \left[ \sum_{i=1}^N E(x_i-X)^2d_i \right] \right|^2.
 \end{align*}
 where $X$ is the `center' of the scattered power which maximizes $\gamma$.
@@ -207,14 +212,62 @@ We want to maximize $\gamma$ while minimizing the reflected power $|b_1'/a_1|^2$
 
 %will be connected
 
+\subsection{Accounting for Higher Order Modes}
+With sufficiently large slab height $h$, the first order (odd) slab mode may be bound along with the fundamental (even) mode. Diagram of mode profiles? A slab can satisfy this while still preventing first order waveguide modes from being bound (with sufficently small waveguide width). However, it is difficult to prevent non-fundamental waveguide modes when the second order mode is bound in the slab, so we will not consider the case where the second order mode is also bound.
+
+With a partially etched notch, we do not perserve symmetry across the center of the waveguide. Thus, coupling between the fundamental slab mode and the first order slab mode is allowed and may be significant. To account for this, we must consider the coupling between the forward and backward, incident and outgoing, fundumental and first order modes. First, we name the eight modes in consideration with the same notation as before, with $c_i$ and $d_i$ being the incident and outgoing first order modes.
+\newcommand{\m}{1.8}
+\begin{center}
+    \begin{tikzpicture}[scale=.5]
+    \node[] at ( \m*\x, -\y) {$c_i'$};
+    \node[] at (-\m*\x, -\y) {$d_i'$};
+    \node[] at ( \m*\x, -\y/3) {$d_i$};
+    \node[] at (-\m*\x, -\y/3) {$c_i$};
+    \node[] at ( \m*\x,  \y/3) {$a_i'$};
+    \node[] at (-\m*\x,  \y/3) {$b_i'$};
+    \node[] at ( \m*\x,  \y) {$b_i$};
+    \node[] at (-\m*\x,  \y) {$a_i$};
+
+    \draw[-latex] (-\x-\aw,  \y) -- (-\x+\aw,  \y);
+    \draw[-latex] ( \x+\aw, -\y) -- ( \x-\aw, -\y);
+    \draw[-latex] (-\x+\aw, -\y) -- (-\x-\aw, -\y);
+    \draw[-latex] ( \x-\aw,  \y) -- ( \x+\aw,  \y);
+    \draw[-latex] (-\x+\aw,  \y/3) -- (-\x-\aw,  \y/3);
+    \draw[-latex] ( \x-\aw, -\y/3) -- ( \x+\aw, -\y/3);
+    \draw[-latex] (-\x-\aw, -\y/3) -- (-\x+\aw, -\y/3);
+    \draw[-latex] ( \x+\aw,  \y/3) -- ( \x-\aw,  \y/3);
+
+    \draw[thick] (-10,  \yt*\y) -- (-\xt*\x,  \yt*\y) -- (-\xtt*\x, 0) -- (\xtt*\x, 0) -- (\xt*\x,  \yt*\y) -- (10,  \yt*\y);
+    \draw[thick] (-10, -\yt*\y) -- (10, -\yt*\y);
+    \end{tikzpicture}
+\end{center}
+Now let us consider the coupling between modes. Instead of simply an $r$ value for reflection, we now have four values $r_{jk}$ where $j$ is the incident mode and $k$ is the outgoing mode: $j, k \in \{ 0, 1 \} \cong \{ \text{Fundamental}, \text{ First Order} \}$. For instance, $r_{10}$ is the reflection of incident first order amplitude into the fundumental mode. Similarly, we define $t_{jk}$ as the four values for transmission. Thus, we have four equations:
+\begin{itemize}
+\item $b_i = t_{00}a_i + t_{10}c_i + r_{00}a_i' + r_{10}c_i'$
+\item $b_i' = t_{00}a_i' + t_{10}c_i' + r_{00}a_i + r_{10}c_i$
+\item $d_i = t_{01}a_i + t_{11}c_i + r_{01}a_i' + r_{11}c_i'$
+\item $d_i' = t_{01}a_i' + t_{11}c_i' + r_{01}a_i + r_{11}c_i$
+\end{itemize}
+Naturally, we can put this into matrix form with (unfinished) algebra\footnote{which is again left as an exercise for the reader :)}:
+\begin{align*}
+\left[ \begin{array}{c}
+a_i \\ b_i' \\ c_i \\ d_i'
+\end{array} \right]
+=
+\left[ \begin{array}{cccc}
+1/t & r^*/t & 0 & 0 \\
+r/t & \frac{|t|^2 + |r|^2}{t} & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 \\
+\end{array} \right]
+\left[ \begin{array}{c}
+b_i \\ a_i' \\ d_i \\ c_i'
+\end{array} \right]
+=
+S(w_i)
+\left[ \begin{array}{c}
+b_i \\ a_i' \\ d_i \\ c_i'
+\end{array} \right]
+\end{align*}
 
 \end{document}
-
-
-
-
-
-
-
-
-
