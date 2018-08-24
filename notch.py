@@ -85,7 +85,7 @@ def notch(w):
 
 	for mode in [0, 1]:
 
-		eig_parity = mp.EVEN_Y	# Fundumental
+		eig_parity = mp.EVEN_Y	# Fundamental
 
 		if mode == 1:	# First order
 			eig_parity = mp.ODD_Y
@@ -282,10 +282,8 @@ def notch(w):
 		Su = 	 su_flux[index] 						/ (refl2_flux[index] - refl1_flux[index])
 		Sd = 	-sd_flux[index] 						/ (refl2_flux[index] - refl1_flux[index])
 
-
-		# CALCULATE ME!
-		LT = None	# Distance from the end of the notch to the transmission monitor
-		LR = None	# Distance from the beginning of the notch to the reflection monitor
+		LT = -w/2 + 0.9 * a/2	# Distance from the end of the notch to the transmission monitor
+		LR = 0.6 * a/2 - w/2	# Distance from the beginning of the notch to the reflection monitor
 
 		r = 		sqrt(R)
 
@@ -297,10 +295,15 @@ def notch(w):
 					* first_order_refl_amp 	/ np.abs(first_order_refl_amp)	# ...times the phase...
 					* np.exp(2*pi * LR * n_eff_first / wavelength)			# ...accounting for the distance to the detector.
 
-		# CALCULATE ME!
-		# t =
-		# t_fund =
-		# t_first =
+	    t =         sqrt(T)
+
+	    t_fund =    t * fund_tran_ratio										# The amplitude...
+	    			* fund_tran_amp / np.abs(fund_tran_amp)					# ...times the phase...
+					* np.exp(2*pi * LT * n_eff_fund  / wavelength)			# ...accounting for the distance to the detector.
+		
+		t_first =   t * first_order_tran_ratio							    # The amplitude...
+	    			* first_order_tran_amp / np.abs(first_order_tran_amp)	# ...times the phase...
+					* np.exp(2*pi * LT * n_eff_first  / wavelength)			# ...accounting for the distance to the detector.
 
 		if mode == 0:
 			r00 = r_fund
@@ -370,7 +373,7 @@ def notch(w):
 
 	#-------------------------------------------------------------
 
-for notch_index in range(4, 32, 2):
+for notch_index in range(4, 6, 2):
 	notch_width = notch_index / 100
 	notch(notch_width)
 
