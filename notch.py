@@ -20,6 +20,32 @@ Sds = []
 NET_LOSS_LIST = []
 norm_Sus = []
 
+real_r00s = []
+imag_r00s = []
+real_r01s = []
+imag_r01s = []
+real_t00s = []
+imag_t00s = []
+real_t01s = []
+imag_t01s = []
+real_su0s = []
+imag_su0s = []
+real_sd0s = []
+imag_sd0s = []
+
+real_r10s = []
+imag_r10s = []
+real_r11s = []
+imag_r11s = []
+real_t10s = []
+imag_t10s = []
+real_t11s = []
+imag_t11s = []
+real_su1s = []
+imag_su1s = []
+real_sd1s = []
+imag_sd1s = []
+
 def notch(w):
 
 	print("#----------------------------------------")
@@ -87,10 +113,12 @@ def notch(w):
 
 		if mode == 0:
 			eig_parity = mp.EVEN_Y	# Fundamental
+			print("-----------")
 			print("MODE TYPE: FUNDAMENTAL")
 
 		else:
 			eig_parity = mp.ODD_Y #First Order
+			print("-----------")
 			print("MODE TYPE: FIRST ORDER")
 
 		sources = [	mp.EigenModeSource(
@@ -170,12 +198,12 @@ def notch(w):
 		def get_refl_slice(sim):
 		    center = mp.Vector3(-0.9 * a/2,0)
 		    size = mp.Vector3(0,H)
-		    refl_vals.append(sim.get_array(center=center, size=size, component=mp.Ez))
+		    refl_vals.append(sim.get_array(center=center, size=size, component=mp.Ez, cmplx = True))
 
 		def get_tran_slice(sim):
 			center = mp.Vector3(0.6 * a/2,0)
 			size = mp.Vector3(0,H)
-			tran_vals.append(sim.get_array(center=center, size=size, component=mp.Ez))
+			tran_vals.append(sim.get_array(center=center, size=size, component=mp.Ez, cmplx = True))
 
 		pt = mp.Vector3(9.75,0)
 
@@ -232,10 +260,10 @@ def notch(w):
 		fund_tran_amp = 		np.dot(tran_val, E_fund_vec) 		/ np.dot(E_fund_vec, E_fund_vec)
 		first_order_tran_amp = 	np.dot(tran_val, E_first_order_vec) / np.dot(E_first_order_vec, E_first_order_vec)
 
-		fund_refl_power = 			fund_tran_amp 			** 2
-		first_order_refl_power = 	first_order_refl_amp 	** 2
-		fund_tran_power = 			fund_tran_amp 			** 2
-		first_order_tran_power = 	first_order_tran_amp 	** 2
+		fund_refl_power = 			np.abs(fund_tran_amp)			** 2
+		first_order_refl_power = 	np.abs(first_order_refl_amp) 	** 2
+		fund_tran_power = 			np.abs(fund_tran_amp) 			** 2
+		first_order_tran_power = 	np.abs(first_order_tran_amp) 	** 2
 
 		fund_refl_ratio = 			fund_refl_power 		/ (fund_refl_power + first_order_refl_power)
 		first_order_refl_ratio = 	first_order_refl_power 	/ (fund_refl_power + first_order_refl_power)
@@ -290,18 +318,20 @@ def notch(w):
 
 		r = sqrt(R)
 
-		r_fund = 	(r  * fund_refl_ratio) * (fund_refl_amp / np.abs(fund_refl_amp)) * (np.exp(2*pi * LR * n_eff_fund  / wavelength))
+		r_fund = 	(r  * fund_refl_ratio) * (fund_refl_amp / np.abs(fund_refl_amp)) * (np.exp(2j*pi * LR * n_eff_fund  / wavelength))
 		# The amplitude ... times the phase ... accounting for the distance to the detector.
+		#print("Re(r_fund): ", np.real(r_fund))
+		#print("Im(r_fund): ", np.imag(r_fund))
 
-		r_first = 	(r * first_order_refl_ratio) * (first_order_refl_amp / np.abs(first_order_refl_amp)) * (np.exp(2*pi * LR * n_eff_first / wavelength))
+		r_first = 	(r * first_order_refl_ratio) * (first_order_refl_amp / np.abs(first_order_refl_amp)) * (np.exp(2j*pi * LR * n_eff_first / wavelength))
 		# The amplitude ... times the phase ... accounting for the distance to the detector.
 
 		t = sqrt(T)
 
-		t_fund =    (t * fund_tran_ratio) * (fund_tran_amp / np.abs(fund_tran_amp))	* (np.exp(2*pi * LT * n_eff_fund  / wavelength))
+		t_fund =    (t * fund_tran_ratio) * (fund_tran_amp / np.abs(fund_tran_amp))	* (np.exp(2j*pi * LT * n_eff_fund  / wavelength))
 		# The amplitude ... times the phase ... accounting for the distance to the detector.
 
-		t_first =   (t * first_order_tran_ratio) * (first_order_tran_amp / np.abs(first_order_tran_amp)) * (np.exp(2*pi * LT * n_eff_first  / wavelength))
+		t_first =   (t * first_order_tran_ratio) * (first_order_tran_amp / np.abs(first_order_tran_amp)) * (np.exp(2j*pi * LT * n_eff_first  / wavelength))
 		#The amplitude ... times the phase ... accounting for the distance to the detector.
 
 		if mode == 0:
@@ -313,6 +343,20 @@ def notch(w):
 
 			su0 = sqrt(Su)
 			sd0 = sqrt(Sd)
+
+			real_r00s.append(np.real(r00)[0])
+			imag_r00s.append(np.imag(r00)[0])
+			real_r01s.append(np.real(r01)[0])
+			imag_r01s.append(np.imag(r01)[0])
+			real_t00s.append(np.real(t00)[0])
+			imag_t00s.append(np.imag(t00)[0])
+			real_t01s.append(np.real(t01)[0])
+			imag_t01s.append(np.imag(t01)[0])
+			real_su0s.append(np.real(su0))
+			imag_su0s.append(np.imag(su0))
+			real_sd0s.append(np.real(sd0))
+			imag_sd0s.append(np.imag(sd0))
+
 		else:
 			r10 = r_fund
 			r11 = r_first
@@ -323,6 +367,18 @@ def notch(w):
 			su1 = sqrt(Su)
 			sd1 = sqrt(Sd)
 
+			real_r10s.append(np.real(r10)[0])
+			imag_r10s.append(np.imag(r10)[0])
+			real_r11s.append(np.real(r11)[0])
+			imag_r11s.append(np.imag(r11)[0])
+			real_t10s.append(np.real(t10)[0])
+			imag_t10s.append(np.imag(t10)[0])
+			real_t11s.append(np.real(t11)[0])
+			imag_t11s.append(np.imag(t11)[0])
+			real_su1s.append(np.real(su1))
+			imag_su1s.append(np.imag(su1))
+			real_sd1s.append(np.real(sd1))
+			imag_sd1s.append(np.imag(sd1))
 
 		norm_Su = S * Su / (Su + Sd)
 
@@ -346,19 +402,20 @@ def notch(w):
 		np.append(norm_Sus, [norm_Su * 100])
 		'''
 
-		ws.append(w*1000)
-		Rs.append(R*100)
-		Ts.append(T*100)
-		Ss.append(S*100)
-		NET_LIST.append(NET)
-		Sus.append(Su*100)
-		Sds.append(Sd*100)
-		NET_LOSS_LIST.append(NET_LOSS)
-		norm_Sus.append(norm_Su*100)
-
-		f1.write("--------------------------------------------------- \n")
+		if mode == 0:
+			ws.append(w*1000)
+			Rs.append(R*100)
+			Ts.append(T*100)
+			Ss.append(S*100)
+			NET_LIST.append(NET)
+			Sus.append(Su*100)
+			Sds.append(Sd*100)
+			NET_LOSS_LIST.append(NET_LOSS)
+			norm_Sus.append(norm_Su*100)
 
 		if mode == 0:
+
+			f1.write("--------------------------------------------------- \n")
 
 			f1.write("Notch Width: %s nanometers \n" % (w * 1000))
 			f1.write("Reflection Percentage: %s \n" % (R * 100))
@@ -372,14 +429,15 @@ def notch(w):
 			f1.write("\n \n")
 
 			f1.write("FUNDAMENTAL MODE \n")
-			f1.write("Re(r00): %s \n" % (np.real(r00)))
-			f1.write("Im(r00): %s \n" % (np.imag(r00)))
-			f1.write("Re(r01): %s \n" % (np.real(r01)))
-			f1.write("Im(r01): %s \n" % (np.imag(r01)))
-			f1.write("Re(t00): %s \n" % (np.real(t00)))
-			f1.write("Im(t00): %s \n" % (np.imag(t00)))
-			f1.write("Re(t01): %s \n" % (np.real(t01)))
-			f1.write("Im(t01): %s \n" % (np.imag(t01)))
+			f1.write("n_eff:   %s \n" % (n_eff_fund[0]))
+			f1.write("Re(r00): %s \n" % (np.real(r00))[0])
+			f1.write("Im(r00): %s \n" % (np.imag(r00))[0])
+			f1.write("Re(r01): %s \n" % (np.real(r01))[0])
+			f1.write("Im(r01): %s \n" % (np.imag(r01))[0])
+			f1.write("Re(t00): %s \n" % (np.real(t00))[0])
+			f1.write("Im(t00): %s \n" % (np.imag(t00))[0])
+			f1.write("Re(t01): %s \n" % (np.real(t01))[0])
+			f1.write("Im(t01): %s \n" % (np.imag(t01))[0])
 			f1.write("Re(su0): %s \n" % (np.real(su0)))
 			f1.write("Im(su0): %s \n" % (np.imag(su0)))
 			f1.write("Re(sd0): %s \n" % (np.real(sd0)))
@@ -389,21 +447,21 @@ def notch(w):
 		else:
 
 			f1.write("FIRST ORDER MODE \n")
-			f1.write("Re(r10): %s \n" % (np.real(r10)))
-			f1.write("Im(r10): %s \n" % (np.imag(r10)))
-			f1.write("Re(r11): %s \n" % (np.real(r11)))
-			f1.write("Im(r11): %s \n" % (np.imag(r11)))
-			f1.write("Re(t10): %s \n" % (np.real(t10)))
-			f1.write("Im(t10): %s \n" % (np.imag(t10)))
-			f1.write("Re(t11): %s \n" % (np.real(t11)))
-			f1.write("Im(t11): %s \n" % (np.imag(t11)))
+			f1.write("n_eff:   %s \n" % (n_eff_first[0]))
+			f1.write("Re(r10): %s \n" % (np.real(r10))[0])
+			f1.write("Im(r10): %s \n" % (np.imag(r10))[0])
+			f1.write("Re(r11): %s \n" % (np.real(r11))[0])
+			f1.write("Im(r11): %s \n" % (np.imag(r11))[0])
+			f1.write("Re(t10): %s \n" % (np.real(t10))[0])
+			f1.write("Im(t10): %s \n" % (np.imag(t10))[0])
+			f1.write("Re(t11): %s \n" % (np.real(t11))[0])
+			f1.write("Im(t11): %s \n" % (np.imag(t11))[0])
 			f1.write("Re(su1): %s \n" % (np.real(su1)))
 			f1.write("Im(su1): %s \n" % (np.imag(su1)))
 			f1.write("Re(sd1): %s \n" % (np.real(sd1)))
 			f1.write("Im(sd1): %s \n" % (np.imag(sd1)))
 
-
-		f1.write("--------------------------------------------------- \n")
+			f1.write("--------------------------------------------------- \n")
 
 		sim.reset_meep()
 
@@ -420,6 +478,32 @@ f2.write("%s \n" % (Ss))
 f2.write("%s \n" % (Sus))
 f2.write("%s \n" % (Sds))
 f2.write("%s \n" % (norm_Sus))
+
+f2.write("%s \n" % (real_r00s))
+f2.write("%s \n" % (imag_r00s))
+f2.write("%s \n" % (real_r01s))
+f2.write("%s \n" % (imag_r01s))
+f2.write("%s \n" % (real_t00s))
+f2.write("%s \n" % (imag_t00s))
+f2.write("%s \n" % (real_t01s))
+f2.write("%s \n" % (imag_t01s))
+f2.write("%s \n" % (real_su0s))
+f2.write("%s \n" % (imag_su0s))
+f2.write("%s \n" % (real_sd0s))
+f2.write("%s \n" % (imag_sd0s))
+
+f2.write("%s \n" % (real_r10s))
+f2.write("%s \n" % (imag_r10s))
+f2.write("%s \n" % (real_r11s))
+f2.write("%s \n" % (imag_r11s))
+f2.write("%s \n" % (real_t10s))
+f2.write("%s \n" % (imag_t10s))
+f2.write("%s \n" % (real_t11s))
+f2.write("%s \n" % (imag_t11s))
+f2.write("%s \n" % (real_su1s))
+f2.write("%s \n" % (imag_su1s))
+f2.write("%s \n" % (real_sd1s))
+f2.write("%s \n" % (imag_sd1s))
 
 f1.close()
 f2.close()
