@@ -85,10 +85,13 @@ def notch(w):
 
 	for mode in [0, 1]:
 
-		eig_parity = mp.EVEN_Y	# Fundamental
+		if mode == 0:
+			eig_parity = mp.EVEN_Y	# Fundamental
+			print("MODE TYPE: FUNDAMENTAL")
 
-		if mode == 1:	# First order
-			eig_parity = mp.ODD_Y
+		else:
+			eig_parity = mp.ODD_Y #First Order
+			print("MODE TYPE: FIRST ORDER")
 
 		sources = [	mp.EigenModeSource(
 						mp.GaussianSource(	frequency = fcen,
@@ -285,25 +288,21 @@ def notch(w):
 		LT = -w/2 + 0.9 * a/2	# Distance from the end of the notch to the transmission monitor
 		LR = 0.6 * a/2 - w/2	# Distance from the beginning of the notch to the reflection monitor
 
-		r = 		sqrt(R)
+		r = sqrt(R)
 
-		r_fund = 	r  * fund_refl_ratio									# The amplitude...
-					* fund_refl_amp / np.abs(fund_refl_amp)					# ...times the phase...
-					* np.exp(2*pi * LR * n_eff_fund  / wavelength)			# ...accounting for the distance to the detector.
+		r_fund = 	(r  * fund_refl_ratio) * (fund_refl_amp / np.abs(fund_refl_amp)) * (np.exp(2*pi * LR * n_eff_fund  / wavelength))
+		# The amplitude ... times the phase ... accounting for the distance to the detector.
 
-		r_first = 	r * first_order_refl_ratio								# The amplitude...
-					* first_order_refl_amp 	/ np.abs(first_order_refl_amp)	# ...times the phase...
-					* np.exp(2*pi * LR * n_eff_first / wavelength)			# ...accounting for the distance to the detector.
+		r_first = 	(r * first_order_refl_ratio) * (first_order_refl_amp / np.abs(first_order_refl_amp)) * (np.exp(2*pi * LR * n_eff_first / wavelength))
+		# The amplitude ... times the phase ... accounting for the distance to the detector.
 
-	    t =         sqrt(T)
+		t = sqrt(T)
 
-	    t_fund =    t * fund_tran_ratio										# The amplitude...
-	    			* fund_tran_amp / np.abs(fund_tran_amp)					# ...times the phase...
-					* np.exp(2*pi * LT * n_eff_fund  / wavelength)			# ...accounting for the distance to the detector.
-		
-		t_first =   t * first_order_tran_ratio							    # The amplitude...
-	    			* first_order_tran_amp / np.abs(first_order_tran_amp)	# ...times the phase...
-					* np.exp(2*pi * LT * n_eff_first  / wavelength)			# ...accounting for the distance to the detector.
+		t_fund =    (t * fund_tran_ratio) * (fund_tran_amp / np.abs(fund_tran_amp))	* (np.exp(2*pi * LT * n_eff_fund  / wavelength))
+		# The amplitude ... times the phase ... accounting for the distance to the detector.
+
+		t_first =   (t * first_order_tran_ratio) * (first_order_tran_amp / np.abs(first_order_tran_amp)) * (np.exp(2*pi * LT * n_eff_first  / wavelength))
+		#The amplitude ... times the phase ... accounting for the distance to the detector.
 
 		if mode == 0:
 			r00 = r_fund
@@ -358,15 +357,52 @@ def notch(w):
 		norm_Sus.append(norm_Su*100)
 
 		f1.write("--------------------------------------------------- \n")
-		f1.write("Notch Width: %s nanometers \n" % (w * 1000))
-		f1.write("Reflection Percentage: %s \n" % (R * 100))
-		f1.write("Transmission Percentage: %s \n" % (T * 100))
-		f1.write("Total Loss Percentage: %s \n" % (S * 100))
-		f1.write("Percentage of Light Accounted For: %s \n" % (NET))
-		f1.write("Upper Loss Percentage: %s \n" % (Su * 100))
-		f1.write("Lower Loss Percentage: %s \n" % (Sd * 100))
-		f1.write("Percentage of Total Loss Accounted For: %s \n" % (NET_LOSS))
-		f1.write("Normalized Upper Loss Percentage: %s \n" % (norm_Su * 100))
+
+		if mode == 0:
+
+			f1.write("Notch Width: %s nanometers \n" % (w * 1000))
+			f1.write("Reflection Percentage: %s \n" % (R * 100))
+			f1.write("Transmission Percentage: %s \n" % (T * 100))
+			f1.write("Total Loss Percentage: %s \n" % (S * 100))
+			f1.write("Percentage of Light Accounted For: %s \n" % (NET))
+			f1.write("Upper Loss Percentage: %s \n" % (Su * 100))
+			f1.write("Lower Loss Percentage: %s \n" % (Sd * 100))
+			f1.write("Percentage of Total Loss Accounted For: %s \n" % (NET_LOSS))
+			f1.write("Normalized Upper Loss Percentage: %s \n" % (norm_Su * 100))
+			f1.write("\n \n")
+
+			f1.write("FUNDAMENTAL MODE \n")
+			f1.write("Re(r00): %s \n" % (np.real(r00)))
+			f1.write("Im(r00): %s \n" % (np.imag(r00)))
+			f1.write("Re(r01): %s \n" % (np.real(r01)))
+			f1.write("Im(r01): %s \n" % (np.imag(r01)))
+			f1.write("Re(t00): %s \n" % (np.real(t00)))
+			f1.write("Im(t00): %s \n" % (np.imag(t00)))
+			f1.write("Re(t01): %s \n" % (np.real(t01)))
+			f1.write("Im(t01): %s \n" % (np.imag(t01)))
+			f1.write("Re(su0): %s \n" % (np.real(su0)))
+			f1.write("Im(su0): %s \n" % (np.imag(su0)))
+			f1.write("Re(sd0): %s \n" % (np.real(sd0)))
+			f1.write("Im(sd0): %s \n" % (np.imag(sd0)))
+			f1.write("\n")
+
+		else:
+
+			f1.write("FIRST ORDER MODE \n")
+			f1.write("Re(r10): %s \n" % (np.real(r10)))
+			f1.write("Im(r10): %s \n" % (np.imag(r10)))
+			f1.write("Re(r11): %s \n" % (np.real(r11)))
+			f1.write("Im(r11): %s \n" % (np.imag(r11)))
+			f1.write("Re(t10): %s \n" % (np.real(t10)))
+			f1.write("Im(t10): %s \n" % (np.imag(t10)))
+			f1.write("Re(t11): %s \n" % (np.real(t11)))
+			f1.write("Im(t11): %s \n" % (np.imag(t11)))
+			f1.write("Re(su1): %s \n" % (np.real(su1)))
+			f1.write("Im(su1): %s \n" % (np.imag(su1)))
+			f1.write("Re(sd1): %s \n" % (np.real(sd1)))
+			f1.write("Im(sd1): %s \n" % (np.imag(sd1)))
+
+
 		f1.write("--------------------------------------------------- \n")
 
 		sim.reset_meep()
