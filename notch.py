@@ -64,240 +64,261 @@ def notch(w):
 	            center = mp.Vector3(0, h2 / 2),
 	            material = mp.Medium())]
 
-	sources = [mp.EigenModeSource(mp.GaussianSource(frequency = fcen, fwidth = df),
-	                              size = mp.Vector3(0,H),
-	                              center = mp.Vector3(-0.75 * a / 2, 0))]
-
 	pml_layers = [mp.PML(0.2)]
 
 	resolution = 50
 
-	sim = mp.Simulation(cell_size = cell,
-	                    boundary_layers = pml_layers,
-	                    geometry = geometry,
-	                    sources = sources,
-	                    resolution = resolution)
-	'''
-	#--------------------------------------------------
-	#FOR DISPLATYING THE GEOMETRY
+	for mode in [0, 1]:
 
-	sim.run(until = 200)
+		eig_parity = mp.EVEN_Y	# Fundumental
 
-	eps_data = sim.get_array(center=mp.Vector3(), size=cell, component=mp.Dielectric)
-	plt.figure(dpi=100)
-	plt.imshow(eps_data.transpose(), interpolation='spline36', cmap='binary')
-	#plt.axis('off')
-	plt.show()
+		if mode == 1:	# First order
+			eig_parity = mp.ODD_Y
 
-	quit()
-	#----------------------------------------------------
-	'''
-	'''
-	#------------------------------------------------------
-	#FOR GENERATING THE ELECTRIC FIELD GIF
-	#Note: After running this program, write the following commands in Terminal:
-	    # $ source deactivate mp
-	    # $ cd notch-out/
-	    # $ python ../NotchIP.py
+		sources = [	mp.EigenModeSource(
+						mp.GaussianSource(	frequency = fcen,
+											fwidth = df),
+											size = mp.Vector3(0,H),
+											center = mp.Vector3(-0.75 * a / 2, 0),
+					eig_parity = eig_parity) ]
 
-	sim.use_output_directory()
-	sim.run(mp.at_beginning(mp.output_epsilon),
-	        mp.to_appended("ez", mp.at_every(0.6, mp.output_efield_z)),
-	        until = 200)
-	#sim.run(mp.at_every(0.6 , mp.output_png(mp.Ez, "-Zc dkbluered")), until=200)
+		sim = mp.Simulation(cell_size = cell,
+		                    boundary_layers = pml_layers,
+		                    geometry = geometry,
+		                    sources = sources,
+		                    resolution = resolution)
+		'''
+		#--------------------------------------------------
+		#FOR DISPLATYING THE GEOMETRY
 
-	#---------------------------------------------------------
-	'''
+		sim.run(until = 200)
 
-	#---------------------------------------------------------
-	#FOR GENERATING THE TRANSMITTANCE SPECTRUM
+		eps_data = sim.get_array(center=mp.Vector3(), size=cell, component=mp.Dielectric)
+		plt.figure(dpi=100)
+		plt.imshow(eps_data.transpose(), interpolation='spline36', cmap='binary')
+		#plt.axis('off')
+		plt.show()
 
-	nfreq = 20  # number of frequencies at which to compute flux
+		quit()
+		#----------------------------------------------------
+		'''
+		'''
+		#------------------------------------------------------
+		#FOR GENERATING THE ELECTRIC FIELD GIF
+		#Note: After running this program, write the following commands in Terminal:
+		    # $ source deactivate mp
+		    # $ cd notch-out/
+		    # $ python ../NotchIP.py
 
-	# reflected flux 1
-	refl_fr1 = mp.FluxRegion(center=mp.Vector3(-0.9 * a/2,0), size=mp.Vector3(0,3*h))
-	refl1 = sim.add_flux(fcen, df, nfreq, refl_fr1)
+		sim.use_output_directory()
+		sim.run(mp.at_beginning(mp.output_epsilon),
+		        mp.to_appended("ez", mp.at_every(0.6, mp.output_efield_z)),
+		        until = 200)
+		#sim.run(mp.at_every(0.6 , mp.output_png(mp.Ez, "-Zc dkbluered")), until=200)
 
-	#reflected flux 2
-	refl_fr2 = mp.FluxRegion(center=mp.Vector3(-0.6 * a/2,0), size=mp.Vector3(0,3*h))
-	refl2 = sim.add_flux(fcen, df, nfreq, refl_fr2)
+		#---------------------------------------------------------
+		'''
 
-	#transmitted flux
-	tran_fr = mp.FluxRegion(center = mp.Vector3(0.6 * a/2,0), size = mp.Vector3(0,3*h))
-	tran = sim.add_flux(fcen, df, nfreq, tran_fr)
+		#---------------------------------------------------------
+		#FOR GENERATING THE TRANSMITTANCE SPECTRUM
 
-	#flux loss above the waveguide
-	su_fr = mp.FluxRegion(center = mp.Vector3(0, 3*h), size = mp.Vector3(a,0))
-	su = sim.add_flux(fcen, df, nfreq, su_fr)
+		nfreq = 20  # number of frequencies at which to compute flux
 
-	#flux loss below the waveguide
-	sd_fr = mp.FluxRegion(center = mp.Vector3(0, -3*h), size = mp.Vector3(a,0))
-	sd = sim.add_flux(fcen, df, nfreq, sd_fr)
+		# reflected flux 1
+		refl_fr1 = mp.FluxRegion(center=mp.Vector3(-0.9 * a/2,0), size=mp.Vector3(0,3*h))
+		refl1 = sim.add_flux(fcen, df, nfreq, refl_fr1)
 
-	# ------------------------ CODE FOR SEPARATING FUND AND FIRST ORDER MODE STARTS HERE ------------------------
+		#reflected flux 2
+		refl_fr2 = mp.FluxRegion(center=mp.Vector3(-0.6 * a/2,0), size=mp.Vector3(0,3*h))
+		refl2 = sim.add_flux(fcen, df, nfreq, refl_fr2)
 
-	refl_vals = []
-	tran_vals = []
+		#transmitted flux
+		tran_fr = mp.FluxRegion(center = mp.Vector3(0.6 * a/2,0), size = mp.Vector3(0,3*h))
+		tran = sim.add_flux(fcen, df, nfreq, tran_fr)
 
-	def get_refl_slice(sim):
-	    center = mp.Vector3(-0.9 * a/2,0)
-	    size = mp.Vector3(0,H)
-	    refl_vals.append(sim.get_array(center=center, size=size, component=mp.Ez))
+		#flux loss above the waveguide
+		su_fr = mp.FluxRegion(center = mp.Vector3(0, 3*h), size = mp.Vector3(a,0))
+		su = sim.add_flux(fcen, df, nfreq, su_fr)
 
-	def get_tran_slice(sim):
-		center = mp.Vector3(0.6 * a/2,0)
-		size = mp.Vector3(0,H)
-		tran_vals.append(sim.get_array(center=center, size=size, component=mp.Ez))
+		#flux loss below the waveguide
+		sd_fr = mp.FluxRegion(center = mp.Vector3(0, -3*h), size = mp.Vector3(a,0))
+		sd = sim.add_flux(fcen, df, nfreq, sd_fr)
 
-	pt = mp.Vector3(9.75,0)
+		# ------------------------ CODE FOR SEPARATING FUND AND FIRST ORDER MODE STARTS HERE ------------------------
 
-	sim.run(mp.at_beginning(mp.output_epsilon),
-			mp.at_time(100, get_refl_slice),
-			mp.at_time(100, get_tran_slice),
-			until_after_sources=mp.stop_when_fields_decayed(50,mp.Ez,pt,1e-3))
+		refl_vals = []
+		tran_vals = []
 
-	refl_val = refl_vals[0]
-	tran_val = tran_vals[0]
+		def get_refl_slice(sim):
+		    center = mp.Vector3(-0.9 * a/2,0)
+		    size = mp.Vector3(0,H)
+		    refl_vals.append(sim.get_array(center=center, size=size, component=mp.Ez))
 
-	#In the fsolve we need to somehow ensure that n_eff satisfies n_e <= n_eff <= n_c
+		def get_tran_slice(sim):
+			center = mp.Vector3(0.6 * a/2,0)
+			size = mp.Vector3(0,H)
+			tran_vals.append(sim.get_array(center=center, size=size, component=mp.Ez))
 
-	def fund_func(n_eff):
-		if n_eff > n_c and n_eff < n_e:
-			return sqrt(n_eff**2 - n_c**2) - sqrt(n_e**2 - n_eff**2) * tan(pi * h / wavelength * sqrt(n_e**2 - n_eff**2))
+		pt = mp.Vector3(9.75,0)
 
-	def first_order_func(n_eff):
-		if n_eff > n_c and n_eff < n_e:
-			return sqrt(n_eff**2 - n_c**2) - sqrt(n_e**2 - n_eff**2) * tan(pi * h / wavelength * sqrt(n_e**2 - n_eff**2) - pi / 2)
+		sim.run(mp.at_beginning(mp.output_epsilon),
+				mp.at_time(100, get_refl_slice),
+				mp.at_time(100, get_tran_slice),
+				until_after_sources=mp.stop_when_fields_decayed(50,mp.Ez,pt,1e-3))
 
-	initial_guess = (n_c + n_e) / 2
+		refl_val = refl_vals[0]
+		tran_val = tran_vals[0]
 
-	n_eff_fund = fsolve(fund_func, initial_guess)
-	n_eff_first = fsolve(first_order_func, initial_guess)
+		#In the fsolve we need to somehow ensure that n_eff satisfies n_e <= n_eff <= n_c
 
-	ky0_fund =  np.absolute(2 * pi / wavelength * sqrt(n_e**2 - n_eff_fund**2))	# CHECK
-	ky0_first = np.absolute(2 * pi / wavelength * sqrt(n_e**2 - n_eff_first**2))	# CHECK
+		def fund_func(n_eff):
+			if n_eff > n_c and n_eff < n_e:
+				return sqrt(n_eff**2 - n_c**2) - sqrt(n_e**2 - n_eff**2) * tan(pi * h / wavelength * sqrt(n_e**2 - n_eff**2))
 
-	ky1_fund =  np.absolute(2 * pi / wavelength * sqrt(n_eff_fund**2  - n_c**2))	# CHECK
-	ky1_first = np.absolute(2 * pi / wavelength * sqrt(n_eff_first**2 - n_c**2))	# CHECK
+		def first_order_func(n_eff):
+			if n_eff > n_c and n_eff < n_e:
+				return sqrt(n_eff**2 - n_c**2) - sqrt(n_e**2 - n_eff**2) * tan(pi * h / wavelength * sqrt(n_e**2 - n_eff**2) - pi / 2)
 
-	E_fund = 		lambda y : cos(ky0_fund * y)  if np.absolute(y) < h / 2 else np.exp(-ky1_fund * (np.absolute(y) - h / 2))
-	E_first_order = lambda y : sin(ky0_first * y) if np.absolute(y) < h / 2 else np.exp(-ky1_first * (np.absolute(y) - h / 2))
+		initial_guess = (n_c + n_e) / 2
 
-	y_list = np.arange(-H/2, H/2, 1/50)
+		n_eff_fund = 	fsolve(fund_func, initial_guess)
+		n_eff_first = 	fsolve(first_order_func, initial_guess)
 
-	#print("Y LIST: ", y_list)
-	#print("SIZE OF Y LIST: ", y_list.size)
+		ky0_fund =  	np.absolute(2 * pi / wavelength * sqrt(n_e**2 - n_eff_fund **2))
+		ky0_first = 	np.absolute(2 * pi / wavelength * sqrt(n_e**2 - n_eff_first**2))
 
-	E_fund_vec = np.zeros(y_list.size)
-	E_first_order_vec = np.zeros(y_list.size)
+		ky1_fund =  	np.absolute(2 * pi / wavelength * sqrt(n_eff_fund **2 - n_c**2))
+		ky1_first = 	np.absolute(2 * pi / wavelength * sqrt(n_eff_first**2 - n_c**2))
 
-	for index in range(y_list.size):
-		y = y_list[index]
-		E_fund_vec[index] = E_fund(y)
-		E_first_order_vec[index] = E_first_order(y)
+		E_fund = 		lambda y : cos(ky0_fund  * y) if np.absolute(y) < h / 2 else cos(ky0_fund  * h/2) * np.exp(-ky1_fund  * (np.absolute(y) - h / 2))
+		E_first_order = lambda y : sin(ky0_first * y) if np.absolute(y) < h / 2 else sin(ky0_first * h/2) * np.exp(-ky1_first * (np.absolute(y) - h / 2))
 
-	#print("E VECTOR: ", refl_val)
-	#print("E0 VECTOR: ", E_fund_vec)
+		y_list = np.arange(-H/2, H/2, 1/50)
 
-	fund_refl_power = (np.dot(refl_val, E_fund_vec) / np.dot(E_fund_vec, E_fund_vec)) ** 2
-	first_order_refl_power = (np.dot(refl_val, E_first_order_vec) / np.dot(E_first_order_vec, E_first_order_vec)) ** 2
+		#print("Y LIST: ", y_list)
+		#print("SIZE OF Y LIST: ", y_list.size)
 
-	fund_tran_power = (np.dot(tran_val, E_fund_vec) / np.dot(E_fund_vec, E_fund_vec)) ** 2
-	first_order_tran_power = (np.dot(tran_val, E_first_order_vec) / np.dot(E_first_order_vec, E_first_order_vec)) ** 2
+		E_fund_vec = np.zeros(y_list.size)
+		E_first_order_vec = np.zeros(y_list.size)
 
-	fund_refl_percentage = fund_refl_power * 100 / (fund_refl_power + first_order_refl_power)
-	print("Percentage of reflected light in fundamental mode: ", fund_refl_percentage)
-	first_order_refl_percentage = first_order_refl_power * 100 / (fund_refl_power + first_order_refl_power)
-	print("Percentage of reflected light in first order mode: ", first_order_refl_percentage)
+		for index in range(y_list.size):
+			y = y_list[index]
+			E_fund_vec[index] = E_fund(y)
+			E_first_order_vec[index] = E_first_order(y)
 
-	fund_tran_percentage = fund_tran_power * 100 / (fund_tran_power + first_order_tran_power)
-	print("Percentage of transmitted light in fundamental mode: ", fund_tran_percentage)
-	first_order_tran_percentage = first_order_tran_power * 100 / (fund_tran_power + first_order_tran_power)
-	print("Percentage of transmitted light in first order mode: ", first_order_tran_percentage)
+		#print("E VECTOR: ", refl_val)
+		#print("E0 VECTOR: ", E_fund_vec)
 
-	# ------------------------ CODE FOR SEPARATING FUND AND FIRST ORDER MODE ENDS HERE ------------------------
+		fund_refl_amp = 		np.dot(refl_val, E_fund_vec) 		/ np.dot(E_fund_vec, E_fund_vec)
+		first_order_refl_amp = 	np.dot(refl_val, E_first_order_vec) / np.dot(E_first_order_vec, E_first_order_vec)
+		fund_tran_amp = 		np.dot(tran_val, E_fund_vec) 		/ np.dot(E_fund_vec, E_fund_vec)
+		first_order_tran_amp = 	np.dot(tran_val, E_first_order_vec) / np.dot(E_first_order_vec, E_first_order_vec)
 
-	# save incident power for reflection planes
-	straight_refl1_flux = mp.get_fluxes(refl1)
-	straight_refl2_flux = mp.get_fluxes(refl2)
+		fund_refl_power = 			fund_tran_amp 			** 2
+		first_order_refl_power = 	first_order_refl_amp 	** 2
+		fund_tran_power = 			fund_tran_amp 			** 2
+		first_order_tran_power = 	first_order_tran_amp 	** 2
 
-	# save incident power for transmission plane
-	straight_tran_flux = mp.get_fluxes(tran)
+		fund_refl_ratio = 			fund_refl_power 		/ (fund_refl_power + first_order_refl_power)
+		first_order_refl_ratio = 	first_order_refl_power 	/ (fund_refl_power + first_order_refl_power)
+		fund_tran_ratio = 			fund_tran_power 		/ (fund_tran_power + first_order_tran_power)
+		first_order_tran_ratio = 	first_order_tran_power 	/ (fund_tran_power + first_order_tran_power)
 
-	# save incident power for loss planes
-	straight_su_flux = mp.get_fluxes(su)
-	straight_sd_flux = mp.get_fluxes(sd)
+		print("Percentage of reflected light in fundamental mode: ", 	fund_refl_ratio * 100)
+		print("Percentage of reflected light in first order mode: ", 	first_order_refl_ratio * 100)
+		print("Percentage of transmitted light in fundamental mode: ", 	fund_tran_ratio * 100)
+		print("Percentage of transmitted light in first order mode: ", 	first_order_tran_ratio * 100)
 
-	wl = [] #list of wavelengths
+		# ------------------------ CODE FOR SEPARATING FUND AND FIRST ORDER MODE ENDS HERE ------------------------
 
-	refl1_flux = mp.get_fluxes(refl1)
-	refl2_flux = mp.get_fluxes(refl2)
-	tran_flux = mp.get_fluxes(tran)
-	su_flux = mp.get_fluxes(su)
-	sd_flux = mp.get_fluxes(sd)
+		# save incident power for reflection planes
+		straight_refl1_flux = mp.get_fluxes(refl1)
+		straight_refl2_flux = mp.get_fluxes(refl2)
 
-	flux_freqs = mp.get_flux_freqs(refl1)
+		# save incident power for transmission plane
+		straight_tran_flux = mp.get_fluxes(tran)
 
-	for i in range(nfreq):
-	    wl = np.append(wl, 1/flux_freqs[i])
+		# save incident power for loss planes
+		straight_su_flux = mp.get_fluxes(su)
+		straight_sd_flux = mp.get_fluxes(sd)
 
-	for ind, elt in enumerate(wl):
-	    #print(round(elt, 4))
-	    if round(elt, 3) == 0.637:
-	        #print("ALERT: MATCH FOUND")
-	        index = ind
+		wl = [] #list of wavelengths
 
-	R = -refl1_flux[index] / (refl2_flux[index] - refl1_flux[index])
-	T = tran_flux[index] / (refl2_flux[index] - refl1_flux[index])
-	S = (refl2_flux[index] - tran_flux[index]) / (refl2_flux[index] - refl1_flux[index])
-	Su = su_flux[index] / (refl2_flux[index] - refl1_flux[index])
-	Sd = -sd_flux[index] / (refl2_flux[index] - refl1_flux[index])
+		refl1_flux = mp.get_fluxes(refl1)
+		refl2_flux = mp.get_fluxes(refl2)
+		tran_flux = mp.get_fluxes(tran)
+		su_flux = mp.get_fluxes(su)
+		sd_flux = mp.get_fluxes(sd)
 
-	norm_Su = S * Su / (Su + Sd)
+		flux_freqs = mp.get_flux_freqs(refl1)
 
-	NET = round((R + T + S) * 100, 0)
-	if NET > 100.0:
-	    NET = 100.0
+		for i in range(nfreq):
+		    wl = np.append(wl, 1/flux_freqs[i])
 
-	NET_LOSS = round((Su + Sd) / S * 100, 0)
-	if NET_LOSS > 100.0:
-		NET_LOSS = 100.0
+		for ind, elt in enumerate(wl):
+		    #print(round(elt, 4))
+		    if round(elt, 3) == 0.637:
+		        #print("ALERT: MATCH FOUND")
+		        index = ind
 
-	'''
-	np.append(ws, [w * 1000])
-	np.append(Rs, [R * 100])
-	np.append(Ts, [T * 100])
-	np.append(Ss, [S * 100])
-	np.append(NET_LIST, [NET])
-	np.append(Sus, [Su * 100])
-	np.append(Sds, [Sd * 100])
-	np.append(NET_LOSS_LIST, [NET_LOSS])
-	np.append(norm_Sus, [norm_Su * 100])
-	'''
+		R = 	-refl1_flux[index] 						/ (refl2_flux[index] - refl1_flux[index])
+		T = 	 tran_flux[index] 						/ (refl2_flux[index] - refl1_flux[index])
+		S = 	(refl2_flux[index] - tran_flux[index]) 	/ (refl2_flux[index] - refl1_flux[index])
+		Su = 	 su_flux[index] 						/ (refl2_flux[index] - refl1_flux[index])
+		Sd = 	-sd_flux[index] 						/ (refl2_flux[index] - refl1_flux[index])
 
-	ws.append(w*1000)
-	Rs.append(R*100)
-	Ts.append(T*100)
-	Ss.append(S*100)
-	NET_LIST.append(NET)
-	Sus.append(Su*100)
-	Sds.append(Sd*100)
-	NET_LOSS_LIST.append(NET_LOSS)
-	norm_Sus.append(norm_Su*100)
+		r = 		sqrt(R)
+		r_fund = 	r * fund_refl_ratio 		* fund_refl_amp 		/ np.abs(fund_refl_amp);
+		r_first = 	r * first_order_refl_ratio 	* first_order_refl_amp 	/ np.abs(first_order_refl_amp);
+		# t =
+		# t_fund =
+		# t_first =
 
-	f1.write("--------------------------------------------------- \n")
-	f1.write("Notch Width: %s nanometers \n" % (w * 1000))
-	f1.write("Reflection Percentage: %s \n" % (R * 100))
-	f1.write("Transmission Percentage: %s \n" % (T * 100))
-	f1.write("Total Loss Percentage: %s \n" % (S * 100))
-	f1.write("Percentage of Light Accounted For: %s \n" % (NET))
-	f1.write("Upper Loss Percentage: %s \n" % (Su * 100))
-	f1.write("Lower Loss Percentage: %s \n" % (Sd * 100))
-	f1.write("Percentage of Total Loss Accounted For: %s \n" % (NET_LOSS))
-	f1.write("Normalized Upper Loss Percentage: %s \n" % (norm_Su * 100))
-	f1.write("--------------------------------------------------- \n")
+		norm_Su = S * Su / (Su + Sd)
 
-	sim.reset_meep()
+		NET = round((R + T + S) * 100, 0)
+		if NET > 100.0:
+		    NET = 100.0
+
+		NET_LOSS = round((Su + Sd) / S * 100, 0)
+		if NET_LOSS > 100.0:
+			NET_LOSS = 100.0
+
+		'''
+		np.append(ws, [w * 1000])
+		np.append(Rs, [R * 100])
+		np.append(Ts, [T * 100])
+		np.append(Ss, [S * 100])
+		np.append(NET_LIST, [NET])
+		np.append(Sus, [Su * 100])
+		np.append(Sds, [Sd * 100])
+		np.append(NET_LOSS_LIST, [NET_LOSS])
+		np.append(norm_Sus, [norm_Su * 100])
+		'''
+
+		ws.append(w*1000)
+		Rs.append(R*100)
+		Ts.append(T*100)
+		Ss.append(S*100)
+		NET_LIST.append(NET)
+		Sus.append(Su*100)
+		Sds.append(Sd*100)
+		NET_LOSS_LIST.append(NET_LOSS)
+		norm_Sus.append(norm_Su*100)
+
+		f1.write("--------------------------------------------------- \n")
+		f1.write("Notch Width: %s nanometers \n" % (w * 1000))
+		f1.write("Reflection Percentage: %s \n" % (R * 100))
+		f1.write("Transmission Percentage: %s \n" % (T * 100))
+		f1.write("Total Loss Percentage: %s \n" % (S * 100))
+		f1.write("Percentage of Light Accounted For: %s \n" % (NET))
+		f1.write("Upper Loss Percentage: %s \n" % (Su * 100))
+		f1.write("Lower Loss Percentage: %s \n" % (Sd * 100))
+		f1.write("Percentage of Total Loss Accounted For: %s \n" % (NET_LOSS))
+		f1.write("Normalized Upper Loss Percentage: %s \n" % (norm_Su * 100))
+		f1.write("--------------------------------------------------- \n")
+
+		sim.reset_meep()
 
 	#-------------------------------------------------------------
 
