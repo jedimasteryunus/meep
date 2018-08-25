@@ -243,23 +243,40 @@ With a partially etched notch, we do not perserve symmetry across the center of 
 \end{center}
 Now let us consider the coupling between modes. Instead of simply an $r$ value for reflection, we now have four values $r_{jk}$ where $j$ is the incident mode and $k$ is the outgoing mode: $j, k \in \{ 0, 1 \} \cong \{ \text{Fundamental}, \text{ First Order} \}$. For instance, $r_{10}$ is the reflection of incident first order amplitude into the fundumental mode. Similarly, we define $t_{jk}$ as the four values for transmission. Thus, we have four equations:
 \begin{itemize}
-\item $b_i = t_{00}a_i + t_{10}c_i + r_{00}a_i' + r_{10}c_i'$
-\item $b_i' = t_{00}a_i' + t_{10}c_i' + r_{00}a_i + r_{10}c_i$
-\item $d_i = t_{01}a_i + t_{11}c_i + r_{01}a_i' + r_{11}c_i'$
-\item $d_i' = t_{01}a_i' + t_{11}c_i' + r_{01}a_i + r_{11}c_i$
+\item $b_i = t_{00}a_i + t_{10}c_i + r_{00}^*a_i' + r_{10}^*c_i'$
+\item $b_i' = t_{00}^*a_i' + t_{10}^*c_i' + r_{00}a_i + r_{10}c_i$
+\item $d_i = t_{01}a_i + t_{11}c_i + r_{01}^*a_i' + r_{11}^*c_i'$
+\item $d_i' = t_{01}^*a_i' + t_{11}^*c_i' + r_{01}a_i + r_{11}c_i$
 \end{itemize}
-Naturally, we can put this into matrix form with (unfinished) algebra\footnote{which is again left as an exercise for the reader :)}:
+Naturally, we can put this into matrix form with algebra\footnote{which is again left as an exercise for the reader :)}:
+% {}\tiny
 \begin{align*}
 \left[ \begin{array}{c}
 a_i \\ b_i' \\ c_i \\ d_i'
 \end{array} \right]
 =
+{\tiny
 \left[ \begin{array}{cccc}
-1/t & r^*/t & 0 & 0 \\
-r/t & \frac{|t|^2 + |r|^2}{t} & 0 & 0 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1 \\
-\end{array} \right]
+    \frac{t_{11}}{t_{00}t_{11} - t_{01}t_{10}} &
+    \frac{t_{10}r_{01}^* - t_{11}r_{00}^*}{t_{00}t_{11} - t_{01}t_{10}} &
+    \frac{-t_{10}}{t_{00}t_{11} - t_{01}t_{10}} &
+    \frac{t_{10}r_{11}^* - t_{11}r_{10}^*}{t_{00}t_{11} - t_{01}t_{10}}
+\\
+    \frac{t_{11}r_{00} - t_{01}r_{10}}{t_{00}t_{11} - t_{01}t_{10}} &
+    t_{00}^* + r_{00}\frac{t_{10}r_{01}^* - t_{11}r_{00}^*}{t_{00}t_{11} - t_{01}t_{10}} + r_{10}\frac{t_{01}r_{00}^* - t_{00}r_{01}^*}{t_{00}t_{11} - t_{01}t_{10}} &
+    \frac{t_{00}r_{01} - t_{10}r_{00}}{t_{00}t_{11} - t_{01}t_{10}} &
+    t_{10}^* + r_{00}\frac{t_{10}r_{11}^* - t_{11}r_{10}^*}{t_{00}t_{11} - t_{01}t_{10}} + r_{10}\frac{t_{01}r_{10}^* - t_{00}r_{11}^*}{t_{00}t_{11} - t_{01}t_{10}}
+\\
+    \frac{-t_{01}}{t_{00}t_{11} - t_{01}t_{10}} &
+    \frac{t_{01}r_{00}^* - t_{00}r_{01}^*}{t_{00}t_{11} - t_{01}t_{10}} &
+    \frac{t_{00}}{t_{00}t_{11} - t_{01}t_{10}} &
+    \frac{t_{01}r_{10}^* - t_{00}r_{11}^*}{t_{00}t_{11} - t_{01}t_{10}}
+\\
+    \frac{t_{11}r_{01} - t_{01}r_{11}}{t_{00}t_{11} - t_{01}t_{10}} &
+    t_{01}^* + r_{01}\frac{t_{10}r_{01}^* - t_{11}r_{00}^*}{t_{00}t_{11} - t_{01}t_{10}} + r_{11}\frac{t_{01}r_{00}^* - t_{00}r_{01}^*}{t_{00}t_{11} - t_{01}t_{10}} &
+    \frac{t_{00}r_{11} - t_{10}r_{01}}{t_{00}t_{11} - t_{01}t_{10}} &
+    t_{11}^* + r_{01}\frac{t_{10}r_{11}^* - t_{11}r_{10}^*}{t_{00}t_{11} - t_{01}t_{10}} + r_{11}\frac{t_{01}r_{10}^* - t_{00}r_{11}^*}{t_{00}t_{11} - t_{01}t_{10}}
+\end{array} \right]}
 \left[ \begin{array}{c}
 b_i \\ a_i' \\ d_i \\ c_i'
 \end{array} \right]
@@ -269,5 +286,6 @@ S(w_i)
 b_i \\ a_i' \\ d_i \\ c_i'
 \end{array} \right]
 \end{align*}
+% }
 
 \end{document}
