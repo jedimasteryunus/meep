@@ -467,7 +467,7 @@ def notch(w):
 
 	#-------------------------------------------------------------
 
-for notch_index in range(4, 6, 2):
+for notch_index in range(4, 32, 2):
 	notch_width = notch_index / 100
 	notch(notch_width)
 
