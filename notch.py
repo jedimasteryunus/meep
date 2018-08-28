@@ -233,10 +233,10 @@ def notch(w):
 		n_eff_first = 	fsolve(first_order_func, initial_guess)
 
 		if len(n_eff_funds) == 0:
-			n_eff_funds.append(n_eff_fund)
+			n_eff_funds.append(n_eff_fund[0])
 
 		if len(n_eff_firsts) == 0:
-			n_eff_firsts.append(n_eff_first)
+			n_eff_firsts.append(n_eff_first[0])
 
 		ky0_fund =  	np.absolute(2 * pi / wavelength * sqrt(n_e**2 - n_eff_fund **2))
 		ky0_first = 	np.absolute(2 * pi / wavelength * sqrt(n_e**2 - n_eff_first**2))

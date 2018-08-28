@@ -37,7 +37,7 @@ def transmission(width):
     real_t10 = data[23][index]
     imag_t10 = data[24][index]
     real_t11 = data[25][index]
-    imag_t11 = data[26]index]
+    imag_t11 = data[26][index]
 
     t00 = complex(real_t00, imag_t00)
     t01 = complex(real_t01, imag_t01)
@@ -58,7 +58,7 @@ def reflection(width):
     real_r10 = data[19][index]
     imag_r10 = data[20][index]
     real_r11 = data[21][index]
-    imag_r11 = data[22]index]
+    imag_r11 = data[22][index]
 
     r00 = complex(real_r00, imag_r00)
     r01 = complex(real_r01, imag_r01)
@@ -81,7 +81,7 @@ def scatter(width):
 
     su1 = complex(real_su1, imag_su1)
 
-    return {"su0": su0. "su1": su1}
+    return {"su0": su0, "su1": su1}
 
 # MATRICES #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
 def scatter_matrix(width):
@@ -163,7 +163,8 @@ def getOverlap(widths, lengths, amplitudes, W, grating_length, num_notches):
     currentx = 0;
 
     for i in range(0, num_notches):
-        s[i] = scatter(widths[i])*(amplitudes[0,2*i] + amplitudes[1,2*i+1])
+        scatter_dict = scatter(widths[i])
+        s[i] = scatter_dict["su0"]*(amplitudes[0,2*i] + amplitudes[1,2*i+1]) + scatter_dict["su1"]*(amplitudes[2,2*i] + amplitudes[3,2*i+1])
         x[i] = currentx + widths[i]/2;
         currentx += lengths[i] + widths[i];
 
