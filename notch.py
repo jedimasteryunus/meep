@@ -328,10 +328,10 @@ def notch(w):
 
 		t = sqrt(T)
 
-		t_fund =    (t * fund_tran_ratio) * (fund_tran_amp / np.abs(fund_tran_amp))	* (np.exp(2j*pi * LT * n_eff_fund  / wavelength))
+		t_fund =    (t * fund_tran_ratio) * (fund_tran_amp / np.abs(fund_tran_amp))	* (np.exp(-2j*pi * LT * n_eff_fund  / wavelength))
 		# The amplitude ... times the phase ... accounting for the distance to the detector.
 
-		t_first =   (t * first_order_tran_ratio) * (first_order_tran_amp / np.abs(first_order_tran_amp)) * (np.exp(2j*pi * LT * n_eff_first  / wavelength))
+		t_first =   (t * first_order_tran_ratio) * (first_order_tran_amp / np.abs(first_order_tran_amp)) * (np.exp(-2j*pi * LT * n_eff_first  / wavelength))
 		#The amplitude ... times the phase ... accounting for the distance to the detector.
 
 		if mode == 0:
