@@ -20,6 +20,7 @@ Sds = []
 NET_LOSS_LIST = []
 norm_Sus = []
 
+n_eff_funds = []
 real_r00s = []
 imag_r00s = []
 real_r01s = []
@@ -33,6 +34,7 @@ imag_su0s = []
 real_sd0s = []
 imag_sd0s = []
 
+n_eff_firsts = []
 real_r10s = []
 imag_r10s = []
 real_r11s = []
@@ -230,6 +232,12 @@ def notch(w):
 		n_eff_fund = 	fsolve(fund_func, initial_guess)
 		n_eff_first = 	fsolve(first_order_func, initial_guess)
 
+		if len(n_eff_funds) == 0:
+			n_eff_funds.append(n_eff_fund)
+
+		if len(n_eff_firsts) == 0:
+			n_eff_firsts.append(n_eff_first)
+
 		ky0_fund =  	np.absolute(2 * pi / wavelength * sqrt(n_e**2 - n_eff_fund **2))
 		ky0_first = 	np.absolute(2 * pi / wavelength * sqrt(n_e**2 - n_eff_first**2))
 
@@ -328,10 +336,10 @@ def notch(w):
 
 		t = sqrt(T)
 
-		t_fund =    (t * fund_tran_ratio) * (fund_tran_amp / np.abs(fund_tran_amp))	* (np.exp(2j*pi * LT * n_eff_fund  / wavelength))
+		t_fund =    (t * fund_tran_ratio) * (fund_tran_amp / np.abs(fund_tran_amp))	* (np.exp(-2j*pi * LT * n_eff_fund  / wavelength))
 		# The amplitude ... times the phase ... accounting for the distance to the detector.
 
-		t_first =   (t * first_order_tran_ratio) * (first_order_tran_amp / np.abs(first_order_tran_amp)) * (np.exp(2j*pi * LT * n_eff_first  / wavelength))
+		t_first =   (t * first_order_tran_ratio) * (first_order_tran_amp / np.abs(first_order_tran_amp)) * (np.exp(-2j*pi * LT * n_eff_first  / wavelength))
 		#The amplitude ... times the phase ... accounting for the distance to the detector.
 
 		if mode == 0:
@@ -504,6 +512,10 @@ f2.write("%s \n" % (real_su1s))
 f2.write("%s \n" % (imag_su1s))
 f2.write("%s \n" % (real_sd1s))
 f2.write("%s \n" % (imag_sd1s))
+
+f2.write("%s \n" % (n_eff_funds))
+f2.write("%s \n" % (n_eff_firsts))
+
 
 f1.close()
 f2.close()
