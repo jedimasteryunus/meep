@@ -135,14 +135,29 @@ def propagate_matrix(length):
 def getAmplitudes(widths, lengths):
     N = widths.shape[0]                                 # N grates.
 
-    a = np.zeros((4, 2*N), dtype=complex)                              # N times [[ a  b  ]; [ b' a' ]].
+    a_fund = np.zeros((4, 2*N), dtype=complex)                              # N times [[ a  b  ]; [ b' a' ]].
 
-    a[0, 2*N-1] = 1                                     # Set the initial vector (b = 1, a' = 0).
-    a[:, 2*N-2] = a[:, 2*N-1] * scatter_matrix(widths[N-1])   # And find a, b' for the first grate.
+    a_fund[0, 2*N-1] = 1                                     # Set the initial vector (b = 1, a' = 0).
+    a_fund[:, 2*N-2] = a[:, 2*N-1] * scatter_matrix(widths[N-1])   # And find a, b' for the first grate.
 
     for ii in range(N-2, -1, -1):                               # Now do this for the rest of the grates.
-        a[:, 2*ii+1] = a[:, 2*ii+2] * propagate_matrix(lengths[ii])
-        a[:, 2*ii] =   a[:, 2*ii+1]  * scatter_matrix(widths[ii])
+        a_fund[:, 2*ii+1] = a[:, 2*ii+2] * propagate_matrix(lengths[ii])
+        a_fund[:, 2*ii] =   a[:, 2*ii+1]  * scatter_matrix(widths[ii])
+
+    a_first = np.zeros((4, 2*N), dtype=complex)                              # N times [[ a  b  ]; [ b' a' ]].
+
+    a_first[2, 2*N-1] = 1                                     # Set the initial vector (b = 1, a' = 0).
+    a_first[:, 2*N-2] = a[:, 2*N-1] * scatter_matrix(widths[N-1])   # And find a, b' for the first grate.
+
+    for ii in range(N-2, -1, -1):                               # Now do this for the rest of the grates.
+        a_first[:, 2*ii+1] = a[:, 2*ii+2] * propagate_matrix(lengths[ii])
+        a_first[:, 2*ii] =   a[:, 2*ii+1]  * scatter_matrix(widths[ii])
+
+    b = -a_fund[2,0]/a_first[2,0];
+
+    a = a_fund + b*a_first #)/(a_fund[0,0] + b*a_first[0,0]);
+
+    assert(a[2,0] == 0)
 
     return a
 
@@ -178,8 +193,10 @@ def getOverlap(widths, lengths, amplitudes, W, grating_length, num_notches):
 
         print(S)
 
-    final_reflection =      np.abs(amplitudes[1,0]/amplitudes[0,0])**2
-    final_transmission =    np.abs(1/amplitudes[0,0])**2
+    final_reflection =          np.abs(amplitudes[1,0]      /amplitudes[0,0])**2
+    final_transmission =        np.abs(amplitudes[0,2*N-1]  /amplitudes[0,0])**2
+    final_reflection_first =    np.abs(amplitudes[3,0]      /amplitudes[0,0])**2
+    final_transmission_first =  np.abs(amplitudes[2,2*N-1]  /amplitudes[0,0])**2
 
     final_gamma = 0
     final_X = 0;
