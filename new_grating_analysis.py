@@ -10,6 +10,9 @@ neff = 2.2012 # refractive index inside waveguide (at wavelength 0.6372)
 
 debug = 0
 
+output_file = 'new_grating_analysis.out'
+f = open(output_file, 'w')
+
 # DATA #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
 def widthToIndex(width):
     return int(width / 20 - 2)
@@ -138,20 +141,20 @@ def getAmplitudes(widths, lengths):
     a_fund = np.zeros((4, 2*N), dtype=complex)                              # N times [[ a  b  ]; [ b' a' ]].
 
     a_fund[0, 2*N-1] = 1                                     # Set the initial vector (b = 1, a' = 0).
-    a_fund[:, 2*N-2] = a[:, 2*N-1] * scatter_matrix(widths[N-1])   # And find a, b' for the first grate.
+    a_fund[:, 2*N-2] = a_fund[:, 2*N-1] * scatter_matrix(widths[N-1])   # And find a, b' for the first grate.
 
     for ii in range(N-2, -1, -1):                               # Now do this for the rest of the grates.
-        a_fund[:, 2*ii+1] = a[:, 2*ii+2] * propagate_matrix(lengths[ii])
-        a_fund[:, 2*ii] =   a[:, 2*ii+1]  * scatter_matrix(widths[ii])
+        a_fund[:, 2*ii+1] = a_fund[:, 2*ii+2] * propagate_matrix(lengths[ii])
+        a_fund[:, 2*ii] =   a_fund[:, 2*ii+1]  * scatter_matrix(widths[ii])
 
     a_first = np.zeros((4, 2*N), dtype=complex)                              # N times [[ a  b  ]; [ b' a' ]].
 
     a_first[2, 2*N-1] = 1                                     # Set the initial vector (b = 1, a' = 0).
-    a_first[:, 2*N-2] = a[:, 2*N-1] * scatter_matrix(widths[N-1])   # And find a, b' for the first grate.
+    a_first[:, 2*N-2] = a_first[:, 2*N-1] * scatter_matrix(widths[N-1])   # And find a, b' for the first grate.
 
     for ii in range(N-2, -1, -1):                               # Now do this for the rest of the grates.
-        a_first[:, 2*ii+1] = a[:, 2*ii+2] * propagate_matrix(lengths[ii])
-        a_first[:, 2*ii] =   a[:, 2*ii+1]  * scatter_matrix(widths[ii])
+        a_first[:, 2*ii+1] = a_first[:, 2*ii+2] * propagate_matrix(lengths[ii])
+        a_first[:, 2*ii] =   a_first[:, 2*ii+1]  * scatter_matrix(widths[ii])
 
     b = -a_fund[2,0]/a_first[2,0];
 
@@ -216,7 +219,10 @@ def getOverlap(widths, lengths, amplitudes, W, grating_length, num_notches):
     # print final_X;
 
     print("Lengths:           ", lengths)
+    f.write("Lengths:           %s" % (lengths))
+
     print("Grate positions:   ", x)
+    f.write("Grate positions:   %s" % (x))
 
     return [final_gamma, final_transmission, final_reflection, final_X]
 
@@ -275,16 +281,23 @@ def anneal(widths, lengths, W, grating_length, num_notches):
             if ap > r:
                 if gtrx[0] < new_gtrx[0]:
                     print("Gamma INCREASED this step",)
+                    f.write("Gamma INCREASED this step")
                 else:
                     print("Gamma DECREASED this step",)
+                    f.write("Gamma DECREASED this step")
 
                 lengths = new_lengths
                 gtrx = new_gtrx
             else:
                 print("Gamma DID NOT CHANGE this step",)
 
-            print(    "S = {:.2f}%,\tT = {:.2f}%,\tR = {:.2f}%,\tX = {};".format(gtrx[0]*100, gtrx[1]*100, gtrx[2]*100, gtrx[3]))
-            print(    "S'= {:.2f}%,\tT'= {:.2f}%,\tR'= {:.2f}%,\tX'= {}.".format(new_gtrx[0]*100, new_gtrx[1]*100, new_gtrx[2]*100, new_gtrx[3]), "\n")
+            print("S = {:.2f}%,\tT = {:.2f}%,\tR = {:.2f}%,\tX = {};".format(gtrx[0]*100, gtrx[1]*100, gtrx[2]*100, gtrx[3]))
+            f.write("S = {:.2f}%,\tT = {:.2f}%,\tR = {:.2f}%,\tX = {};".format(gtrx[0]*100, gtrx[1]*100, gtrx[2]*100, gtrx[3]))
+
+            print("S'= {:.2f}%,\tT'= {:.2f}%,\tR'= {:.2f}%,\tX'= {}.".format(new_gtrx[0]*100, new_gtrx[1]*100, new_gtrx[2]*100, new_gtrx[3]), "\n")
+            f.write("S'= {:.2f}%,\tT'= {:.2f}%,\tR'= {:.2f}%,\tX'= {}.".format(new_gtrx[0]*100, new_gtrx[1]*100, new_gtrx[2]*100, new_gtrx[3]))
+
+            f.write("\n")
 
             i += 1
 
@@ -327,10 +340,15 @@ def main():
     anneal_tup = anneal(widths, lengths, W, grating_length, N)
 
     print("Lengths: ", anneal_tup[0])
+    f.write("Lengths: %s" % (anneal_tup[0]))
+
     print("GTRX List: ", anneal_tup[1])
+    f.write("GTRX List: %s" % (ammeal_tup[1]))
 
     end = time.time()
 
     print("Run Time: ", end - start)
+    f.write("Run Time: %s" % (end-start))
 
 main()
+f.close()
