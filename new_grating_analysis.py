@@ -128,10 +128,10 @@ def scatter_matrix(width):
 def propagate_matrix(length):
     n_eff_fund = data[31][0]
     n_eff_first = data[32][0]
-    return np.matrix([  [np.exp(-pi*2j*n_eff_fund*length/wavelength), 0, 0, 0],
-                        [0, np.exp(pi*2j*n_eff_fund*length/wavelength), 0, 0],
+    return np.matrix([  [np.exp(-pi*2j*n_eff_fund*length/wavelength),  0, 0, 0],
+                        [0, np.exp(pi*2j*n_eff_fund*length/wavelength),   0, 0],
                         [0, 0, np.exp(-pi*2j*n_eff_first*length/wavelength), 0],
-                        [0, 0, 0, np.exp(pi*2j*n_eff_first*length/wavelength)]  ],
+                        [0, 0, 0, np.exp(pi*2j*n_eff_first*length/wavelength)]],
                         dtype=complex)
 
 # AMPLITUDES #### #### #### #### #### #### #### #### #### ####
