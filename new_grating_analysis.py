@@ -116,7 +116,7 @@ def scatter_matrix(width):
                         (t01 * np.conj(r10) - t00 * np.conj(r11)) / denom],
 
                         [(t11 * r01 - t01 * r11) / denom,
-                        np.cong(t01) + r01 * (t10 * np.conj(r01) - t11 * np.conj(r00)) / denom + r11 * (t01 * np.conj(r00) - t00 * np.conj(r01)) / denom,
+                        np.conj(t01) + r01 * (t10 * np.conj(r01) - t11 * np.conj(r00)) / denom + r11 * (t01 * np.conj(r00) - t00 * np.conj(r01)) / denom,
                         (t00 * r11 - t10 * r01) / denom,
                         np.conj(t11) + r01 * (t10 * np.conj(r11) - t11 * np.conj(r10)) / denom + r11 * (t01 * np.conj(r10) - t00 * np.conj(r11)) / denom] ],
 
