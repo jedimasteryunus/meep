@@ -109,7 +109,7 @@ def scatter_matrix(width):
                         (t10 * np.conj(r11) - t11 * np.conj(r10)) / denom],
 
                         [(t11 * r00 - t01 * r10) / denom,
-                        np.conj(t00) + r00 * (t10 * np.conj(r01) - t11 * np.conj(r00)) / denom + r10 * (t01 + np.conj(r00) - t00 * np.conj(r01)) / denom,
+                        np.conj(t00) + r00 * (t10 * np.conj(r01) - t11 * np.conj(r00)) / denom + r10 * (t01 * np.conj(r00) - t00 * np.conj(r01)) / denom,
                         (t00 * r01 - t10 * r00) / denom,
                         np.conj(t10) + r00 * (t10 * np.conj(r11) - t11 * np.conj(r10)) / denom + r10 * (t01 * np.conj(r10) - t00 * np.conj(r11)) / denom],
 
@@ -160,7 +160,7 @@ def getAmplitudes(widths, lengths):
 
     a = a_fund + b*a_first #)/(a_fund[0,0] + b*a_first[0,0]);
 
-    assert(a[2,0] == 0)
+    #print("a[2,0] value (should be close to 0): ", a[2,0])
 
     return a
 
@@ -197,9 +197,9 @@ def getOverlap(widths, lengths, amplitudes, W, grating_length, num_notches):
         print(S)
 
     final_reflection =          np.abs(amplitudes[1,0]      /amplitudes[0,0])**2
-    final_transmission =        np.abs(amplitudes[0,2*N-1]  /amplitudes[0,0])**2
+    final_transmission =        np.abs(amplitudes[0,2*num_notches-1]  /amplitudes[0,0])**2
     final_reflection_first =    np.abs(amplitudes[3,0]      /amplitudes[0,0])**2
-    final_transmission_first =  np.abs(amplitudes[2,2*N-1]  /amplitudes[0,0])**2
+    final_transmission_first =  np.abs(amplitudes[2,2*num_notches-1]  /amplitudes[0,0])**2
 
     final_gamma = 0
     final_X = 0;
@@ -219,10 +219,10 @@ def getOverlap(widths, lengths, amplitudes, W, grating_length, num_notches):
     # print final_X;
 
     print("Lengths:           ", lengths)
-    f.write("Lengths:           %s" % (lengths))
+    #f.write("Lengths:           %s" % (lengths))
 
     print("Grate positions:   ", x)
-    f.write("Grate positions:   %s" % (x))
+    #f.write("Grate positions:   %s" % (x))
 
     return [final_gamma, final_transmission, final_reflection, final_X]
 
@@ -281,10 +281,10 @@ def anneal(widths, lengths, W, grating_length, num_notches):
             if ap > r:
                 if gtrx[0] < new_gtrx[0]:
                     print("Gamma INCREASED this step",)
-                    f.write("Gamma INCREASED this step")
+                    #f.write("Gamma INCREASED this step")
                 else:
                     print("Gamma DECREASED this step",)
-                    f.write("Gamma DECREASED this step")
+                    #f.write("Gamma DECREASED this step")
 
                 lengths = new_lengths
                 gtrx = new_gtrx
@@ -292,12 +292,12 @@ def anneal(widths, lengths, W, grating_length, num_notches):
                 print("Gamma DID NOT CHANGE this step",)
 
             print("S = {:.2f}%,\tT = {:.2f}%,\tR = {:.2f}%,\tX = {};".format(gtrx[0]*100, gtrx[1]*100, gtrx[2]*100, gtrx[3]))
-            f.write("S = {:.2f}%,\tT = {:.2f}%,\tR = {:.2f}%,\tX = {};".format(gtrx[0]*100, gtrx[1]*100, gtrx[2]*100, gtrx[3]))
+            #f.write("S = {:.2f}%,\tT = {:.2f}%,\tR = {:.2f}%,\tX = {};".format(gtrx[0]*100, gtrx[1]*100, gtrx[2]*100, gtrx[3]))
 
             print("S'= {:.2f}%,\tT'= {:.2f}%,\tR'= {:.2f}%,\tX'= {}.".format(new_gtrx[0]*100, new_gtrx[1]*100, new_gtrx[2]*100, new_gtrx[3]), "\n")
-            f.write("S'= {:.2f}%,\tT'= {:.2f}%,\tR'= {:.2f}%,\tX'= {}.".format(new_gtrx[0]*100, new_gtrx[1]*100, new_gtrx[2]*100, new_gtrx[3]))
+            #f.write("S'= {:.2f}%,\tT'= {:.2f}%,\tR'= {:.2f}%,\tX'= {}.".format(new_gtrx[0]*100, new_gtrx[1]*100, new_gtrx[2]*100, new_gtrx[3]))
 
-            f.write("\n")
+            #f.write("\n")
 
             i += 1
 
@@ -343,7 +343,7 @@ def main():
     f.write("Lengths: %s" % (anneal_tup[0]))
 
     print("GTRX List: ", anneal_tup[1])
-    f.write("GTRX List: %s" % (ammeal_tup[1]))
+    f.write("GTRX List: %s" % (anneal_tup[1]))
 
     end = time.time()
 
