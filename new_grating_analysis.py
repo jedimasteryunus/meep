@@ -370,15 +370,15 @@ def main():
     anneal_tup = anneal(widths, lengths, W, grating_length, N)
 
     print("Lengths: ", anneal_tup[0])
-    f.write("Lengths: %s" % (anneal_tup[0]))
+    f.write("Lengths: %s \n" % (anneal_tup[0]))
 
     print("GTRX List: ", anneal_tup[1])
-    f.write("GTRX List: %s" % (anneal_tup[1]))
+    f.write("GTRX List: %s \n" % (anneal_tup[1]))
 
     end = time.time()
 
     print("Run Time: ", end - start)
-    f.write("Run Time: %s" % (end-start))
+    f.write("Run Time: %s \n" % (end-start))
 
 main()
 f.close()
