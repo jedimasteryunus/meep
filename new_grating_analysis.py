@@ -29,6 +29,7 @@ def importData(fname):
 fname = "notch.txt"
 data = importData(fname)
 
+
 def transmission(width):
     index = widthToIndex(width)
 
@@ -76,15 +77,20 @@ def scatter(width):
 
     real_su0 = data[15][index]
     imag_su0 = data[16][index]
-
     real_su1 = data[27][index]
     imag_su1 = data[28][index]
 
+    real_sd0 = data[17][index]
+    imag_sd0 = data[18][index]
+    real_sd1 = data[29][index]
+    imag_sd1 = data[30][index]
+
     su0 = complex(real_su0, imag_su0)
-
     su1 = complex(real_su1, imag_su1)
+    sd0 = complex(real_sd0, imag_sd0)
+    sd1 = complex(real_sd1, imag_sd1)
 
-    return {"su0": su0, "su1": su1}
+    return {"su0": su0, "su1": su1, "sd0": sd0, "sd1": sd1}
 
 # MATRICES #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
 def scatter_matrix(width):
@@ -101,27 +107,35 @@ def scatter_matrix(width):
     r10 = r["r10"]
     r11 = r["r11"]
 
+    # t01 = 0;
+    # t10 = 0;
+    # t11 = 1;
+    #
+    # r01 = 0;
+    # r10 = 0;
+    # r11 = 0;
+
     denom = t00 * t11 - t01 * t10
 
     return np.matrix([  [t11 / denom,
-                        (t10 * np.conj(r01) - t11 * np.conj(r00)) / denom,
+                        -(t10 * np.conj(r01) - t11 * np.conj(r00)) / denom,
                         -t10 / denom,
-                        (t10 * np.conj(r11) - t11 * np.conj(r10)) / denom],
+                        -(t10 * np.conj(r11) - t11 * np.conj(r10)) / denom],
 
                         [(t11 * r00 - t01 * r10) / denom,
-                        np.conj(t00) + r00 * (t10 * np.conj(r01) - t11 * np.conj(r00)) / denom + r10 * (t01 * np.conj(r00) - t00 * np.conj(r01)) / denom,
+                        np.conj(t00) - r00 * (t10 * np.conj(r01) - t11 * np.conj(r00)) / denom - r10 * (t01 * np.conj(r00) - t00 * np.conj(r01)) / denom,
                         (t00 * r01 - t10 * r00) / denom,
-                        np.conj(t10) + r00 * (t10 * np.conj(r11) - t11 * np.conj(r10)) / denom + r10 * (t01 * np.conj(r10) - t00 * np.conj(r11)) / denom],
+                        np.conj(t10) - r00 * (t10 * np.conj(r11) - t11 * np.conj(r10)) / denom - r10 * (t01 * np.conj(r10) - t00 * np.conj(r11)) / denom],
 
                         [-t01 / denom,
-                        (t01 * np.conj(r00) - t00 * np.conj(r01)) / denom,
+                        -(t01 * np.conj(r00) - t00 * np.conj(r01)) / denom,
                         t00 / denom,
-                        (t01 * np.conj(r10) - t00 * np.conj(r11)) / denom],
+                        -(t01 * np.conj(r10) - t00 * np.conj(r11)) / denom],
 
                         [(t11 * r01 - t01 * r11) / denom,
-                        np.conj(t01) + r01 * (t10 * np.conj(r01) - t11 * np.conj(r00)) / denom + r11 * (t01 * np.conj(r00) - t00 * np.conj(r01)) / denom,
+                        np.conj(t01) - r01 * (t10 * np.conj(r01) - t11 * np.conj(r00)) / denom - r11 * (t01 * np.conj(r00) - t00 * np.conj(r01)) / denom,
                         (t00 * r11 - t10 * r01) / denom,
-                        np.conj(t11) + r01 * (t10 * np.conj(r11) - t11 * np.conj(r10)) / denom + r11 * (t01 * np.conj(r10) - t00 * np.conj(r11)) / denom] ],
+                        np.conj(t11) - r01 * (t10 * np.conj(r11) - t11 * np.conj(r10)) / denom - r11 * (t01 * np.conj(r10) - t00 * np.conj(r11)) / denom] ],
 
                         dtype=complex)
 
@@ -143,6 +157,8 @@ def getAmplitudes(widths, lengths):
     a_fund[0, 2*N-1] = 1                                     # Set the initial vector (b = 1, a' = 0).
     a_fund[:, 2*N-2] = a_fund[:, 2*N-1] * scatter_matrix(widths[N-1])   # And find a, b' for the first grate.
 
+    # print(scatter_matrix(widths[0]))
+
     for ii in range(N-2, -1, -1):                               # Now do this for the rest of the grates.
         a_fund[:, 2*ii+1] = a_fund[:, 2*ii+2] * propagate_matrix(lengths[ii])
         a_fund[:, 2*ii] =   a_fund[:, 2*ii+1]  * scatter_matrix(widths[ii])
@@ -156,11 +172,7 @@ def getAmplitudes(widths, lengths):
         a_first[:, 2*ii+1] = a_first[:, 2*ii+2] * propagate_matrix(lengths[ii])
         a_first[:, 2*ii] =   a_first[:, 2*ii+1]  * scatter_matrix(widths[ii])
 
-    b = -a_fund[2,0]/a_first[2,0];
-
-    a = a_fund + b*a_first #)/(a_fund[0,0] + b*a_first[0,0]);
-
-    #print("a[2,0] value (should be close to 0): ", a[2,0])
+    a = a_fund - (a_fund[2,0]/a_first[2,0]) * a_first
 
     return a
 
@@ -171,8 +183,9 @@ def E(x,W):
 
 def getOverlap(widths, lengths, amplitudes, W, grating_length, num_notches):
 
-    s = np.zeros(num_notches, dtype = complex)
-    x = np.zeros(num_notches)
+    s =     np.zeros(num_notches, dtype = complex)
+    sd =    np.zeros(num_notches, dtype = complex)
+    x =     np.zeros(num_notches)
 
     #for i in range(0, num_notches):
         #print("Scatter:", scatter(widths[i]))
@@ -182,11 +195,13 @@ def getOverlap(widths, lengths, amplitudes, W, grating_length, num_notches):
 
     for i in range(0, num_notches):
         scatter_dict = scatter(widths[i])
-        s[i] = scatter_dict["su0"]*(amplitudes[0,2*i] + amplitudes[1,2*i+1]) + scatter_dict["su1"]*(amplitudes[2,2*i] + amplitudes[3,2*i+1])
+        s[i] =  scatter_dict["su0"]*(amplitudes[0,2*i] + amplitudes[1,2*i+1]) + scatter_dict["su1"]*(amplitudes[2,2*i] + amplitudes[3,2*i+1])
+        sd[i] = scatter_dict["sd0"]*(amplitudes[0,2*i] + amplitudes[1,2*i+1]) + scatter_dict["sd1"]*(amplitudes[2,2*i] + amplitudes[3,2*i+1])
         x[i] = currentx + widths[i]/2;
         currentx += lengths[i] + widths[i];
 
     s /= amplitudes[0,0]
+    sd /= amplitudes[0,0]
 
     if debug:
         S = np.zeros(num_notches)
@@ -196,10 +211,12 @@ def getOverlap(widths, lengths, amplitudes, W, grating_length, num_notches):
 
         print(S)
 
-    final_reflection =          np.abs(amplitudes[1,0]      /amplitudes[0,0])**2
-    final_transmission =        np.abs(amplitudes[0,2*num_notches-1]  /amplitudes[0,0])**2
-    final_reflection_first =    np.abs(amplitudes[3,0]      /amplitudes[0,0])**2
-    final_transmission_first =  np.abs(amplitudes[2,2*num_notches-1]  /amplitudes[0,0])**2
+    # print(amplitudes/amplitudes[0,0])
+
+    final_reflection =          np.abs(amplitudes[1,0]                  /amplitudes[0,0])**2
+    final_transmission =        np.abs(amplitudes[0,2*num_notches-1]    /amplitudes[0,0])**2
+    final_reflection_first =    np.abs(amplitudes[3,0]                  /amplitudes[0,0])**2
+    final_transmission_first =  np.abs(amplitudes[2,2*num_notches-1]    /amplitudes[0,0])**2
 
     final_gamma = 0
     final_X = 0;
@@ -218,13 +235,16 @@ def getOverlap(widths, lengths, amplitudes, W, grating_length, num_notches):
         # print gamma
     # print final_X;
 
+    # total_scatter_up =      np.sum(np.abs(s)**2);
+    # total_scatter_down =    np.sum(np.abs(sd)**2);
+
     print("Lengths:           ", lengths)
     #f.write("Lengths:           %s" % (lengths))
 
     print("Grate positions:   ", x)
     #f.write("Grate positions:   %s" % (x))
 
-    return [final_gamma, final_transmission, final_reflection, final_X]
+    return [final_gamma, final_transmission, final_reflection, final_transmission_first, final_reflection_first, final_X] #, total_scatter_up, total_scatter_down]
 
 # ANNEALING #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
 def neighbor(lengths):
@@ -291,10 +311,12 @@ def anneal(widths, lengths, W, grating_length, num_notches):
             else:
                 print("Gamma DID NOT CHANGE this step",)
 
-            print("S = {:.2f}%,\tT = {:.2f}%,\tR = {:.2f}%,\tX = {};".format(gtrx[0]*100, gtrx[1]*100, gtrx[2]*100, gtrx[3]))
+            print("S = {:.2f}%,\tT0 = {:.2f}%,\tR0 = {:.2f}%,\tT1 = {:.2f}%,\tR1 = {:.2f}%,\tX  = {};".format(gtrx[0]*100, gtrx[1]*100, gtrx[2]*100, gtrx[3]*100, gtrx[4]*100, gtrx[5]))
+            # print("S = {:.2f}%,\tT0 = {:.2f}%,\tR0 = {:.2f}%,\tT1 = {:.2f}%,\tR1 = {:.2f}%,\tX  = {},\tSu = {:.2f}%,\tSd = {:.2f}%;".format(gtrx[0]*100, gtrx[1]*100, gtrx[2]*100, gtrx[3]*100, gtrx[4]*100, gtrx[5], gtrx[6]*100, gtrx[7]*100))
             #f.write("S = {:.2f}%,\tT = {:.2f}%,\tR = {:.2f}%,\tX = {};".format(gtrx[0]*100, gtrx[1]*100, gtrx[2]*100, gtrx[3]))
 
-            print("S'= {:.2f}%,\tT'= {:.2f}%,\tR'= {:.2f}%,\tX'= {}.".format(new_gtrx[0]*100, new_gtrx[1]*100, new_gtrx[2]*100, new_gtrx[3]), "\n")
+            print("S'= {:.2f}%,\tT0'= {:.2f}%,\tR0'= {:.2f}%,\tT1'= {:.2f}%,\tR1'= {:.2f}%,\tX' = {}.\n".format(new_gtrx[0]*100, new_gtrx[1]*100, new_gtrx[2]*100, new_gtrx[3]*100, new_gtrx[4]*100, new_gtrx[5]))
+            # print("S'= {:.2f}%,\tT0'= {:.2f}%,\tR0'= {:.2f}%,\tT1'= {:.2f}%,\tR1'= {:.2f}%,\tX' = {},\tSu'= {:.2f}%,\tSd'= {:.2f}%.\n".format(new_gtrx[0]*100, new_gtrx[1]*100, new_gtrx[2]*100, new_gtrx[3]*100, new_gtrx[4]*100, new_gtrx[5], new_gtrx[6]*100, new_gtrx[7]*100))
             #f.write("S'= {:.2f}%,\tT'= {:.2f}%,\tR'= {:.2f}%,\tX'= {}.".format(new_gtrx[0]*100, new_gtrx[1]*100, new_gtrx[2]*100, new_gtrx[3]))
 
             #f.write("\n")
@@ -312,14 +334,22 @@ def anneal(widths, lengths, W, grating_length, num_notches):
 # [570. 160. 600. 570. 300. 290. 580. 580. 580. 300.]
 
 def main():
+    # print(transmission(100))
+    # print(reflection(100))
+    # print(scatter(100))
+    # print(scatter_matrix(100))
+    # print(propagate_matrix(1))
+    #
+    # return
+
     N = 10
     NA = .200 #Numerical Aperture
     W = wavelength / (pi * NA) #mode field diameter
     grating_length = 2000
 
-    widths = 100 * np.ones(N)
-    # lengths =   300 * np.ones(N)
-    lengths = np.array([590., 630., 600., 580., 290., 290., 290., 290., 670., 300.]);
+    widths =    100 * np.ones(N)
+    lengths =   600 * np.ones(N)
+    # lengths = np.array([590., 630., 600., 580., 290., 290., 290., 290., 670., 300.]);
 
     # print scatter(100), scatter(100)**2
     #

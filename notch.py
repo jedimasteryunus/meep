@@ -479,42 +479,42 @@ for notch_index in range(4, 32, 2):
 	notch_width = notch_index / 100
 	notch(notch_width)
 
-f2.write("%s \n" % (ws))
-f2.write("%s \n" % (Rs))
-f2.write("%s \n" % (Ts))
-f2.write("%s \n" % (Ss))
-f2.write("%s \n" % (Sus))
-f2.write("%s \n" % (Sds))
-f2.write("%s \n" % (norm_Sus))
+f2.write("%s \n" % (ws))			# 0
+f2.write("%s \n" % (Rs))			# 1
+f2.write("%s \n" % (Ts))			# 2
+f2.write("%s \n" % (Ss))			# 3
+f2.write("%s \n" % (Sus))			# 4
+f2.write("%s \n" % (Sds))			# 5
+f2.write("%s \n" % (norm_Sus))		# 6
 
-f2.write("%s \n" % (real_r00s))
-f2.write("%s \n" % (imag_r00s))
-f2.write("%s \n" % (real_r01s))
-f2.write("%s \n" % (imag_r01s))
-f2.write("%s \n" % (real_t00s))
-f2.write("%s \n" % (imag_t00s))
-f2.write("%s \n" % (real_t01s))
-f2.write("%s \n" % (imag_t01s))
-f2.write("%s \n" % (real_su0s))
-f2.write("%s \n" % (imag_su0s))
-f2.write("%s \n" % (real_sd0s))
-f2.write("%s \n" % (imag_sd0s))
+f2.write("%s \n" % (real_r00s))		# 7
+f2.write("%s \n" % (imag_r00s))		# 8
+f2.write("%s \n" % (real_r01s))		# 9
+f2.write("%s \n" % (imag_r01s))		# 10
+f2.write("%s \n" % (real_t00s))		# 11
+f2.write("%s \n" % (imag_t00s))		# 12
+f2.write("%s \n" % (real_t01s))		# 13
+f2.write("%s \n" % (imag_t01s))		# 14
+f2.write("%s \n" % (real_su0s))		# 15
+f2.write("%s \n" % (imag_su0s))		# 16
+f2.write("%s \n" % (real_sd0s))		# 17
+f2.write("%s \n" % (imag_sd0s))		# 18
 
-f2.write("%s \n" % (real_r10s))
-f2.write("%s \n" % (imag_r10s))
-f2.write("%s \n" % (real_r11s))
-f2.write("%s \n" % (imag_r11s))
-f2.write("%s \n" % (real_t10s))
-f2.write("%s \n" % (imag_t10s))
-f2.write("%s \n" % (real_t11s))
-f2.write("%s \n" % (imag_t11s))
-f2.write("%s \n" % (real_su1s))
-f2.write("%s \n" % (imag_su1s))
-f2.write("%s \n" % (real_sd1s))
-f2.write("%s \n" % (imag_sd1s))
+f2.write("%s \n" % (real_r10s))		# 19
+f2.write("%s \n" % (imag_r10s))		# 20
+f2.write("%s \n" % (real_r11s))		# 21
+f2.write("%s \n" % (imag_r11s))		# 22
+f2.write("%s \n" % (real_t10s))		# 23
+f2.write("%s \n" % (imag_t10s))		# 24
+f2.write("%s \n" % (real_t11s))		# 25
+f2.write("%s \n" % (imag_t11s))		# 26
+f2.write("%s \n" % (real_su1s))		# 27
+f2.write("%s \n" % (imag_su1s))		# 28
+f2.write("%s \n" % (real_sd1s))		# 29
+f2.write("%s \n" % (imag_sd1s))		# 30
 
-f2.write("%s \n" % (n_eff_funds))
-f2.write("%s \n" % (n_eff_firsts))
+f2.write("%s \n" % (n_eff_funds))	# 31
+f2.write("%s \n" % (n_eff_firsts))	# 32
 
 
 f1.close()
