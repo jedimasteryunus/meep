@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from math import pi, sin, cos, tan, sqrt
 from scipy.optimize import fsolve
 
-#os.system("rm -r notch-out/")
+os.system("rm -r notch-out/")
 
 f1 = open('notch.out', 'w')
 f2 = open('notch.txt', 'w')
@@ -199,9 +199,10 @@ def notch(w):
 
 		pt = mp.Vector3(9.75,0)
 
-		gif = True
+		gif = False
 
 		if gif:
+			sim.use_output_directory()
 			sim.run(mp.at_beginning(mp.output_epsilon),
 					mp.at_end(get_refl_slice),
 					mp.at_end(get_tran_slice), until=100)
@@ -463,7 +464,9 @@ def notch(w):
 
 notch(0)
 
-widths = range(4, 32, 2) / 100;
+old_widths = range(4, 32, 2)
+
+widths = [elt/100 for elt in old_widths]
 
 p0 = t00s[0] * np.exp(n_eff_funds[0]  * 2j * pi * (Ls + widths/2) / wavelength)
 p1 = t11s[0] * np.exp(n_eff_firsts[0] * 2j * pi * (Ls + widths/2) / wavelength)
@@ -493,7 +496,7 @@ sd0s = []
 su1s = []
 sd1s = []
 
-for notch_index in range(4, 32, 2):
+for notch_index in range(4, 12, 2):
 	notch_width = notch_index / 100
 	notch(notch_width)
 

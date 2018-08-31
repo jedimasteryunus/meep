@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from math import pi, tan, sqrt
 
-#os.system("rm -r notch-out/")
+os.system("rm -r grating_validation-out/")
 
 f1 = open('grating_validation.out', 'w')
 
@@ -100,6 +100,23 @@ def validation(w):
                         sources = sources,
                         resolution = resolution)
 
+
+    #------------------------------------------------------
+    #FOR GENERATING THE ELECTRIC FIELD GIF
+    #Note: After running this program, write the following commands in Terminal:
+        # $ source deactivate mp
+        # $ cd grating_validation-out/
+        # $ python ../GratingValidationIP.py
+
+    sim.use_output_directory()
+    sim.run(mp.at_beginning(mp.output_epsilon),
+            mp.to_appended("ez", mp.at_every(0.6, mp.output_efield_z)),
+            until = 200)
+    #sim.run(mp.at_every(0.6 , mp.output_png(mp.Ez, "-Zc dkbluered")), until=200)
+
+    #---------------------------------------------------------
+    '''
+
     #---------------------------------------------------------
     #FOR GENERATING THE TRANSMITTANCE SPECTRUM
 
@@ -190,5 +207,5 @@ def validation(w):
     sim.reset_meep()
 
     #-------------------------------------------------------------
-
+    '''
 validation(0.1)
