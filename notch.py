@@ -201,7 +201,7 @@ def notch(w):
 
 		gif = False
 
-		if gif:
+		if gif and w == 0.1:
 			sim.use_output_directory()
 			sim.run(mp.at_beginning(mp.output_epsilon),
 					mp.at_end(get_refl_slice),
