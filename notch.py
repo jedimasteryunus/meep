@@ -463,7 +463,10 @@ def notch(w):
 
 notch(0)
 
-Tnorm = Ts[0]
+widths = range(4, 32, 2) / 100;
+
+p0 = t00s[0] * np.exp(n_eff_funds[0]  * 2j * pi * (Ls + widths/2) / wavelength)
+p1 = t11s[0] * np.exp(n_eff_firsts[0] * 2j * pi * (Ls + widths/2) / wavelength)
 
 ws = []
 Rs = []
@@ -489,11 +492,6 @@ su0s = []
 sd0s = []
 su1s = []
 sd1s = []
-
-widths = range(4, 32, 2) / 100;
-
-p0 = Tnorm * np.exp(-n_eff_funds[0]  * 2j * pi * (Ls + widths/2) / wavelength)
-p1 = Tnorm * np.exp(-n_eff_firsts[0] * 2j * pi * (Ls + widths/2) / wavelength)
 
 for notch_index in range(4, 32, 2):
 	notch_width = notch_index / 100
