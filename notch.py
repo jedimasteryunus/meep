@@ -21,32 +21,22 @@ NET_LOSS_LIST = []
 norm_Sus = []
 
 n_eff_funds = []
-real_r00s = []
-imag_r00s = []
-real_r01s = []
-imag_r01s = []
-real_t00s = []
-imag_t00s = []
-real_t01s = []
-imag_t01s = []
-real_su0s = []
-imag_su0s = []
-real_sd0s = []
-imag_sd0s = []
-
 n_eff_firsts = []
-real_r10s = []
-imag_r10s = []
-real_r11s = []
-imag_r11s = []
-real_t10s = []
-imag_t10s = []
-real_t11s = []
-imag_t11s = []
-real_su1s = []
-imag_su1s = []
-real_sd1s = []
-imag_sd1s = []
+
+r00s = []
+r01s = []
+r10s = []
+r11s = []
+
+t00s = []
+t01s = []
+t10s = []
+t11s = []
+
+su0s = []
+sd0s = []
+su1s = []
+sd1s = []
 
 def notch(w):
 
@@ -209,10 +199,19 @@ def notch(w):
 
 		pt = mp.Vector3(9.75,0)
 
-		sim.run(mp.at_beginning(mp.output_epsilon),
-				mp.at_time(100, get_refl_slice),
-				mp.at_time(100, get_tran_slice),
-				until_after_sources=mp.stop_when_fields_decayed(50,mp.Ez,pt,1e-3))
+		gif = True
+
+		if gif:
+			sim.run(mp.at_beginning(mp.output_epsilon),
+					mp.at_end(get_refl_slice),
+					mp.at_end(get_tran_slice), until=100)
+			sim.run(mp.at_every(wavelength / 20, mp.output_efield_z), until=wavelength)
+			sim.run(until_after_sources=mp.stop_when_fields_decayed(50,mp.Ez,pt,1e-3))
+		else:
+			sim.run(mp.at_beginning(mp.output_epsilon),
+					mp.at_time(100, get_refl_slice),
+					mp.at_time(100, get_tran_slice),
+					until_after_sources=mp.stop_when_fields_decayed(50,mp.Ez,pt,1e-3))
 
 		refl_val = refl_vals[0]
 		tran_val = tran_vals[0]
@@ -352,19 +351,12 @@ def notch(w):
 			su0 = sqrt(Su)
 			sd0 = sqrt(Sd)
 
-			real_r00s.append(np.real(r00)[0])
-			imag_r00s.append(np.imag(r00)[0])
-			real_r01s.append(np.real(r01)[0])
-			imag_r01s.append(np.imag(r01)[0])
-			real_t00s.append(np.real(t00)[0])
-			imag_t00s.append(np.imag(t00)[0])
-			real_t01s.append(np.real(t01)[0])
-			imag_t01s.append(np.imag(t01)[0])
-			real_su0s.append(np.real(su0))
-			imag_su0s.append(np.imag(su0))
-			real_sd0s.append(np.real(sd0))
-			imag_sd0s.append(np.imag(sd0))
-
+			r00s.append(r00[0])
+			r01s.append(r01[0])
+			t00s.append(t00[0])
+			t01s.append(t01[0])
+			su0s.append(su0)
+			sd0s.append(sd0)
 		else:
 			r10 = r_fund
 			r11 = r_first
@@ -375,18 +367,12 @@ def notch(w):
 			su1 = sqrt(Su)
 			sd1 = sqrt(Sd)
 
-			real_r10s.append(np.real(r10)[0])
-			imag_r10s.append(np.imag(r10)[0])
-			real_r11s.append(np.real(r11)[0])
-			imag_r11s.append(np.imag(r11)[0])
-			real_t10s.append(np.real(t10)[0])
-			imag_t10s.append(np.imag(t10)[0])
-			real_t11s.append(np.real(t11)[0])
-			imag_t11s.append(np.imag(t11)[0])
-			real_su1s.append(np.real(su1))
-			imag_su1s.append(np.imag(su1))
-			real_sd1s.append(np.real(sd1))
-			imag_sd1s.append(np.imag(sd1))
+			r10s.append(r10[0])
+			r11s.append(r11[0])
+			t10s.append(t10[0])
+			t11s.append(t11[0])
+			su1s.append(su1)
+			sd1s.append(sd1)
 
 		norm_Su = S * Su / (Su + Sd)
 
@@ -475,9 +461,47 @@ def notch(w):
 
 	#-------------------------------------------------------------
 
+notch(0)
+
+Tnorm = Ts[0]
+
+ws = []
+Rs = []
+Ts = []
+Ss = []
+NET_LIST = []
+Sus = []
+Sds = []
+NET_LOSS_LIST = []
+norm_Sus = []
+
+r00s = []
+r01s = []
+r10s = []
+r11s = []
+
+t00s = []
+t01s = []
+t10s = []
+t11s = []
+
+su0s = []
+sd0s = []
+su1s = []
+sd1s = []
+
+widths = range(4, 32, 2) / 100;
+
+p0 = Tnorm * np.exp(-n_eff_funds[0]  * 2j * pi * (Ls + widths/2) / wavelength)
+p1 = Tnorm * np.exp(-n_eff_firsts[0] * 2j * pi * (Ls + widths/2) / wavelength)
+
 for notch_index in range(4, 32, 2):
 	notch_width = notch_index / 100
 	notch(notch_width)
+
+def writeme(value, phasecompensation):
+	f2.write("%s \n" % np.real(np.divide(value, phasecompensation)))		# 7
+	f2.write("%s \n" % np.imag(np.divide(value, phasecompensation)))		# 8
 
 f2.write("%s \n" % (ws))			# 0
 f2.write("%s \n" % (Rs))			# 1
@@ -487,35 +511,47 @@ f2.write("%s \n" % (Sus))			# 4
 f2.write("%s \n" % (Sds))			# 5
 f2.write("%s \n" % (norm_Sus))		# 6
 
-f2.write("%s \n" % (real_r00s))		# 7
-f2.write("%s \n" % (imag_r00s))		# 8
-f2.write("%s \n" % (real_r01s))		# 9
-f2.write("%s \n" % (imag_r01s))		# 10
-f2.write("%s \n" % (real_t00s))		# 11
-f2.write("%s \n" % (imag_t00s))		# 12
-f2.write("%s \n" % (real_t01s))		# 13
-f2.write("%s \n" % (imag_t01s))		# 14
-f2.write("%s \n" % (real_su0s))		# 15
-f2.write("%s \n" % (imag_su0s))		# 16
-f2.write("%s \n" % (real_sd0s))		# 17
-f2.write("%s \n" % (imag_sd0s))		# 18
+# f2.write("%s \n" % (real_r00s))		# 7
+writeme(r00s, p0);
+writeme(r01s, p0);
+writeme(t00s, p0);
+writeme(t01s, p0);
+writeme(sd0s, p0);
+writeme(su0s, p0);
+# f2.write("%s \n" % np.real(np.divide(r00s, p0)))		# 7
+# f2.write("%s \n" % np.imag(np.divide(r00s, p0)))		# 8
+# f2.write("%s \n" % (real_r01s))		# 9
+# f2.write("%s \n" % (imag_r01s))		# 10
+# f2.write("%s \n" % (real_t00s))		# 11
+# f2.write("%s \n" % (imag_t00s))		# 12
+# f2.write("%s \n" % (real_t01s))		# 13
+# f2.write("%s \n" % (imag_t01s))		# 14
+# f2.write("%s \n" % (real_su0s))		# 15
+# f2.write("%s \n" % (imag_su0s))		# 16
+# f2.write("%s \n" % (real_sd0s))		# 17
+# f2.write("%s \n" % (imag_sd0s))		# 18
 
-f2.write("%s \n" % (real_r10s))		# 19
-f2.write("%s \n" % (imag_r10s))		# 20
-f2.write("%s \n" % (real_r11s))		# 21
-f2.write("%s \n" % (imag_r11s))		# 22
-f2.write("%s \n" % (real_t10s))		# 23
-f2.write("%s \n" % (imag_t10s))		# 24
-f2.write("%s \n" % (real_t11s))		# 25
-f2.write("%s \n" % (imag_t11s))		# 26
-f2.write("%s \n" % (real_su1s))		# 27
-f2.write("%s \n" % (imag_su1s))		# 28
-f2.write("%s \n" % (real_sd1s))		# 29
-f2.write("%s \n" % (imag_sd1s))		# 30
+writeme(r10s, p1);
+writeme(r11s, p1);
+writeme(t10s, p1);
+writeme(t11s, p1);
+writeme(sd1s, p1);
+writeme(su1s, p1);
+# f2.write("%s \n" % (real_r10s))		# 19
+# f2.write("%s \n" % (imag_r10s))		# 20
+# f2.write("%s \n" % (real_r11s))		# 21
+# f2.write("%s \n" % (imag_r11s))		# 22
+# f2.write("%s \n" % (real_t10s))		# 23
+# f2.write("%s \n" % (imag_t10s))		# 24
+# f2.write("%s \n" % (real_t11s))		# 25
+# f2.write("%s \n" % (imag_t11s))		# 26
+# f2.write("%s \n" % (real_su1s))		# 27
+# f2.write("%s \n" % (imag_su1s))		# 28
+# f2.write("%s \n" % (real_sd1s))		# 29
+# f2.write("%s \n" % (imag_sd1s))		# 30
 
 f2.write("%s \n" % (n_eff_funds))	# 31
 f2.write("%s \n" % (n_eff_firsts))	# 32
-
 
 f1.close()
 f2.close()
