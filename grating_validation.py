@@ -46,7 +46,7 @@ def validation(w):
     default_material = mp.Medium(epsilon = n_c ** 2)
 
     #old_grate_positions = [50., 740., 1470., 2170., 2850., 3390., 3780., 4170., 4560., 4950.]
-    old_grate_positions = [50.,   800.,  1570.,  1860.,  2580.,  3310.,  4060.,  4640.,  5370.,  5950.]
+    old_grate_positions = [50.,   810.,  1560.,  1920.,  2630.,  3370.,  4110.,  4690.,  5020.,  5600.]
 
     grate_positions = []
     for elt in old_grate_positions:
