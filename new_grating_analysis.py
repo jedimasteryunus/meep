@@ -15,7 +15,8 @@ f = open(output_file, 'w')
 
 # DATA #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
 def widthToIndex(width):
-    return int(width / 20 - 2)
+    # return int(width / 20 - 2)
+    return 0
 
 def importData(fname):
     f = open(fname, "r")
@@ -343,7 +344,7 @@ def main():
     # return
 
     N = 10
-    NA = .200 #Numerical Aperture
+    NA = .100 #Numerical Aperture
     W = wavelength / (pi * NA) #mode field diameter
     grating_length = 2000
 

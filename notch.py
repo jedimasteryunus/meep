@@ -38,6 +38,30 @@ sd0s = []
 su1s = []
 sd1s = []
 
+# a = 4 # length of cell
+# h = 0.2 # height of Waveguide
+# H = 10 * h #height of cell
+#
+# Lt = 	 0.6 * a/2	# Position of transmisison monitor
+# Lr1 = 	-0.9 * a/2	# Position of reflection monitor1
+# Lr2 = 	-0.6 * a/2	# Position of reflection monitor2
+# Ls = 	-0.75* a/2	# Position of source
+#
+# monitorheight = 3*h
+
+a = 10 # length of cell
+h = 0.2 # height of Waveguide
+H = 3 #height of cell
+
+Lt = 	a/2-1.50	# Position of transmisison monitor
+Lr1 = 	1.50-a/2	# Position of reflection monitor1
+Lr2 = 	2.00-a/2	# Position of reflection monitor2
+Ls = 	1.75-a/2	# Position of source
+
+monitorheight = 3*h
+
+wavelength = 0.6372
+
 def notch(w):
 
 	print("#----------------------------------------")
@@ -47,10 +71,7 @@ def notch(w):
 	# w is the width of the notch in the waveguide
 
 	#Waveguide Math
-	a = 4 # length of cell
-	h = 0.2 # height of Waveguide
 	e = 0.4 # etch fraction [0 -> 1]
-	H = 10 * h #height of cell
 
 	h2 = h * (1 - e) #height of the etched region
 	d = 1 #spacing of the waveguides
@@ -62,8 +83,6 @@ def notch(w):
 	bottomoffset = h / tan(angrad)
 	c = bottomoffset / 2
 	r = sqrt(bottomoffset ** 2 + h ** 2)
-
-	wavelength = 0.6372
 	fcen = 1 / wavelength
 	df = 0.05
 
@@ -80,9 +99,10 @@ def notch(w):
 	            material = mp.Medium(epsilon = n_e ** 2)),
 	            mp.Block(mp.Vector3(w, e * h),
 	            center = mp.Vector3(0, h2 / 2),
-	            material = mp.Medium())]
+	            material = default_material)]
 
-	pml_layers = [mp.PML(0.2)]
+	# pml_layers = [mp.PML(0.2)]
+	pml_layers = [mp.Absorber(thickness=1)]
 
 	resolution = 50
 
@@ -101,7 +121,7 @@ def notch(w):
 	su1 = None
 	sd1 = None
 
-	for mode in [0, 1]:
+	for mode in [0]:
 
 		if mode == 0:
 			eig_parity = mp.EVEN_Y	# Fundamental
@@ -109,7 +129,7 @@ def notch(w):
 			print("MODE TYPE: FUNDAMENTAL")
 
 		else:
-			eig_parity = mp.ODD_Y #First Order
+			eig_parity = mp.ODD_Y 	# First Order
 			print("-----------")
 			print("MODE TYPE: FIRST ORDER")
 
@@ -117,17 +137,18 @@ def notch(w):
 						mp.GaussianSource(	frequency = fcen,
 											fwidth = df),
 											size = mp.Vector3(0,H),
-											center = mp.Vector3(-0.75 * a / 2, 0),
-					eig_parity = eig_parity) ]
+											center = mp.Vector3(Ls, 0),
+											eig_parity = eig_parity) ]
 
 		sim = mp.Simulation(cell_size = cell,
 		                    boundary_layers = pml_layers,
 		                    geometry = geometry,
 		                    sources = sources,
-		                    resolution = resolution)
+		                    resolution = resolution,
+							force_complex_fields = True)
 		'''
 		#--------------------------------------------------
-		#FOR DISPLATYING THE GEOMETRY
+		#FOR DISPLAYING THE GEOMETRY
 
 		sim.run(until = 200)
 
@@ -158,48 +179,44 @@ def notch(w):
 		'''
 
 		#---------------------------------------------------------
-		#FOR GENERATING THE TRANSMITTANCE SPECTRUM
+		# FOR GENERATING THE TRANSMITTANCE SPECTRUM
 
 		nfreq = 20  # number of frequencies at which to compute flux
 
-		# reflected flux 1
-		refl_fr1 = mp.FluxRegion(center=mp.Vector3(-0.9 * a/2,0), size=mp.Vector3(0,3*h))
+		refl_fr1 = 	mp.FluxRegion(center=mp.Vector3(Lr1,0), 	size=mp.Vector3(0,monitorheight))	# Reflected flux 1
+		refl_fr2 = 	mp.FluxRegion(center=mp.Vector3(Lr2,0), 	size=mp.Vector3(0,monitorheight))	# Reflected flux 2
+		tran_fr = 	mp.FluxRegion(center=mp.Vector3(Lt,0), 		size=mp.Vector3(0,monitorheight))	# Transmitted flux
+		su_fr = 	mp.FluxRegion(center=mp.Vector3(0, monitorheight/2),	size=mp.Vector3(a,0))	# Flux loss above the waveguide
+		sd_fr = 	mp.FluxRegion(center=mp.Vector3(0,-monitorheight/2), 	size=mp.Vector3(a,0))	# Flux loss below the waveguide
+
 		refl1 = sim.add_flux(fcen, df, nfreq, refl_fr1)
-
-		#reflected flux 2
-		refl_fr2 = mp.FluxRegion(center=mp.Vector3(-0.6 * a/2,0), size=mp.Vector3(0,3*h))
 		refl2 = sim.add_flux(fcen, df, nfreq, refl_fr2)
-
-		#transmitted flux
-		tran_fr = mp.FluxRegion(center = mp.Vector3(0.6 * a/2,0), size = mp.Vector3(0,3*h))
-		tran = sim.add_flux(fcen, df, nfreq, tran_fr)
-
-		#flux loss above the waveguide
-		su_fr = mp.FluxRegion(center = mp.Vector3(0, 3*h), size = mp.Vector3(a,0))
-		su = sim.add_flux(fcen, df, nfreq, su_fr)
-
-		#flux loss below the waveguide
-		sd_fr = mp.FluxRegion(center = mp.Vector3(0, -3*h), size = mp.Vector3(a,0))
-		sd = sim.add_flux(fcen, df, nfreq, sd_fr)
+		tran = 	sim.add_flux(fcen, df, nfreq, tran_fr)
+		su = 	sim.add_flux(fcen, df, nfreq, su_fr)
+		sd = 	sim.add_flux(fcen, df, nfreq, sd_fr)
 
 		# ------------------------ CODE FOR SEPARATING FUND AND FIRST ORDER MODE STARTS HERE ------------------------
+
+		y_list = np.arange(-H/2, H/2, 1/resolution)
 
 		refl_vals = []
 		tran_vals = []
 
 		def get_refl_slice(sim):
-		    center = mp.Vector3(-0.9 * a/2,0)
-		    size = mp.Vector3(0,H)
-		    refl_vals.append(sim.get_array(center=center, size=size, component=mp.Ez, cmplx = True))
+			# print(sim.get_array(center=mp.Vector3(Lr1,0), size=mp.Vector3(0,H), component=mp.Ez, cmplx=True))
+			# refl_val = sim.get_array(center=mp.Vector3(Lr1,0), size=mp.Vector3(0,H), component=mp.Ez, cmplx=True)
+			refl_vals.append(sim.get_array(center=mp.Vector3(Lr1,0), size=mp.Vector3(0,H), component=mp.Ez, cmplx=True))
+
 
 		def get_tran_slice(sim):
-			center = mp.Vector3(0.6 * a/2,0)
-			size = mp.Vector3(0,H)
-			tran_vals.append(sim.get_array(center=center, size=size, component=mp.Ez, cmplx = True))
+			# print(sim.get_array(center=mp.Vector3(Lt, 0), size=mp.Vector3(0,H), component=mp.Ez, cmplx=True))
+			# tran_val = sim.get_array(center=mp.Vector3(Lt, 0), size=mp.Vector3(0,H), component=mp.Ez, cmplx=True)
+			tran_vals.append(sim.get_array(center=mp.Vector3(Lt, 0), size=mp.Vector3(0,H), component=mp.Ez, cmplx=True))
 
-		pt = mp.Vector3(9.75,0)
 
-		gif = False
+		pt = mp.Vector3(9.75,0)	# Hardcoded?
+
+		gif = True
 
 		if gif and w == 0.1:
 			sim.use_output_directory()
@@ -220,17 +237,19 @@ def notch(w):
 		#In the fsolve we need to somehow ensure that n_eff satisfies n_e <= n_eff <= n_c
 
 		def fund_func(n_eff):
-			if n_eff > n_c and n_eff < n_e:
+			if n_eff >= n_c and n_eff <= n_e:
 				return sqrt(n_eff**2 - n_c**2) - sqrt(n_e**2 - n_eff**2) * tan(pi * h / wavelength * sqrt(n_e**2 - n_eff**2))
 
 		def first_order_func(n_eff):
-			if n_eff > n_c and n_eff < n_e:
+			if n_eff >= n_c and n_eff <= n_e:
 				return sqrt(n_eff**2 - n_c**2) - sqrt(n_e**2 - n_eff**2) * tan(pi * h / wavelength * sqrt(n_e**2 - n_eff**2) - pi / 2)
 
 		initial_guess = (n_c + n_e) / 2
 
 		n_eff_fund = 	fsolve(fund_func, initial_guess)
-		n_eff_first = 	fsolve(first_order_func, initial_guess)
+		n_eff_first = 	fsolve(first_order_func, n_c)
+
+		print(n_eff_fund, n_eff_first)
 
 		if len(n_eff_funds) == 0:
 			n_eff_funds.append(n_eff_fund[0])
@@ -245,9 +264,8 @@ def notch(w):
 		ky1_first = 	np.absolute(2 * pi / wavelength * sqrt(n_eff_first**2 - n_c**2))
 
 		E_fund = 		lambda y : cos(ky0_fund  * y) if np.absolute(y) < h / 2 else cos(ky0_fund  * h/2) * np.exp(-ky1_fund  * (np.absolute(y) - h / 2))
-		E_first_order = lambda y : sin(ky0_first * y) if np.absolute(y) < h / 2 else sin(ky0_first * h/2) * np.exp(-ky1_first * (np.absolute(y) - h / 2))
-
-		y_list = np.arange(-H/2, H/2, 1/50)
+		E_first_order = lambda y : sin(ky0_first * y) if np.absolute(y) < h / 2 else sin(ky0_first * h/2) * np.exp(-ky1_first * (np.absolute(y) - h / 2)) * np.sign(y)
+		# y_list = np.arange(-H/2+.5/resolution, H/2-.5/resolution, 1/resolution)
 
 		#print("Y LIST: ", y_list)
 		#print("SIZE OF Y LIST: ", y_list.size)
@@ -260,18 +278,32 @@ def notch(w):
 			E_fund_vec[index] = E_fund(y)
 			E_first_order_vec[index] = E_first_order(y)
 
-		#print("E VECTOR: ", refl_val)
-		#print("E0 VECTOR: ", E_fund_vec)
+		# print("r VECTOR: ", 	refl_val)
+		# print("t VECTOR: ", 	tran_val)
+		# print("E0 VECTOR: ", 	E_fund_vec)
+		# print("E1 VECTOR: ", 	E_first_order_vec)
 
-		fund_refl_amp = 		np.dot(refl_val, E_fund_vec) 		/ np.dot(E_fund_vec, E_fund_vec)
-		first_order_refl_amp = 	np.dot(refl_val, E_first_order_vec) / np.dot(E_first_order_vec, E_first_order_vec)
-		fund_tran_amp = 		np.dot(tran_val, E_fund_vec) 		/ np.dot(E_fund_vec, E_fund_vec)
-		first_order_tran_amp = 	np.dot(tran_val, E_first_order_vec) / np.dot(E_first_order_vec, E_first_order_vec)
+		# plt.plot(y_list, refl_val*100,'bo-',label='reflectance')
+		# plt.plot(y_list, tran_val*1,'ro-',label='transmittance')
+		# plt.plot(y_list, E_fund_vec,'go-',label='E0')
+		# plt.plot(y_list, E_first_order_vec, 'co-', label='E1')
+		# # plt.axis([40.0, 300.0, 0.0, 100.0])
+		# plt.xlabel("y (um)")
+		# plt.ylabel("Field")
+		# plt.legend(loc="center right")
+		# plt.show()
+
+		fund_refl_amp = 		np.conj(np.dot(refl_val, E_fund_vec) 		/ np.dot(E_fund_vec, E_fund_vec))
+		first_order_refl_amp = 	np.conj(np.dot(refl_val, E_first_order_vec) / np.dot(E_first_order_vec, E_first_order_vec))
+		fund_tran_amp = 		np.conj(np.dot(tran_val, E_fund_vec) 		/ np.dot(E_fund_vec, E_fund_vec))
+		first_order_tran_amp = 	np.conj(np.dot(tran_val, E_first_order_vec) / np.dot(E_first_order_vec, E_first_order_vec))
 
 		fund_refl_power = 			np.abs(fund_tran_amp)			** 2
 		first_order_refl_power = 	np.abs(first_order_refl_amp) 	** 2
 		fund_tran_power = 			np.abs(fund_tran_amp) 			** 2
 		first_order_tran_power = 	np.abs(first_order_tran_amp) 	** 2
+
+		print(fund_refl_power, first_order_refl_power, fund_tran_power, first_order_tran_power)
 
 		fund_refl_ratio = 			fund_refl_power 		/ (fund_refl_power + first_order_refl_power)
 		first_order_refl_ratio = 	first_order_refl_power 	/ (fund_refl_power + first_order_refl_power)
@@ -285,16 +317,16 @@ def notch(w):
 
 		# ------------------------ CODE FOR SEPARATING FUND AND FIRST ORDER MODE ENDS HERE ------------------------
 
-		# save incident power for reflection planes
-		straight_refl1_flux = mp.get_fluxes(refl1)
-		straight_refl2_flux = mp.get_fluxes(refl2)
-
-		# save incident power for transmission plane
-		straight_tran_flux = mp.get_fluxes(tran)
-
-		# save incident power for loss planes
-		straight_su_flux = mp.get_fluxes(su)
-		straight_sd_flux = mp.get_fluxes(sd)
+		# # save incident power for reflection planes
+		# straight_refl1_flux = mp.get_fluxes(refl1)
+		# straight_refl2_flux = mp.get_fluxes(refl2)
+		#
+		# # save incident power for transmission plane
+		# straight_tran_flux = mp.get_fluxes(tran)
+		#
+		# # save incident power for loss planes
+		# straight_su_flux = mp.get_fluxes(su)
+		# straight_sd_flux = mp.get_fluxes(sd)
 
 		wl = [] #list of wavelengths
 
@@ -321,26 +353,19 @@ def notch(w):
 		Su = 	 su_flux[index] 						/ (refl2_flux[index] - refl1_flux[index])
 		Sd = 	-sd_flux[index] 						/ (refl2_flux[index] - refl1_flux[index])
 
+		print(R, T, S, Su, Sd)
+
 		LT = -w/2 + 0.9 * a/2	# Distance from the end of the notch to the transmission monitor
 		LR = 0.6 * a/2 - w/2	# Distance from the beginning of the notch to the reflection monitor
 
 		r = sqrt(R)
-
-		r_fund = 	(r  * fund_refl_ratio) * (fund_refl_amp / np.abs(fund_refl_amp)) * (np.exp(2j*pi * LR * n_eff_fund  / wavelength))
-		# The amplitude ... times the phase ... accounting for the distance to the detector.
-		#print("Re(r_fund): ", np.real(r_fund))
-		#print("Im(r_fund): ", np.imag(r_fund))
-
-		r_first = 	(r * first_order_refl_ratio) * (first_order_refl_amp / np.abs(first_order_refl_amp)) * (np.exp(2j*pi * LR * n_eff_first / wavelength))
-		# The amplitude ... times the phase ... accounting for the distance to the detector.
-
 		t = sqrt(T)
 
-		t_fund =    (t * fund_tran_ratio) * (fund_tran_amp / np.abs(fund_tran_amp))	* (np.exp(-2j*pi * LT * n_eff_fund  / wavelength))
 		# The amplitude ... times the phase ... accounting for the distance to the detector.
-
-		t_first =   (t * first_order_tran_ratio) * (first_order_tran_amp / np.abs(first_order_tran_amp)) * (np.exp(-2j*pi * LT * n_eff_first  / wavelength))
-		#The amplitude ... times the phase ... accounting for the distance to the detector.
+		r_fund = 	(r  * fund_refl_ratio) 			* (fund_refl_amp / np.abs(fund_refl_amp)) 				* (np.exp( 2j*pi * LR * n_eff_fund  / wavelength))
+		r_first = 	(r * first_order_refl_ratio) 	* (first_order_refl_amp / np.abs(first_order_refl_amp)) * (np.exp( 2j*pi * LR * n_eff_first / wavelength))
+		t_fund =    (t * fund_tran_ratio) 			* (fund_tran_amp / np.abs(fund_tran_amp))				* (np.exp(-2j*pi * LT * n_eff_fund  / wavelength))
+		t_first =   (t * first_order_tran_ratio) 	* (first_order_tran_amp / np.abs(first_order_tran_amp)) * (np.exp(-2j*pi * LT * n_eff_first / wavelength))
 
 		if mode == 0:
 			r00 = r_fund
@@ -349,8 +374,8 @@ def notch(w):
 			t00 = t_fund
 			t01 = t_first
 
-			su0 = sqrt(Su)
-			sd0 = sqrt(Sd)
+			su0 = sqrt(np.abs(Su))
+			sd0 = sqrt(np.abs(Su))
 
 			r00s.append(r00[0])
 			r01s.append(r01[0])
@@ -358,6 +383,13 @@ def notch(w):
 			t01s.append(t01[0])
 			su0s.append(su0)
 			sd0s.append(sd0)
+
+			r10s.append(0)
+			r11s.append(0)
+			t10s.append(0)
+			t11s.append(1)
+			su1s.append(0)
+			sd1s.append(0)
 		else:
 			r10 = r_fund
 			r11 = r_first
@@ -365,8 +397,8 @@ def notch(w):
 			t10 = t_fund
 			t11 = t_first
 
-			su1 = sqrt(Su)
-			sd1 = sqrt(Sd)
+			su1 = sqrt(np.abs(Su))
+			sd1 = sqrt(np.abs(Su))
 
 			r10s.append(r10[0])
 			r11s.append(r11[0])
@@ -462,14 +494,23 @@ def notch(w):
 
 	#-------------------------------------------------------------
 
+# notch(0)
+# notch(.1)
+#
+# quit()
+
 notch(0)
 
 old_widths = range(4, 32, 2)
 
-widths = [elt/100 for elt in old_widths]
+# widths = [elt/100 for elt in old_widths]
+widths = [.1]
 
-p0 = t00s[0] * np.exp(n_eff_funds[0]  * 2j * pi * (Ls + widths/2) / wavelength)
-p1 = t11s[0] * np.exp(n_eff_firsts[0] * 2j * pi * (Ls + widths/2) / wavelength)
+# p0 = t00s[0] * np.exp(n_eff_funds[0]  * 2j * pi * (Lt + widths/2) / wavelength)
+# p1 = t11s[0] * np.exp(n_eff_firsts[0] * 2j * pi * (Lt + widths/2) / wavelength)
+
+p0 = [ t00s[0] * np.exp(n_eff_funds[0]  * 2j * pi * (Lt + width/2) / wavelength) for width in widths]
+p1 = [ t11s[0] * np.exp(n_eff_firsts[0] * 2j * pi * (Lt + width/2) / wavelength) for width in widths]
 
 ws = []
 Rs = []
@@ -496,9 +537,10 @@ sd0s = []
 su1s = []
 sd1s = []
 
-for notch_index in range(4, 12, 2):
-	notch_width = notch_index / 100
-	notch(notch_width)
+# notch(.1)
+
+for width in widths:
+	notch(width)
 
 def writeme(value, phasecompensation):
 	f2.write("%s \n" % np.real(np.divide(value, phasecompensation)))		# 7
@@ -512,25 +554,12 @@ f2.write("%s \n" % (Sus))			# 4
 f2.write("%s \n" % (Sds))			# 5
 f2.write("%s \n" % (norm_Sus))		# 6
 
-# f2.write("%s \n" % (real_r00s))		# 7
 writeme(r00s, p0);
 writeme(r01s, p0);
 writeme(t00s, p0);
 writeme(t01s, p0);
 writeme(sd0s, p0);
 writeme(su0s, p0);
-# f2.write("%s \n" % np.real(np.divide(r00s, p0)))		# 7
-# f2.write("%s \n" % np.imag(np.divide(r00s, p0)))		# 8
-# f2.write("%s \n" % (real_r01s))		# 9
-# f2.write("%s \n" % (imag_r01s))		# 10
-# f2.write("%s \n" % (real_t00s))		# 11
-# f2.write("%s \n" % (imag_t00s))		# 12
-# f2.write("%s \n" % (real_t01s))		# 13
-# f2.write("%s \n" % (imag_t01s))		# 14
-# f2.write("%s \n" % (real_su0s))		# 15
-# f2.write("%s \n" % (imag_su0s))		# 16
-# f2.write("%s \n" % (real_sd0s))		# 17
-# f2.write("%s \n" % (imag_sd0s))		# 18
 
 writeme(r10s, p1);
 writeme(r11s, p1);
@@ -538,18 +567,6 @@ writeme(t10s, p1);
 writeme(t11s, p1);
 writeme(sd1s, p1);
 writeme(su1s, p1);
-# f2.write("%s \n" % (real_r10s))		# 19
-# f2.write("%s \n" % (imag_r10s))		# 20
-# f2.write("%s \n" % (real_r11s))		# 21
-# f2.write("%s \n" % (imag_r11s))		# 22
-# f2.write("%s \n" % (real_t10s))		# 23
-# f2.write("%s \n" % (imag_t10s))		# 24
-# f2.write("%s \n" % (real_t11s))		# 25
-# f2.write("%s \n" % (imag_t11s))		# 26
-# f2.write("%s \n" % (real_su1s))		# 27
-# f2.write("%s \n" % (imag_su1s))		# 28
-# f2.write("%s \n" % (real_sd1s))		# 29
-# f2.write("%s \n" % (imag_sd1s))		# 30
 
 f2.write("%s \n" % (n_eff_funds))	# 31
 f2.write("%s \n" % (n_eff_firsts))	# 32

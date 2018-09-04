@@ -33,7 +33,8 @@ def validation(w):
     c = bottomoffset / 2
     r = sqrt(bottomoffset ** 2 + h ** 2)
 
-    wavelength = 0.6372
+    # wavelength = 0.6372
+    wavelength = 0.4203
     fcen = 1 / wavelength
     df = 0.05
 
@@ -46,7 +47,9 @@ def validation(w):
     default_material = mp.Medium(epsilon = n_c ** 2)
 
     #old_grate_positions = [50., 740., 1470., 2170., 2850., 3390., 3780., 4170., 4560., 4950.]
-    old_grate_positions = [50.,   810.,  1560.,  1920.,  2630.,  3370.,  4110.,  4690.,  5020.,  5600.]
+    # old_grate_positions = [50.,   810.,  1560.,  1920.,  2630.,  3370.,  4110.,  4690.,  5020.,  5600.]
+    # old_grate_positions = range(150,12*300,300)
+    old_grate_positions = range(150,12*300,350)
 
     grate_positions = []
     for elt in old_grate_positions:
@@ -112,7 +115,7 @@ def validation(w):
     sim.run(mp.at_beginning(mp.output_epsilon),
             mp.to_appended("ez", mp.at_every(0.6, mp.output_efield_z)),
             until = 200)
-    #sim.run(mp.at_every(0.6 , mp.output_png(mp.Ez, "-Zc dkbluered")), until=200)
+    sim.run(mp.at_every(wavelength/20 , mp.output_png(mp.Ez, "-Zc dkbluered")), until=wavelength)
 
     #---------------------------------------------------------
     '''
