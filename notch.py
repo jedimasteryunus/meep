@@ -568,6 +568,14 @@ writeme(t11s, p1);
 writeme(sd1s, p1);
 writeme(su1s, p1);
 
+'''
+for i in range(len(Rs)): 
+	print("Reflected Power Without Mode Separation: ", Rs[i])
+	print("Reflected Power With Mode Separation: ", r00s[i]**2 + r01s[i]**2)
+	print("Transmitted Power Without Mode Separation: ", Ts[i])
+	print("Transmitted Power With Mode Separation: ", t00s[i]**2 + t01s[i]**2)
+'''
+
 f2.write("%s \n" % (n_eff_funds))	# 31
 f2.write("%s \n" % (n_eff_firsts))	# 32
 
