@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1535175330 "grating.tex" "grating.pdf" "grating" 1535175331
+["pdflatex"] 1535175330 "grating.tex" "grating.pdf" "grating" 1536351077
   "/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1480098666 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/local/texlive/2017/texmf-dist/fonts/map/fontname/texfonts.map" 1480098670 3287 e6b82fe08f5336d4d5ebc73fb1152e87 ""
   "/usr/local/texlive/2017/texmf-dist/fonts/tfm/adobe/symbol/psyr.tfm" 1480098689 1408 5937f58aa508ea2cea4901c07d10f5fe ""
@@ -234,7 +234,7 @@
   "grating.out" 1535175331 233 af4456e2a4811074a02cc0abf23ddf4a ""
   "grating.tex" 1535175326 13485 e2a822acf137cb94f61a1bafc41f17b1 ""
   (generated)
-  "grating.out"
-  "grating.aux"
   "grating.log"
+  "grating.out"
   "grating.pdf"
+  "grating.aux"

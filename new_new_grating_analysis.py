@@ -6,8 +6,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cProfile
 
-wavelength = 637
-# wavelength = 420
+# wavelength = 637
+wavelength = 420
 # neff = 2.2012 # refractive index inside waveguide (at wavelength 0.6372)
 
 debug = 0
@@ -19,7 +19,7 @@ f = open(output_file, 'w')
 def widthToIndex(width):
     # return int(width / 20 - 2)
     # return 1
-    return 3
+    return 5
 
 def importData(fname):
     f = open(fname, "r")
@@ -30,8 +30,8 @@ def importData(fname):
     f.close()
     return data
 
-fname = "notch2.txt"
-# fname = "AlN420 v2/notch-AlN420.txt"
+# fname = "notch2.txt"
+fname = "AlN420 v2/notch-AlN420.txt"
 data = importData(fname)
 
 
@@ -80,15 +80,15 @@ def reflection(width):
 def scatter(width):
     index = widthToIndex(width)
 
-    real_sd0 = data[15][index]
-    imag_sd0 = data[16][index]
-    real_sd1 = data[27][index]
-    imag_sd1 = data[28][index]
+    real_su0 = data[15][index]
+    imag_su0 = data[16][index]
+    real_su1 = data[27][index]
+    imag_su1 = data[28][index]
 
-    real_su0 = data[17][index]
-    imag_su0 = data[18][index]
-    real_su1 = data[29][index]
-    imag_su1 = data[30][index]
+    real_sd0 = data[17][index]
+    imag_sd0 = data[18][index]
+    real_sd1 = data[29][index]
+    imag_sd1 = data[30][index]
 
     su0 = complex(real_su0, imag_su0)
     su1 = complex(real_su1, imag_su1)
@@ -103,14 +103,18 @@ def scatter_matrix(width):
     r = reflection(width)
 
     t00 = t["t00"]
-    t01 = t["t01"]
-    t10 = t["t10"]
-    t11 = t["t11"]
+    # t01 = t["t01"]
+    # t10 = t["t10"]
+    # t11 = t["t11"]
 
     r00 = r["r00"]
-    r01 = r["r01"]
-    r10 = r["r10"]
-    r11 = r["r11"]
+    # r01 = r["r01"]
+    # r10 = r["r10"]
+    # r11 = r["r11"]
+
+    return np.matrix([  [ 1/t00,     np.conj(r00)/t00             ],
+                        [ r00/t00,   (r00*np.conj(r00) + t00*np.conj(t00))/t00   ]  ],
+                        dtype=complex)
 
     # t01 = 0;
     # t10 = 0;
@@ -120,29 +124,29 @@ def scatter_matrix(width):
     # r10 = 0;
     # r11 = 0;
 
-    denom = t00 * t11 - t01 * t10
-
-    return np.matrix([  [t11 / denom,
-                        -(t10 * np.conj(r01) - t11 * np.conj(r00)) / denom,
-                        -t10 / denom,
-                        -(t10 * np.conj(r11) - t11 * np.conj(r10)) / denom],
-
-                        [(t11 * r00 - t01 * r10) / denom,
-                        np.conj(t00) - r00 * (t10 * np.conj(r01) - t11 * np.conj(r00)) / denom - r10 * (t01 * np.conj(r00) - t00 * np.conj(r01)) / denom,
-                        (t00 * r01 - t10 * r00) / denom,
-                        np.conj(t10) - r00 * (t10 * np.conj(r11) - t11 * np.conj(r10)) / denom - r10 * (t01 * np.conj(r10) - t00 * np.conj(r11)) / denom],
-
-                        [-t01 / denom,
-                        -(t01 * np.conj(r00) - t00 * np.conj(r01)) / denom,
-                        t00 / denom,
-                        -(t01 * np.conj(r10) - t00 * np.conj(r11)) / denom],
-
-                        [(t11 * r01 - t01 * r11) / denom,
-                        np.conj(t01) - r01 * (t10 * np.conj(r01) - t11 * np.conj(r00)) / denom - r11 * (t01 * np.conj(r00) - t00 * np.conj(r01)) / denom,
-                        (t00 * r11 - t10 * r01) / denom,
-                        np.conj(t11) - r01 * (t10 * np.conj(r11) - t11 * np.conj(r10)) / denom - r11 * (t01 * np.conj(r10) - t00 * np.conj(r11)) / denom] ],
-
-                        dtype=complex)
+    # denom = t00 * t11 - t01 * t10
+    #
+    # return np.matrix([  [t11 / denom,
+    #                     -(t10 * np.conj(r01) - t11 * np.conj(r00)) / denom,
+    #                     -t10 / denom,
+    #                     -(t10 * np.conj(r11) - t11 * np.conj(r10)) / denom],
+    #
+    #                     [(t11 * r00 - t01 * r10) / denom,
+    #                     np.conj(t00) - r00 * (t10 * np.conj(r01) - t11 * np.conj(r00)) / denom - r10 * (t01 * np.conj(r00) - t00 * np.conj(r01)) / denom,
+    #                     (t00 * r01 - t10 * r00) / denom,
+    #                     np.conj(t10) - r00 * (t10 * np.conj(r11) - t11 * np.conj(r10)) / denom - r10 * (t01 * np.conj(r10) - t00 * np.conj(r11)) / denom],
+    #
+    #                     [-t01 / denom,
+    #                     -(t01 * np.conj(r00) - t00 * np.conj(r01)) / denom,
+    #                     t00 / denom,
+    #                     -(t01 * np.conj(r10) - t00 * np.conj(r11)) / denom],
+    #
+    #                     [(t11 * r01 - t01 * r11) / denom,
+    #                     np.conj(t01) - r01 * (t10 * np.conj(r01) - t11 * np.conj(r00)) / denom - r11 * (t01 * np.conj(r00) - t00 * np.conj(r01)) / denom,
+    #                     (t00 * r11 - t10 * r01) / denom,
+    #                     np.conj(t11) - r01 * (t10 * np.conj(r11) - t11 * np.conj(r10)) / denom - r11 * (t01 * np.conj(r10) - t00 * np.conj(r11)) / denom] ],
+    #
+    #                     dtype=complex)
 
     # return np.matrix([  [t11 / denom,
     #                     (t10 * np.conj(r01) - t11 * np.conj(r00)) / denom,
@@ -167,13 +171,19 @@ def scatter_matrix(width):
     #                     dtype=complex)
 
 def propagate_matrix(length):
-    n_eff_fund =  data[31][0]
-    n_eff_first = data[32][0]
-    return np.matrix([  [np.exp(          pi * 2j * n_eff_fund  * length / wavelength), 0, 0, 0],
-                        [0, np.exp(      -pi * 2j * n_eff_fund  * length / wavelength),    0, 0],
-                        [0, 0, np.exp(    pi * 2j * n_eff_first * length / wavelength),       0],
-                        [0, 0, 0, np.exp(-pi * 2j * n_eff_first * length / wavelength)         ]  ],
+    n_eff =  data[31][0]
+    # n_eff_first = data[32][0]
+
+
+    return np.matrix([  [ np.exp(pi*2j*n_eff*length/wavelength),              0                     ],
+                        [ 0,                                 np.exp(-pi*2j*n_eff*length/wavelength)   ]  ],
                         dtype=complex)
+
+    # return np.matrix([  [np.exp(          pi * 2j * n_eff_fund  * length / wavelength), 0, 0, 0],
+    #                     [0, np.exp(      -pi * 2j * n_eff_fund  * length / wavelength),    0, 0],
+    #                     [0, 0, np.exp(    pi * 2j * n_eff_first * length / wavelength),       0],
+    #                     [0, 0, 0, np.exp(-pi * 2j * n_eff_first * length / wavelength)         ]  ],
+    #                     dtype=complex)
 
 # AMPLITUDES #### #### #### #### #### #### #### #### #### ####
 def getAmplitudes(widths, lengths):
@@ -181,7 +191,7 @@ def getAmplitudes(widths, lengths):
 
     # print(N)
 
-    a_fund = np.zeros((4, 2*N), dtype=complex)                              # N times [[ a  b  ]; [ b' a' ]].
+    a_fund = np.zeros((2, 2*N), dtype=complex)                              # N times [[ a  b  ]; [ b' a' ]].
 
     a_fund[0, 2*N-1] = 1                                     # Set the initial vector (b = 1, a' = 0).
     a_fund[:, 2*N-2] = a_fund[:, 2*N-1] * scatter_matrix(widths[N-1])   # And find a, b' for the first grate.
@@ -192,22 +202,22 @@ def getAmplitudes(widths, lengths):
         a_fund[:, 2*ii+1] = propagate_matrix(lengths[ii]).dot(a_fund[:, 2*ii+2])
         a_fund[:, 2*ii] =   scatter_matrix(widths[ii])   .dot(a_fund[:, 2*ii+1])
 
-    a_first = np.zeros((4, 2*N), dtype=complex)                              # N times [[ a  b  ]; [ b' a' ]].
-
-    a_first[2, 2*N-1] = 1                                     # Set the initial vector (b = 1, a' = 0).
-    a_first[:, 2*N-2] = a_first[:, 2*N-1] * scatter_matrix(widths[N-1])   # And find a, b' for the first grate.
-
-    for ii in range(N-2, -1, -1):                               # Now do this for the rest of the grates.
-        # a_first[:, 2*ii+1] = a_first[:, 2*ii+2] * propagate_matrix(lengths[ii])
-        # a_first[:, 2*ii] =   a_first[:, 2*ii+1]  * scatter_matrix(widths[ii])
-        a_first[:, 2*ii+1] = propagate_matrix(lengths[ii]).dot(a_first[:, 2*ii+2])
-        a_first[:, 2*ii] =   scatter_matrix(widths[ii])   .dot(a_first[:, 2*ii+1])
-
-    a = a_fund - (a_fund[2,0]/a_first[2,0]) * a_first
+    # a_first = np.zeros((4, 2*N), dtype=complex)                              # N times [[ a  b  ]; [ b' a' ]].
+    #
+    # a_first[2, 2*N-1] = 1                                     # Set the initial vector (b = 1, a' = 0).
+    # a_first[:, 2*N-2] = a_first[:, 2*N-1] * scatter_matrix(widths[N-1])   # And find a, b' for the first grate.
+    #
+    # for ii in range(N-2, -1, -1):                               # Now do this for the rest of the grates.
+    #     # a_first[:, 2*ii+1] = a_first[:, 2*ii+2] * propagate_matrix(lengths[ii])
+    #     # a_first[:, 2*ii] =   a_first[:, 2*ii+1]  * scatter_matrix(widths[ii])
+    #     a_first[:, 2*ii+1] = propagate_matrix(lengths[ii]).dot(a_first[:, 2*ii+2])
+    #     a_first[:, 2*ii] =   scatter_matrix(widths[ii])   .dot(a_first[:, 2*ii+1])
+    #
+    # a = a_fund - (a_fund[2,0]/a_first[2,0]) * a_first
 
     # print(np.abs(a_fund[2,0]/a_first[2,0]))
 
-    return a
+    return a_fund
 
 
 # OVERLAP #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
@@ -242,8 +252,8 @@ def getOverlap(widths, lengths, amplitudes, W, Z, num_notches, outputScatter):
 
     for i in range(0, num_notches):
         scatter_dict = scatter(widths[i])
-        s[i+other_notches] =  scatter_dict["su0"]*(amplitudes[0,2*i] + amplitudes[1,2*i+1]) + scatter_dict["su1"]*(amplitudes[2,2*i] + amplitudes[3,2*i+1])
-        sd[i+other_notches] = scatter_dict["sd0"]*(amplitudes[0,2*i] + amplitudes[1,2*i+1]) + scatter_dict["sd1"]*(amplitudes[2,2*i] + amplitudes[3,2*i+1])
+        s[i+other_notches] =  scatter_dict["su0"]*(amplitudes[0,2*i] + amplitudes[1,2*i+1]) #+ scatter_dict["su1"]*(amplitudes[2,2*i] + amplitudes[3,2*i+1])
+        sd[i+other_notches] = scatter_dict["sd0"]*(amplitudes[0,2*i] + amplitudes[1,2*i+1]) #+ scatter_dict["sd1"]*(amplitudes[2,2*i] + amplitudes[3,2*i+1])
         x[i+other_notches] = currentx + widths[i]/2;
 
         if i == 0 or i == num_notches-1:
@@ -283,8 +293,10 @@ def getOverlap(widths, lengths, amplitudes, W, Z, num_notches, outputScatter):
 
     final_reflection =          np.abs(amplitudes[1,0]                  /amplitudes[0,0])**2
     final_transmission =        np.abs(amplitudes[0,2*num_notches-1]    /amplitudes[0,0])**2
-    final_reflection_first =    np.abs(amplitudes[3,0]                  /amplitudes[0,0])**2
-    final_transmission_first =  np.abs(amplitudes[2,2*num_notches-1]    /amplitudes[0,0])**2
+    # final_reflection_first =    np.abs(amplitudes[3,0]                  /amplitudes[0,0])**2
+    # final_transmission_first =  np.abs(amplitudes[2,2*num_notches-1]    /amplitudes[0,0])**2
+    final_reflection_first =    0
+    final_transmission_first =  0
 
     final_gamma = 0
     final_X = 0;
@@ -294,7 +306,7 @@ def getOverlap(widths, lengths, amplitudes, W, Z, num_notches, outputScatter):
     Wround = int(min(np.max(x), W)/200)*100;
     # print(range(Wround, int(np.max(x)) + sensitivity-Wround, sensitivity));
 
-    gammav2 = True
+    gammav2 = False
 
     for X in range(Wround, int(np.max(x)) + sensitivity-Wround, sensitivity):
         gamma = 0
@@ -351,6 +363,7 @@ def getOverlap(widths, lengths, amplitudes, W, Z, num_notches, outputScatter):
         plt.plot(x, 1000*(np.abs(s)**2)/sqrt(dx[i]),'co-',label='Scatter')
         plt.plot(x, 1*(np.angle(s) + pi),'ro-',label='Phase')
         plt.plot(x, 10*(np.abs(E(x - final_X, W, Z))**2),'go-',label='Match')
+        plt.plot(x, 1*(np.angle(E(x - final_X, W, Z)) + pi),'gko-',label='Match')
         plt.plot(x, dx/100,'yo-',label='Match')
         plt.draw()
         plt.pause(.001)
@@ -371,7 +384,7 @@ def neighbor(lengths):
     new_lengths = lengths.copy()
 
     lowerbound = 100
-    upperbound = 500
+    upperbound = 1000
     # upperbound = 900
 
     # rand_val = randint(5, 25) * sensitivity
@@ -512,14 +525,14 @@ def main():
 
     # widths =    90 * np.ones(N)
     widths =    50 * np.ones(N)
-    lengths =   300 * np.ones(N)
+    # lengths =   300 * np.ones(N)
     # lengths = [490.0, 315.0, 315.0, 340.0, 305.0, 460.0, 385.0, 290.0, 335.0, 480.0, 290.0, 350.0, 475.0, 480.0, 170.0, 305.0, 330.0, 155.0, 325.0, 300.0]
 
     # lengths = np.array([590., 630., 600., 580., 290., 290., 290., 290., 670., 300.]);
     # lengths = [395, 395, 395, 395, 395, 395, 395, 395, 395, 395, 300, 500, 455, 325, 475, 335, 470, 325, 280, 300]
     # lengths = [250, 220, 255, 210, 255, 190, 270, 200, 275, 185, 275, 175, 285, 175, 280, 205, 270, 190, 280, 300]
     # lengths = 100 * np.ones(N)
-    # lengths = [600, 500, 400, 400, 300, 300, 200, 200, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100]
+    lengths = [600, 500, 400, 400, 300, 300, 200, 200, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100]
 
     # lengths = [205, 230, 360, 390, 385, 375, 285, 150, 125, 155, 310, 255, 130, 170, 345, 245, 395, 320, 145, 100]
 

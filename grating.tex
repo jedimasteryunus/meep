@@ -202,9 +202,10 @@ We can approximate the overlap between our arrayed scatterers and the ideal gaus
 \gamma
 %&= \left. \left| \sum_{i=1}^N \frac{s_i}{d_i}\int_{(x_{i-1}+x_i)/2}^{(x_i+x_{i+1})/2}E(x-X)\,dx \right|^2 \right/ W\pi
 %&= \left. \left| \left[ \sum_{i=1}^N \frac{s_i}{d_i}E(x_i-X)d_i \right] \right/ \left[ \sum_{i=1}^N E(x_i-X)E(x_i-X)d_i \right] \right|^2. \\
-&= \int s(x)E(x-X)\,dx
-\sim \left| \sum_{i=1}^N \frac{s_i}{l_i}E(x_i-X)l_i \right|^2
-= \left| \sum_{i=1}^N s_iE(x_i-X) \right|^2
+&= \left| \int s(x)E(x-X)\,dx\right|^2
+%\sim \left| \sum_{i=1}^N \frac{s_i}{\sqrt{l_i}}\frac{E(x_i-X)}{\sqrt{l_i}}l_i \right|^2
+\sim \left| \sum_{i=1}^N \frac{s_i}{\sqrt{l_i}}\left(E(x_i-X)\sqrt{l_i}\right)l_i \right|^2
+= \left| \sum_{i=1}^N s_iE(x_i-X){l_i} \right|^2
 %&= \left. \left| \left[ \sum_{i=1}^N s_iE(x_i-X) \right] \right/ \left[ \sum_{i=1}^N E(x_i-X)^2d_i \right] \right|^2.
 \end{align*}
 where $X$ is the `center' of the scattered power which maximizes $\gamma$.

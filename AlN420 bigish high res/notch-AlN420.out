@@ -1,0 +1,27 @@
+--------------------------------------------------- 
+Notch Width: 100.0 nanometers 
+Reflection Percentage: 1.423959453678971
+Transmission Percentage: 87.59148300421843
+Total Loss Percentage: 10.984557542102602
+Percentage of Light Accounted For: 100.0
+Upper Loss Percentage: 2.0800959575568885
+Lower Loss Percentage: 10.509055970231982
+Percentage of Total Loss Accounted For: 100.0
+Normalized Upper Loss Percentage: 1.8149700527835144
+
+ 
+FUNDAMENTAL MODE 
+n_eff:   2.0696110792430935
+Re(r00): -0.024655233083549617
+Im(r00): -0.031229868760860546
+Re(r01): 0.0
+Im(r01): -0.0
+Re(t00): 0.4213366345657325
+Im(t00): 0.6567764907066915
+Re(t01): 0.0
+Im(t01): -0.0
+Re(su0): 0.1347208244030415
+Im(su0): 0.0
+Re(sd0): 0.30281326736652553
+Im(sd0): 0.0
+
