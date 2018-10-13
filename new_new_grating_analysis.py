@@ -12,14 +12,14 @@ wavelength = 420
 
 debug = 0
 
-output_file = 'new_grating_analysis.out'
+output_file = 'new_new_grating_analysis.out'
 f = open(output_file, 'w')
 
 # DATA #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
 def widthToIndex(width):
     # return int(width / 20 - 2)
     # return 1
-    return 5
+    return 2
 
 def importData(fname):
     f = open(fname, "r")
@@ -31,7 +31,7 @@ def importData(fname):
     return data
 
 # fname = "notch2.txt"
-fname = "AlN420 v2/notch-AlN420.txt"
+fname = "AlN-a=16/notch-AlN420-test.txt"
 data = importData(fname)
 
 
@@ -363,7 +363,7 @@ def getOverlap(widths, lengths, amplitudes, W, Z, num_notches, outputScatter):
         plt.plot(x, 1000*(np.abs(s)**2)/sqrt(dx[i]),'co-',label='Scatter')
         plt.plot(x, 1*(np.angle(s) + pi),'ro-',label='Phase')
         plt.plot(x, 10*(np.abs(E(x - final_X, W, Z))**2),'go-',label='Match')
-        plt.plot(x, 1*(np.angle(E(x - final_X, W, Z)) + pi),'gko-',label='Match')
+        plt.plot(x, 1*(np.angle(E(x - final_X, W, Z)) + pi),'ko-',label='Match')
         plt.plot(x, dx/100,'yo-',label='Match')
         plt.draw()
         plt.pause(.001)
@@ -517,7 +517,7 @@ def main():
     plt.ion()
     plt.show()
 
-    N = 20
+    N = 10
     NA = .150 #Numerical Aperture
     W = wavelength / (pi * NA) #mode field diameter
     Z = 20e3
@@ -532,7 +532,8 @@ def main():
     # lengths = [395, 395, 395, 395, 395, 395, 395, 395, 395, 395, 300, 500, 455, 325, 475, 335, 470, 325, 280, 300]
     # lengths = [250, 220, 255, 210, 255, 190, 270, 200, 275, 185, 275, 175, 285, 175, 280, 205, 270, 190, 280, 300]
     # lengths = 100 * np.ones(N)
-    lengths = [600, 500, 400, 400, 300, 300, 200, 200, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100]
+    # lengths = [600, 500, 400, 400, 300, 300, 200, 200, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100]
+    lengths = [600, 500, 400, 400, 300, 300, 200, 200, 100, 100]
 
     # lengths = [205, 230, 360, 390, 385, 375, 285, 150, 125, 155, 310, 255, 130, 170, 345, 245, 395, 320, 145, 100]
 

@@ -36,8 +36,8 @@ sd0s = []
 su1s = []
 sd1s = []
 
-a = 8 						# length of cell
-h = 0.4 					# height of Waveguide
+a = 16 						# length of cell
+h = 0.2 					# height of Waveguide
 dpml = .5;
 # monitorheight = .8
 monitorheight = .6
@@ -551,7 +551,6 @@ def notch(w):
 		# print("t VECTOR: ", 	tran_val)
 		# print("E0 VECTOR: ", 	E_fund_vec)
 		# print("E1 VECTOR: ", 	E_first_order_vec)
-		#
 
 		# fund_refl_amp_2 = 			np.conj(np.dot(refl_val, E_fund_vec) 		/ np.dot(E_fund_vec, E_fund_vec))					# Conjugate becasue MEEP uses physics exp(kz-wt) rather than engineering exp(wt-kz)
 		# first_order_refl_amp_2 = 	np.conj(np.dot(refl_val, E_first_order_vec) / np.dot(E_first_order_vec, E_first_order_vec))
