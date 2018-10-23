@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from math import pi, sin, cos, tan, sqrt
 from scipy.optimize import fsolve
 
-os.system("rm -r notch-out/")
+os.system("rm -r notchtest-out/")
 
 def notchtest(a, monitorheight, resolution):
 	ws = []
@@ -39,10 +39,11 @@ def notchtest(a, monitorheight, resolution):
 
 	# a = 16 						# length of cell
 	h = 0.2 					# height of Waveguide
-	dpml = .5;
+	dpml = .25;
 	# monitorheight = .8
 	# monitorheight = .6
-	H = monitorheight + 2*dpml 	#height of cell
+	# H = monitorheight + 2*dpml 	#height of cell
+	H = monitorheight + 4*dpml 	#height of cell
 	# resolution = 50
 
 	Lr2 = 	2.00-a/2	# Position of reflection monitor2
@@ -102,9 +103,10 @@ def notchtest(a, monitorheight, resolution):
 
 		ang = 80
 
-	f1 = open('notch-' + case + '.out', 'a')
-	f2 = open('notch-' + case + '.txt', 'a')
+	f1 = open('notchtest-' + case + '.out', 'a')
+	f2 = open('notchtest-' + case + '.txt', 'a')
 
+	casedash = case + "-" + str(a) + "-" + str(monitorheight) + "-" + str(resolution);
 	case += ", " + str(a) + ", " + str(monitorheight) + ", " + str(resolution);
 
 	f1.write("\n\t" + case + "\n\n\n");
@@ -266,10 +268,16 @@ def notchtest(a, monitorheight, resolution):
 				print("-----------")
 				print("MODE TYPE: FIRST ORDER")
 
+			# sources = [	mp.EigenModeSource(
+			# 				mp.GaussianSource(	frequency = fcen,
+			# 									fwidth = df),
+			# 									size = mp.Vector3(0,H),
+			# 									center = mp.Vector3(Ls, 0),
+			# 									eig_parity = eig_parity) ]
+
 			sources = [	mp.EigenModeSource(
-							mp.GaussianSource(	frequency = fcen,
-												fwidth = df),
-												size = mp.Vector3(0,H),
+							mp.ContinuousSource(frequency = fcen),
+												size = mp.Vector3(0,monitorheight),
 												center = mp.Vector3(Ls, 0),
 												eig_parity = eig_parity) ]
 
@@ -299,7 +307,7 @@ def notchtest(a, monitorheight, resolution):
 			#FOR GENERATING THE ELECTRIC FIELD GIF
 			#Note: After running this program, write the following commands in Terminal:
 			    # $ source deactivate mp
-			    # $ cd notch-out/
+			    # $ cd notchtest-out/
 			    # $ python ../NotchIP.py
 
 			sim.use_output_directory()
@@ -314,19 +322,19 @@ def notchtest(a, monitorheight, resolution):
 			#---------------------------------------------------------
 			# FOR GENERATING THE TRANSMITTANCE SPECTRUM
 
-			nfreq = 1  # number of frequencies at which to compute flux
-
-			refl_fr1 = 	mp.FluxRegion(center=mp.Vector3(Lr1,0), 	size=mp.Vector3(0,monitorheight))	# Reflected flux 1
-			refl_fr2 = 	mp.FluxRegion(center=mp.Vector3(Lr2,0), 	size=mp.Vector3(0,monitorheight))	# Reflected flux 2
-			tran_fr = 	mp.FluxRegion(center=mp.Vector3(Lt,0), 		size=mp.Vector3(0,monitorheight))	# Transmitted flux
-			su_fr = 	mp.FluxRegion(center=mp.Vector3(0, monitorheight/2),	size=mp.Vector3(a,0))	# Flux loss above the waveguide
-			sd_fr = 	mp.FluxRegion(center=mp.Vector3(0,-monitorheight/2), 	size=mp.Vector3(a,0))	# Flux loss below the waveguide
-
-			refl1 = sim.add_flux(fcen, df, nfreq, refl_fr1)
-			refl2 = sim.add_flux(fcen, df, nfreq, refl_fr2)
-			tran = 	sim.add_flux(fcen, df, nfreq, tran_fr)
-			su = 	sim.add_flux(fcen, df, nfreq, su_fr)
-			sd = 	sim.add_flux(fcen, df, nfreq, sd_fr)
+			# nfreq = 1  # number of frequencies at which to compute flux
+			#
+			# refl_fr1 = 	mp.FluxRegion(center=mp.Vector3(Lr1,0), 	size=mp.Vector3(0,monitorheight))	# Reflected flux 1
+			# refl_fr2 = 	mp.FluxRegion(center=mp.Vector3(Lr2,0), 	size=mp.Vector3(0,monitorheight))	# Reflected flux 2
+			# tran_fr = 	mp.FluxRegion(center=mp.Vector3(Lt,0), 		size=mp.Vector3(0,monitorheight))	# Transmitted flux
+			# su_fr = 	mp.FluxRegion(center=mp.Vector3(0, monitorheight/2),	size=mp.Vector3(a,0))	# Flux loss above the waveguide
+			# sd_fr = 	mp.FluxRegion(center=mp.Vector3(0,-monitorheight/2), 	size=mp.Vector3(a,0))	# Flux loss below the waveguide
+			#
+			# refl1 = sim.add_flux(fcen, df, nfreq, refl_fr1)
+			# refl2 = sim.add_flux(fcen, df, nfreq, refl_fr2)
+			# tran = 	sim.add_flux(fcen, df, nfreq, tran_fr)
+			# su = 	sim.add_flux(fcen, df, nfreq, su_fr)
+			# sd = 	sim.add_flux(fcen, df, nfreq, sd_fr)
 
 			# ------------------------ CODE FOR SEPARATING FUND AND FIRST ORDER MODE STARTS HERE ------------------------
 
@@ -347,25 +355,54 @@ def notchtest(a, monitorheight, resolution):
 
 			gif = True
 
+			# T = 50*(a-4)/12;
+			T = 60;
+
+			if resolution == 50:
+				epsform = "eps-000000.00"
+			else:
+				epsform = "eps-000000000"
+
 			if gif: # and w == 0.1:
 				sim.use_output_directory()
 				sim.run(mp.at_beginning(mp.output_epsilon),
+						mp.at_every(1 , mp.output_png(mp.Ez, "-RZc bluered -A notchtest-out/notchtest-" + epsform + ".h5 -a gray:.2")),
 						mp.at_end(get_refl_slice),
 						mp.at_end(get_tran_slice),
-						until=100)
+						until=T)
+
+				os.system("convert notchtest-out/notchtest-ez-*.png    " 	+ casedash + "-" + str(int(w*1000)) + "-" + str(mode) + "-full.gif")
+				os.system("rm notchtest-out/notchtest-ez-*.png")
+
+				nfreq = 1  # number of frequencies at which to compute flux
+
+				refl_fr1 = 	mp.FluxRegion(center=mp.Vector3(Lr1,0), 	size=mp.Vector3(0,monitorheight))	# Reflected flux 1
+				refl_fr2 = 	mp.FluxRegion(center=mp.Vector3(Lr2,0), 	size=mp.Vector3(0,monitorheight))	# Reflected flux 2
+				tran_fr = 	mp.FluxRegion(center=mp.Vector3(Lt,0), 		size=mp.Vector3(0,monitorheight))	# Transmitted flux
+				su_fr = 	mp.FluxRegion(center=mp.Vector3(0, monitorheight/2),	size=mp.Vector3(a,0))	# Flux loss above the waveguide
+				sd_fr = 	mp.FluxRegion(center=mp.Vector3(0,-monitorheight/2), 	size=mp.Vector3(a,0))	# Flux loss below the waveguide
+
+				refl1 = sim.add_flux(fcen, df, nfreq, refl_fr1)
+				refl2 = sim.add_flux(fcen, df, nfreq, refl_fr2)
+				tran = 	sim.add_flux(fcen, df, nfreq, tran_fr)
+				su = 	sim.add_flux(fcen, df, nfreq, su_fr)
+				sd = 	sim.add_flux(fcen, df, nfreq, sd_fr)
+
 				# sim.run(mp.at_every(wavelength / 20, mp.output_efield_z), until=wavelength)
-				# sim.run(mp.at_every(wavelength/20 , mp.output_png(mp.Ez, "-RZc bluered -A notch-out/notch-eps-000000000.h5 -a gray:.2")), until=19*wavelength/20)
-				sim.run(mp.at_every(wavelength/20 , mp.output_png(mp.Ez, "-RZc bluered -A notch-out/notch-eps-000000.00.h5 -a gray:.2")), until=19*wavelength/20)
-				sim.run(until_after_sources=mp.stop_when_fields_decayed(50, mp.Ez, mp.Vector3(), 1e-5))
+				# sim.run(mp.at_every(wavelength/20 , mp.output_png(mp.Ez, "-RZc bluered -A notchtest-out/notchtest-eps-000000000.h5 -a gray:.2")), until=19*wavelength/20)
+				sim.run(mp.at_every(wavelength/20 , mp.output_png(mp.Ez, "-RZc bluered -A notchtest-out/notchtest-" + epsform + ".h5 -a gray:.2")), until=19*wavelength/20)
+				sim.run(until=20)
+				# sim.run(until_after_sources=mp.stop_when_fields_decayed(50, mp.Ez, mp.Vector3(), 1e-5))
 			else:
 				sim.run(mp.at_beginning(mp.output_epsilon),
-						mp.at_time(100, get_refl_slice),
-						mp.at_time(100, get_tran_slice),
-						until_after_sources=mp.stop_when_fields_decayed(50, mp.Ez, mp.Vector3(), 1e-5))
+						mp.at_time(T, get_refl_slice),
+						mp.at_time(T, get_tran_slice)) #,
+						# until_after_sources=mp.stop_when_fields_decayed(50, mp.Ez, mp.Vector3(), 1e-5))
 
-			os.system("h5topng notch-out/notch-eps-000000.00.h5; mv notch-out/notch-eps-000000.00.png " 	+ case + "-" + str(int(w*1000)) + "-" + str(mode) + "-eps.png")
-			os.system("cp notch-out/notch-ez-000100.00.png " 	+ case + "-" + str(int(w*1000)) + "-" + str(mode) + ".png")
-			os.system("convert notch-out/notch-ez-*.png    " 	+ case + "-" + str(int(w*1000)) + "-" + str(mode) + ".gif")
+			os.system("h5topng notchtest-out/notchtest-" + epsform + ".h5; mv notchtest-out/notchtest-" + epsform + ".png " 	+ casedash + "-" + str(int(w*1000)) + "-" + str(mode) + "-eps.png")
+			# os.system("cp notchtest-out/notchtest-ez-000100.00.png " 	+ case + "-" + str(int(w*1000)) + "-" + str(mode) + ".png")
+			os.system("convert notchtest-out/notchtest-ez-*.png    " 	+ casedash + "-" + str(int(w*1000)) + "-" + str(mode) + ".gif")
+			os.system("rm notchtest-out/notchtest-ez-*.png")
 
 			# get_eigenmode(fcen, mp., refl_fr1, 1, kpoint)
 			# v = mp.volume(mp.vec(Lr1, -monitorheight/2), mp.vec(Lr1, monitorheight/2))
@@ -563,6 +600,9 @@ def notchtest(a, monitorheight, resolution):
 			# fund_tran_amp_2 = 			np.conj(np.dot(tran_val, E_fund_vec) 		/ np.dot(E_fund_vec, E_fund_vec))
 			# first_order_tran_amp_2 = 	np.conj(np.dot(tran_val, E_first_order_vec) / np.dot(E_first_order_vec, E_first_order_vec))
 
+			fund_refl_amp0 = fund_refl_amp;
+			fund_tran_amp0 = fund_tran_amp;
+
 			fund_refl_amp = 			np.conj(np.dot(refl_val, E0) / np.dot(E0, E0))					# Conjugate becasue MEEP uses physics exp(kz-wt) rather than engineering exp(wt-kz)
 			first_order_refl_amp = 		0 # np.conj(np.dot(refl_val, E1[:,2]) / np.dot(E1[:,2], E1[:,2]))
 			fund_tran_amp = 			np.conj(np.dot(tran_val, E0) / np.dot(E0, E0))
@@ -578,20 +618,33 @@ def notchtest(a, monitorheight, resolution):
 			fund_tran_power =			np.dot(np.conj(fund_tran),		fund_tran)
 			not_fund_tran_power = 		np.dot(np.conj(not_fund_tran), 	not_fund_tran)
 
+			f2.write("%s, " % [fund_refl_amp0, fund_tran_amp0, fund_refl_amp, fund_tran_amp]);
+
+			# assert(fund_refl_power + not_fund_refl_power == 1)
+			# assert(fund_tran_power + not_fund_tran_power == 1)
+			# f2.write("\n");
+
 			fund_refl_ratio = 			np.abs(fund_refl_power 		/ (fund_refl_power + not_fund_refl_power))
 			first_order_refl_ratio = 	0
 			fund_tran_ratio = 			np.abs(fund_tran_power 		/ (fund_tran_power + not_fund_tran_power))
 			first_order_tran_ratio = 	0
 
-			# plt.plot(y_list, np.abs(refl_val),	'bo-',label='reflectance')
-			# plt.plot(y_list, np.abs(tran_val),	'ro-',label='transmittance')
-			# plt.plot(y_list, E0,	'go-',label='E0')
-			# plt.plot(y_list, fund_refl_amp*E0,	'co-',label='over')
-			# # plt.axis([40.0, 300.0, 0.0, 100.0])
-			# plt.xlabel("y (um)")
-			# plt.ylabel("Field")
-			# plt.legend(loc="center right")
-			# plt.show()
+			f2.write("%s, " %
+				[fund_refl_ratio, fund_refl_power, not_fund_refl_power, fund_refl_power + not_fund_refl_power,
+				 fund_tran_ratio, fund_tran_power, not_fund_tran_power, fund_tran_power + not_fund_tran_power]);
+
+			plt.plot(y_list, np.abs(refl_val),	'bo-',label='reflectance')
+			plt.plot(y_list, np.abs(tran_val),	'ro-',label='transmittance')
+			plt.plot(y_list, E0,				'go-',label='E0')
+			plt.plot(y_list, fund_refl,			'co-',label='over')
+			plt.plot(y_list, not_fund_refl,		'ko-',label='over')
+			# plt.axis([40.0, 300.0, 0.0, 100.0])
+			plt.xlabel("y (um)")
+			plt.ylabel("Field")
+			plt.legend(loc="center right")
+			plt.savefig(case + "fields.png")
+			plt.close()
+
 			#
 			# print("\n")
 			#
@@ -698,12 +751,6 @@ def notchtest(a, monitorheight, resolution):
 
 			r = sqrt(R)
 			t = sqrt(T)
-
-			# The amplitude ... times the phase ... accounting for the distance to the detector (Reverse exp(-kz) of phase).
-			# r_fund = 	(r * fund_refl_ratio) 			* (fund_refl_amp 		/ np.abs(fund_refl_amp)) 		* (np.exp( 2j*pi * (-Lr1 - w/2) * n_eff_fund  / wavelength))	# Lr1 is negative because it is the (negative) position of the monitor, not the distace from the monitor to the center.
-			# r_first = 	(r * first_order_refl_ratio) 	* (first_order_refl_amp / np.abs(first_order_refl_amp)) * (np.exp( 2j*pi * (-Lr1 - w/2) * n_eff_first / wavelength))
-			# t_fund =    (t * fund_tran_ratio) 			* (fund_tran_amp 		/ np.abs(fund_tran_amp))		* (np.exp( 2j*pi * ( Lt  - w/2) * n_eff_fund  / wavelength))
-			# t_first =   (t * first_order_tran_ratio) 	* (first_order_tran_amp / np.abs(first_order_tran_amp)) * (np.exp( 2j*pi * ( Lt  - w/2) * n_eff_first / wavelength))
 
 			r_fund = 	(r * fund_refl_ratio) 			* np.exp( 1j*np.angle(fund_refl_amp) 		+ 2j*pi * (-Lr1 - w/2) * n_eff_fund  / wavelength)	# Lr1 is negative because it is the (negative) position of the monitor, not the distace from the monitor to the center.
 			r_first = 	(r * first_order_refl_ratio) 	* np.exp( 1j*np.angle(first_order_refl_amp) + 2j*pi * (-Lr1 - w/2) * n_eff_first / wavelength)
@@ -842,35 +889,10 @@ def notchtest(a, monitorheight, resolution):
 
 		#-------------------------------------------------------------
 
-	# notch(0)
-	# notch(.1)
-	#
-	# quit()
-
 	notch(0)
 
-	# old_widths = range(4, 32, 2)
-
-	# widths = [elt/100 for elt in old_widths]
-	# widths = [0, .1, .2]
-	# widths = [0, .09, .1, .11, .2]
-	# widths = [0, .05, .1, .15, .2, .25, .3]
-	# widths = [0, .02, .04, .06, .08, .1, .12, .14, .16, .18, .2]
-
-	# p0 = t00s[0] * np.exp(n_eff_funds[0]  * 2j * pi * (Lt + widths/2) / wavelength)
-	# p1 = t11s[0] * np.exp(n_eff_firsts[0] * 2j * pi * (Lt + widths/2) / wavelength)
-
-	# p0t = t00s[0]
-	# p1t = t11s[0]
 	p0t = [ t00s[0] / np.abs(t00s[0]) * np.exp( n_eff_funds[0]  * 2j * pi * (width/2) / wavelength) for width in widths ]
 	p1t = [ t11s[0] / np.abs(t11s[0]) * np.exp( n_eff_firsts[0] * 2j * pi * (width/2) / wavelength) for width in widths ]
-
-
-	# p0t = [ t00s[0] * np.exp( n_eff_funds[0]  * 2j * pi * width / wavelength) for width in widths ]
-	# p1t = [ t11s[0] * np.exp( n_eff_firsts[0] * 2j * pi * width / wavelength) for width in widths ]
-
-	# p0r = [ t00s[0] * np.exp( n_eff_funds[0]  * 2j * pi * (Lt + width/2) / wavelength) for width in widths ]
-	# p1r = [ t11s[0] * np.exp( n_eff_firsts[0] * 2j * pi * (Lt + width/2) / wavelength) for width in widths ]
 
 	p0r = [ t00s[0] / np.abs(t00s[0]) * np.exp( n_eff_funds[0]  * 2j * pi * (width/2) / wavelength) for width in widths ]
 	p1r = [ t11s[0] / np.abs(t11s[0]) * np.exp( n_eff_firsts[0] * 2j * pi * (width/2) / wavelength) for width in widths ]
@@ -969,8 +991,13 @@ def notchtest(a, monitorheight, resolution):
 	f1.close()
 	f2.close()
 
+# notchtest(16, 1, 100);
 
-for r in [50, 100]:
-	for a in [12, 16, 20]:
-		for mh in [.4, .8, 1, 1.4]:
-			notchtest(a, mh, r);
+# for r in [50, 100]:
+for a in np.linspace(12, 14, 21):
+	for mh in [1, 1.5, 2, 2.5, 3]:
+		notchtest(a, mh, 100);
+
+# for a in np.linspace(12, 14, 21):
+# for mh in np.linspace(.2, 4, 20):
+# 	notchtest(12, mh, 50);

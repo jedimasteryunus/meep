@@ -60,7 +60,8 @@ def validation(w):
 	resolution = 50
 	H = a
 	sxy = H - 2*dpml
-	sxy2 = H - 3*dpml
+	# sxy2 = H - 3*dpml
+	sxy2 = H
 
 	Lr2 = 	2.00-a/2	# Position of reflection monitor2
 	Ls = 	1.75-a/2	# Position of source
@@ -92,7 +93,7 @@ def validation(w):
 
 		h = .2
 		hu = .2
-		hl = 6
+		hl = 100
 
 		# only_fund = False
 
@@ -119,8 +120,8 @@ def validation(w):
 
 		ang = 80
 
-	f1 = open('notch-' + case + '.out', 'w')
-	f2 = open('notch-' + case + '.txt', 'w')
+	# f1 = open('notch-' + case + '.out', 'w')
+	# f2 = open('notch-' + case + '.txt', 'w')
 
 	hu = min(hu, (H-h)/2)
 	hl = min(hl, (H-h)/2)
@@ -176,8 +177,14 @@ def validation(w):
 	# old_grate_positions = [250, 220, 255, 210, 255, 190, 270, 200, 275, 185, 275, 175, 285, 175, 280, 205, 270, 190, 280, 300]
 	# old_grate_positions = [260, 220, 240, 220, 270, 205, 275, 190, 245, 200, 290, 170, 290, 185, 280, 190, 255, 185, 300, 300]
 
-	old_grate_positions = [885, 900, 920, 945, 965, 995, 335, 590, 585, 100]
-
+	# old_grate_positions = [885, 900, 920, 945, 965, 995, 335, 590, 585, 100]
+	# old_grate_positions = [915, 915, 990, 940, 1000, 815, 605, 405, 850, 100]
+	# old_grate_positions = [165, 355, 165, 370, 155, 170, 380, 155, 170, 390, 180, 140, 185, 400, 400, 405, 195, 405, 190, 100]
+	# old_grate_positions = [355, 555, 365, 160, 365, 175, 155, 165, 170, 165, 390, 160, 165, 195, 380, 415, 395, 405, 485, 100];
+	# old_grate_positions = [160, 155, 160, 165, 160, 175, 150, 170, 395, 400, 400, 410, 400, 380, 380];
+	# old_grate_positions = [115, 125, 130, 130, 160, 140, 185, 410, 495, 400];
+	# old_grate_positions = [115, 125, 130, 130, 160, 140, 185];
+	old_grate_positions = [110, 340, 130, 135, 160, 165, 375];
 	# geometry = [mp.Block(cell,
 	# 				center = mp.Vector3(0,0),
 	# 				material = default_material),
@@ -213,18 +220,29 @@ def validation(w):
 				#     material = default_material),
 				# ]
 
+	x = 0;
+
+	for elt in old_grate_positions:
+		x -= w + elt / 1000
+
+	x /= 2;
+
 	# grate_positions = []
-	w = .100
-	x = 3*dpml - a/2;
+	w = .050
+	# x = 3*dpml - a/2;
 	# h2 =
 	for elt in old_grate_positions:
-		x += w + elt / 1000
 		geometry.append(mp.Block(mp.Vector3(w, e*h),
 			center = mp.Vector3(x, h * (1 - e)/2),
 			material = default_material))
+		x += w + elt / 1000
 		# grate_positions.append(x)
 
-	sources = [mp.EigenModeSource(mp.GaussianSource(frequency = fcen, fwidth = df),
+		# geometry.append(mp.Block(mp.Vector3(w, e*h),
+		# 	center = mp.Vector3(x, h * (1 - e)/2),
+		# 	material = default_material))
+
+	sources = [mp.EigenModeSource(mp.ContinuousSource(frequency = fcen),
 								  size = mp.Vector3(0,H),
 								  center = mp.Vector3(2*dpml-a/2, 0))]
 
@@ -247,35 +265,42 @@ def validation(w):
 		# $ cd grating_validation-out/
 		# $ python ../GratingValidationIP.py
 
-	nearfield = sim.add_near2far(fcen, 0, 1,
-		mp.Near2FarRegion(mp.Vector3(0,  0.5*sxy), size=mp.Vector3(sxy)),
-		mp.Near2FarRegion(mp.Vector3(0, -0.5*sxy), size=mp.Vector3(sxy), weight=-1.0),
-		mp.Near2FarRegion(mp.Vector3( 0.5*sxy), size=mp.Vector3(0,sxy)),
-		mp.Near2FarRegion(mp.Vector3(-0.5*sxy), size=mp.Vector3(0,sxy), weight=-1.0))
-
 	sim.use_output_directory()
 	sim.run(mp.at_beginning(mp.output_epsilon),
-			mp.to_appended("ez", mp.at_every(0.6, mp.output_efield_z)),
-			until = 100)
+			mp.at_every(1, mp.output_png(mp.Ez, "-RZc bluered -A grating_validation-out/grating_validation-eps-000000.00.h5 -a gray:.2")),
+			# mp.to_appended("ez", mp.at_every(0.6, mp.output_efield_z)),
+			until = 40)
+
+	os.system("convert grating_validation-out/grating_validation-ez-*.png gratingFull.gif");
+	os.system("rm grating_validation-out/grating_validation-ez-*.png");
+
+	# nearfield = sim.add_near2far(fcen, 0, 1,
+	# 	mp.Near2FarRegion(mp.Vector3(0,  0.5*sxy), size=mp.Vector3(sxy)),
+	# 	mp.Near2FarRegion(mp.Vector3(0, -0.5*sxy), size=mp.Vector3(sxy), weight=-1.0),
+	# 	mp.Near2FarRegion(mp.Vector3( 0.5*sxy), size=mp.Vector3(0,sxy)),
+	# 	mp.Near2FarRegion(mp.Vector3(-0.5*sxy), size=mp.Vector3(0,sxy), weight=-1.0))
+
+	nearfield = sim.add_near2far(fcen, 0, 1, mp.Near2FarRegion(mp.Vector3(0,  0.5*sxy), size=mp.Vector3(sxy)))
+
 	sim.run(mp.at_every(wavelength/20 , mp.output_png(mp.Ez, "-RZc bluered -A grating_validation-out/grating_validation-eps-000000.00.h5 -a gray:.2")), until=19*wavelength/20)
+	sim.run(until = 19*wavelength)
 
 	pt = mp.Vector3(0,0)
 	# sim.run(until_after_sources=mp.stop_when_fields_decayed(50,mp.Ez,pt,1e-3))
 
-	string = "convert grating_validation-out/grating_validation-ez-*.png grating.gif";
-	print(string)
-
-	os.system(string)
+	os.system("convert grating_validation-out/grating_validation-ez-*.png grating.gif");
 
 	r = 800
 	npts = 1000;
 
 	for n in range(npts):
-		ff = sim.get_farfield(nearfield, mp.Vector3(r*cos(2*pi*(n/npts)),
-													r*sin(2*pi*(n/npts))))
+		print(n);
+		ff = sim.get_farfield(nearfield, mp.Vector3(r*cos(2*pi*(n/npts)), r*sin(2*pi*(n/npts))))
 		f1.write("{}, {}, ".format(n,2*pi*n/npts))
 		f1.write(", ".join([str(f).strip('()').replace('j', 'i') for f in ff]))
 		f1.write("\n")
+		print(n)
+	f1.close();
 
 	#---------------------------------------------------------
 	'''
@@ -371,4 +396,5 @@ def validation(w):
 
 	#-------------------------------------------------------------
 	'''
+# validation(0.05)
 validation(0.1)

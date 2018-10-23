@@ -24,13 +24,18 @@ function grating_validation_ff()
     
     figure
 
-    polar(angs, Pr/max(Pr))
-    hold on
-    
-    center = 2*pi/2;
-    
-    polar([center + ang, 0, center - ang], [1 0 1])
-    hold off
-    
-    sum(Pr(angs <= center + ang & angs >= center - ang))/sum(Pr)
+    if true
+        polar(angs, Pr/max(Pr))
+        hold on
+
+        center = pi/2 + asin(55/800);
+
+        polar([center + ang, 0, center - ang], [1 0 1])
+        hold off
+
+        sum(Pr(angs <= center + ang & angs >= center - ang))/sum(Pr)
+        sum(Pr(~(angs <= center + ang & angs >= center - ang)))/sum(Pr)
+    else
+        plot(angs, Pr/max(Pr))
+    end
 end
