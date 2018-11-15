@@ -17,8 +17,8 @@ wavelength = 420
 # z = 10e3
 # NA = .150 #Numerical Aperture
 
-N = 7
-z = 5e3
+N = 8
+z = 2.5e3
 NA = .300 #Numerical Aperture
 
 w = wavelength / (pi * NA) #mode field diameter
@@ -79,8 +79,12 @@ def transmission(width):
 
 	# t00 = complex(0.927068099, -1.334914783)
 	# t00 = 0.927068099 * np.exp(-1.334914783j);
-	t00 = 0.915114329 * np.exp(-1.364540532j);
-	t00 = 0.79975051 * np.exp(-2.72857885j);
+	if width == 50:
+		t00 = 0.915114329 * np.exp(-1.364540532j);
+	elif width == 75:
+		t00 = (0.79975051 + 0.915114329) * np.exp((-1.364540532j-2.72857885j)/2) / 2;
+	else:
+		t00 = 0.79975051 * np.exp(-2.72857885j);
 
 	return {"t00": t00}
 
@@ -108,8 +112,12 @@ def reflection(width):
 	# r00 = complex(0.083756091, 0.311361372)
 	# r00 = 0.083756091 * np.exp(0.311361372j);
 
-	# r00 = 0.097903405 * np.exp(0.769077219j);
-	r00 = 0.044589874 * np.exp(0.288595898j);
+	if width == 50:
+		r00 = 0.097903405 * np.exp(0.769077219j);
+	elif width == 75:
+		r00 = (0.097903405 + 0.044589874) * np.exp((0.769077219j + 0.288595898j)/2) / 2;
+	else:
+		r00 = 0.044589874 * np.exp(0.288595898j);
 
 	return {"r00": r00}
 
@@ -137,10 +145,16 @@ def scatter(width):
 	# sd0 = complex(0.243604087, 1.141884602)
 	# su0 = 0.098703181 * np.exp(1.141884602j);
 	# sd0 = 0.243604087 * np.exp(1.141884602j);
-	# su0 = 0.089001686 * np.exp(1.411550693j);
-	# sd0 = 0.225385718 * np.exp(1.411550693j);
-	su0 = 0.144666593 * np.exp(0.642012067j);
-	sd0 = 0.382175491 * np.exp(0.642012067j);
+
+	if width == 50:
+		su0 = 0.089001686 * np.exp(1.411550693j);
+		sd0 = 0.225385718 * np.exp(1.411550693j);
+	elif width == 75:
+		su0 = (0.089001686 + 0.144666593) * np.exp((1.411550693j + 0.642012067j)/2) / 2;
+		sd0 = (0.225385718 + 0.382175491) * np.exp((1.411550693j + 0.642012067j)/2) / 2;
+	else:
+		su0 = 0.144666593 * np.exp(0.642012067j);
+		sd0 = 0.382175491 * np.exp(0.642012067j);
 
 	return {"su0": su0, "sd0": sd0}
 
@@ -168,7 +182,6 @@ def propagate_matrix(length):
 	# n_eff =  data[31][0]
 	n_eff = 2.0696110793181015;
 	# n_eff_first = data[32][0]
-
 
 	return np.matrix([  [ np.exp(pi*2j*n_eff*length/wavelength),              0                     ],
 						[ 0,                                 np.exp(-pi*2j*n_eff*length/wavelength)   ]  ],
@@ -226,7 +239,11 @@ def getAmplitudes(widths, lengths):
 #     return np.exp(-x**2 / W**2) * np.exp(-1j *(k*z + k*x*x/(2*R) - phi) )
 
 def E(x,w,z):
-	return np.exp(-x**2 / W**2) * np.exp(-1j *(k*z + k*x*x/(2*R) - phi) )
+	# return np.exp(-x**2 / W**2) * np.exp(-1j * (k*z + k*x*x/(2*R) - phi) )
+	return np.exp(-x**2 / W**2) * np.exp(1j * k*x*x/(2*R) )
+	# d = (2 * pi / wavelength) * (400/800);
+	# return d if x == 0 else ( d * np.sin(x * d) / (pi * x * d)) * np.exp(-1j *(k*z + k*x*x/(2*R) - phi) )
+	# return ( 50000 * np.sin(x / d) / (pi * x / d)) * np.exp(-1j *(k*z + k*x*x/(2*R) - phi) )
 
 def getOverlap(widths, lengths, amplitudes, W, Z, num_notches, outputScatter):
 	other_notches = 5;
@@ -244,7 +261,7 @@ def getOverlap(widths, lengths, amplitudes, W, Z, num_notches, outputScatter):
 		#print("Scatter:", scatter(widths[i]))
 		#print("Amplitudes:", amplitudes[0,2*i] + amplitudes[1,2*i+1])
 
-	currentx = 0;
+	currentx = -widths[0]/2;
 
 	for i in range(0, num_notches):
 		scatter_dict = scatter(widths[i])
@@ -252,16 +269,19 @@ def getOverlap(widths, lengths, amplitudes, W, Z, num_notches, outputScatter):
 		sd[i+other_notches] = scatter_dict["sd0"]*(amplitudes[0,2*i] + amplitudes[1,2*i+1]) #+ scatter_dict["sd1"]*(amplitudes[2,2*i] + amplitudes[3,2*i+1])
 		x[i+other_notches] = currentx + widths[i]/2;
 
-		if i == 0 or i == num_notches-1:
+		if 		i == 0:
 			dx[i+other_notches] = widths[i] + lengths[i]
+		elif 	i == num_notches-1:
+			dx[i+other_notches] = widths[i] + lengths[i-1]
 		else:
 			dx[i+other_notches] = widths[i] + (lengths[i-1] + lengths[i])/2
 
-		currentx += lengths[i] + widths[i];
+		if 	i != num_notches-1:
+			currentx += lengths[i] + widths[i];
 
 	for i in range(0, other_notches):
-		x[other_notches-1-i] = x[other_notches-i] - 400;
-		x[other_notches+num_notches+i] = x[other_notches+num_notches-1+i] + 400;
+		x[other_notches-i-1] = x[other_notches-i] - other_notch_space - 100;
+		x[other_notches+num_notches+i] = x[other_notches+num_notches-1+i] + other_notch_space + 100;
 
 	s  /= amplitudes[0,0]
 	sd /= amplitudes[0,0]
@@ -298,7 +318,7 @@ def getOverlap(widths, lengths, amplitudes, W, Z, num_notches, outputScatter):
 	final_X = 0;
 	final_scatter_up = 0
 	final_scatter_down = 0
-	sensitivity = 200;
+	sensitivity = 100;
 	Wround = int(min(currentx, W)/200)*100;
 	# print(range(Wround, int(np.max(x)) + sensitivity-Wround, sensitivity));
 
@@ -321,8 +341,8 @@ def getOverlap(widths, lengths, amplitudes, W, Z, num_notches, outputScatter):
 		gamma = (np.abs(gamma/integral)**2)
 		# gamma = (np.abs(gamma)**2)
 
-		if outputScatter:
-			print("{:.2f}\t{:.2f}\t{:.2f}".format(X, 100*gamma, 100*integral))
+		# if outputScatter:
+		# 	print("{:.2f}\t{:.2f}\t{:.2f}".format(X, 100*gamma, 100*integral))
 
 		if gamma > final_gamma:
 			final_gamma = gamma
@@ -344,12 +364,12 @@ def getOverlap(widths, lengths, amplitudes, W, Z, num_notches, outputScatter):
 				gamma           += s[i] * np.conj(E(x[i] - X, W, Z))
 				integral        += (np.abs(E(x[i] - X, W, Z))**2)
 
-		for i in range(0, tot_notches):
-			# print("{:.2f}\t{:.4f}\t{:.4f}\t{:.4f}".format(x[i], 100*(np.abs(s[i])**2)/dx[i], np.angle(s[i]), 100*(np.abs(E(x[i] - final_X, W))**2)/dx[i]/integral))
-			# print("{:.2f}\t{:.4f}\t{:.4f}\t{:.4f}".format(x[i], 100*(np.abs(s[i])**2) / dx[i], np.angle(s[i]), 100*(np.abs(E(x[i] - final_X, W))**2)*dx[i]/integral))
-			print("{:.2f}\t{:.4f}\t{:.4f}\t{:.4f}".format(x[i], 100*(np.abs(s[i])**2), np.angle(s[i]), 100*(np.abs(E(x[i] - final_X, W, Z))**2)/integral))
+		# for i in range(0, tot_notches):
+		# 	# print("{:.2f}\t{:.4f}\t{:.4f}\t{:.4f}".format(x[i], 100*(np.abs(s[i])**2)/dx[i], np.angle(s[i]), 100*(np.abs(E(x[i] - final_X, W))**2)/dx[i]/integral))
+		# 	# print("{:.2f}\t{:.4f}\t{:.4f}\t{:.4f}".format(x[i], 100*(np.abs(s[i])**2) / dx[i], np.angle(s[i]), 100*(np.abs(E(x[i] - final_X, W))**2)*dx[i]/integral))
+		# 	print("{:.2f}\t{:.4f}\t{:.4f}\t{:.4f}".format(x[i], 100*(np.abs(s[i])**2), np.angle(s[i]), 100*(np.abs(E(x[i] - final_X, W, Z))**2)/integral))
 
-		print(np.angle(np.transpose(amplitudes)/amplitudes[0,0]));
+		# print(np.angle(np.transpose(amplitudes)/amplitudes[0,0]));
 
 		# plt.plot(x, 100*(np.abs(s)**2)/dx,'bo-',label='Scatter')
 		# plt.plot(x, 1*(np.angle(s) + pi),'ro-',label='Phase')
@@ -362,7 +382,7 @@ def getOverlap(widths, lengths, amplitudes, W, Z, num_notches, outputScatter):
 		plt.plot(x, 1*(np.angle(E(x - final_X, W, Z)) + pi),'ko-',label='Match')
 		plt.plot(x, dx/100,'yo-',label='Match')
 		plt.draw()
-		plt.pause(.001)
+		plt.pause(.00001)
 
 		# print [X, gamma]
 	# print final_X;
@@ -375,12 +395,12 @@ def getOverlap(widths, lengths, amplitudes, W, Z, num_notches, outputScatter):
 # ANNEALING #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
 def neighbor(lengths):
 	N = len(lengths)
-	sensitivity = 5
+	sensitivity = 1
 	rand_index = randint(0, N - 1)
 	new_lengths = lengths.copy()
 
-	lowerbound = 100
-	upperbound = 500
+	lowerbound = 50
+	upperbound = 400
 	# if rand_index < 5:
 	#     upperbound = 900
 
@@ -412,8 +432,8 @@ def anneal(widths, lengths, W, Z, num_notches):
 	# T = 0.001
 	# T_min = 0.0001
 	T =     0.000001
-	T_min = 0.00000001
-	alpha = 0.99
+	T_min = 0.000000001
+	alpha = 0.975
 
 	# T = T_min/alpha;
 
@@ -422,7 +442,7 @@ def anneal(widths, lengths, W, Z, num_notches):
 	while T > T_min:
 		i = 1
 
-		while i <= 100:
+		while i <= 200:
 			new_lengths = neighbor(lengths)
 			new_gtrx = getOverlap(widths, new_lengths, getAmplitudes(widths, new_lengths), W, Z, num_notches, output or i == 1)
 
@@ -518,6 +538,11 @@ def main():
 
 	# widths =    90 * np.ones(N)
 	widths =    100 * np.ones(N)
+	widths[0] = 50;
+	widths[1] = 75;
+	widths[5] = 75;
+	widths[6] = 50;
+	widths[7] = 50;
 	# widths =    50 * np.ones(N)
 	# lengths =   300 * np.ones(N)
 	# lengths = [490.0, 315.0, 315.0, 340.0, 305.0, 460.0, 385.0, 290.0, 335.0, 480.0, 290.0, 350.0, 475.0, 480.0, 170.0, 305.0, 330.0, 155.0, 325.0, 300.0]
@@ -535,7 +560,25 @@ def main():
 	# lengths = [160, 155, 160, 165, 160, 175, 150, 170, 395, 400, 400, 410, 400, 380, 380];
 	# lengths = [160, 155, 160, 165, 160, 175, 150];
 	# lengths = [110, 120, 135, 125, 175, 210, 255];
-	lengths = [110, 340, 130, 135, 160, 165, 375];
+	# lengths = [110, 340, 130, 135, 160, 165, 375];
+	# lengths = [320, 345, 125, 140, 145, 145, 120];
+	# lengths = [310, 340, 120, 125, 145, 135, 105];
+	# lengths = [115, 340, 130, 135, 160, 165];
+	# lengths = [120, 135, 135, 165, 185, 165, 165];
+	# lengths = [120, 110, 275, 100, 275, 220, 165];
+	# lengths = [125, 500, 145, 135, 165, 155, 170];
+	# lengths = [120, 500, 145, 130, 165, 155];
+	# lengths = [120, 300, 145, 130];
+	lengths = [143, 313, 328, 135, 132, 167, 165];
+	lengths = [181, 152, 307, 100, 259, 100, 199];
+	lengths = [181, 152, 307, 100, 259, 100];
+	lengths = [177, 145, 113, 100, 259, 100];
+	lengths = [177, 145, 113, 100, 259, 100, 100];
+	lengths = [174, 145, 316, 100, 267, 100, 389]
+	lengths = [173, 146, 500, 93,  87,  85];
+	lengths = [158, 335, 105, 275, 90];
+	lengths = [160, 340, 299, 95, 281, 299, 280];
+	# widths =  [50,  75,  100, 100, 100, 75, 50, 50];
 	# lengths = [600, 500, 400, 400, 300, 300, 200, 200, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100]
 	# lengths = [600, 500, 400, 400, 300, 300, 200, 200, 100, 100]
 
