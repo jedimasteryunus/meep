@@ -2,12 +2,13 @@ from math import pi, sqrt, atan
 from random import random, randint, choice
 import time
 import ast
+import csv
 import numpy as np
 import matplotlib.pyplot as plt
 import cProfile
 
-# wavelength = 637
-wavelength = 420
+wavelength = 637
+#wavelength = 420
 # neff = 2.2012 # refractive index inside waveguide (at wavelength 0.6372)
 
 # N = 20
@@ -33,6 +34,22 @@ phi = atan(z/zr)
 
 debug = 0
 
+input_file = 'transpose-notch-LN637.csv'
+notch_file = open(input_file, 'r')
+
+width_dict = dict()
+data_list = list(csv.reader(notch_file, delimiter=','))
+
+n_eff = float(data_list[-1][0])
+print(n_eff, type(n_eff))
+
+for row in data_list[:-1]:
+	width_dict[float(row[0])] = dict()
+	width_dict[float(row[0])]['r00'] = complex(float(row[7]), float(row[8]))
+	width_dict[float(row[0])]['t00'] = complex(float(row[9]), float(row[10]))
+	width_dict[float(row[0])]['sd0'] = complex(float(row[11]), float(row[12]))
+	width_dict[float(row[0])]['su0'] = complex(float(row[13]), float(row[14]))
+
 output_file = 'new_new_grating_analysis.out'
 f = open(output_file, 'w')
 
@@ -55,8 +72,16 @@ f = open(output_file, 'w')
 # fname = "AlN-a=16/notch-AlN420-test.txt"
 # data = importData(fname)
 
+def widthCheck(width):
+	if width in width_dict.keys():
+		return True
+	else:
+		return False
 
 def transmission(width):
+	if not widthCheck(width):
+		print("Alert! The width you have entered may not have any MEEP data.")
+
 	# index = widthToIndex(width)
 	#
 	# real_t00 = data[11][index]
@@ -79,16 +104,15 @@ def transmission(width):
 
 	# t00 = complex(0.927068099, -1.334914783)
 	# t00 = 0.927068099 * np.exp(-1.334914783j);
-	if width == 50:
-		t00 = 0.915114329 * np.exp(-1.364540532j);
-	elif width == 75:
-		t00 = (0.79975051 + 0.915114329) * np.exp((-1.364540532j-2.72857885j)/2) / 2;
-	else:
-		t00 = 0.79975051 * np.exp(-2.72857885j);
+	t00 = width_dict[width]["t00"]
 
 	return {"t00": t00}
 
 def reflection(width):
+
+	if not widthCheck(width):
+		print("Alert! The width you have entered may not have any MEEP data.")
+
 	# index = widthToIndex(width)
 	#
 	# real_r00 = data[7][index]
@@ -111,17 +135,15 @@ def reflection(width):
 
 	# r00 = complex(0.083756091, 0.311361372)
 	# r00 = 0.083756091 * np.exp(0.311361372j);
-
-	if width == 50:
-		r00 = 0.097903405 * np.exp(0.769077219j);
-	elif width == 75:
-		r00 = (0.097903405 + 0.044589874) * np.exp((0.769077219j + 0.288595898j)/2) / 2;
-	else:
-		r00 = 0.044589874 * np.exp(0.288595898j);
+	r00 = width_dict[width]["r00"]
 
 	return {"r00": r00}
 
 def scatter(width):
+
+	if not widthCheck(width):
+		print("Alert! The width you have entered may not have any MEEP data.")
+
 	# index = widthToIndex(width)
 	#
 	# real_su0 = data[15][index]
@@ -146,43 +168,26 @@ def scatter(width):
 	# su0 = 0.098703181 * np.exp(1.141884602j);
 	# sd0 = 0.243604087 * np.exp(1.141884602j);
 
-	if width == 50:
-		su0 = 0.089001686 * np.exp(1.411550693j);
-		sd0 = 0.225385718 * np.exp(1.411550693j);
-	elif width == 75:
-		su0 = (0.089001686 + 0.144666593) * np.exp((1.411550693j + 0.642012067j)/2) / 2;
-		sd0 = (0.225385718 + 0.382175491) * np.exp((1.411550693j + 0.642012067j)/2) / 2;
-	else:
-		su0 = 0.144666593 * np.exp(0.642012067j);
-		sd0 = 0.382175491 * np.exp(0.642012067j);
+	su0 = width_dict[width]["su0"]
+	sd0 = width_dict[width]["sd0"]
 
 	return {"su0": su0, "sd0": sd0}
 
 # MATRICES #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
 
 def scatter_matrix(width):
-	t = transmission(width)
-	r = reflection(width)
 
-	t00 = t["t00"]
-	# t01 = t["t01"]
-	# t10 = t["t10"]
-	# t11 = t["t11"]
+	if not widthCheck(width):
+		print("Alert! The width you have entered may not have any MEEP data.")
 
-	r00 = r["r00"]
-	# r01 = r["r01"]
-	# r10 = r["r10"]
-	# r11 = r["r11"]
+	t00 = width_dict[width]["t00"]
+	r00 = width_dict[width]["r00"]
 
 	return np.matrix([  [ 1/t00,     np.conj(r00)/t00             ],
 						[ r00/t00,   (r00*np.conj(r00) + t00*np.conj(t00))/t00   ]  ],
 						dtype=complex)
 
 def propagate_matrix(length):
-	# n_eff =  data[31][0]
-	n_eff = 2.0696110793181015;
-	# n_eff_first = data[32][0]
-
 	return np.matrix([  [ np.exp(pi*2j*n_eff*length/wavelength),              0                     ],
 						[ 0,                                 np.exp(-pi*2j*n_eff*length/wavelength)   ]  ],
 						dtype=complex)
@@ -477,12 +482,12 @@ def anneal(widths, lengths, W, Z, num_notches):
 				# print("S'= {:.2f}%,\tT0'= {:.2f}%,\tR0'= {:.2f}%,\tT1'= {:.2f}%,\tR1'= {:.2f}%,\tX' = {},\tSu'= {:.2f}%,\tSd'= {:.2f}%.\n".format(new_gtrx[0]*100, new_gtrx[1]*100, new_gtrx[2]*100, new_gtrx[3]*100, new_gtrx[4]*100, new_gtrx[5], new_gtrx[6]*100, new_gtrx[7]*100))
 				#f.write("S'= {:.2f}%,\tT'= {:.2f}%,\tR'= {:.2f}%,\tX'= {}.".format(new_gtrx[0]*100, new_gtrx[1]*100, new_gtrx[2]*100, new_gtrx[3]))
 
-
+'''
 				if np.log10(T) == -2.0:
 					print("Progress:  0.0%")
 				else:
 					print("Progress: ", -(np.log10(T) + 2) * 100, "%")
-
+'''
 			i += 1
 
 		T = T*alpha
@@ -538,11 +543,6 @@ def main():
 
 	# widths =    90 * np.ones(N)
 	widths =    100 * np.ones(N)
-	widths[0] = 50;
-	widths[1] = 75;
-	widths[5] = 75;
-	widths[6] = 50;
-	widths[7] = 50;
 	# widths =    50 * np.ones(N)
 	# lengths =   300 * np.ones(N)
 	# lengths = [490.0, 315.0, 315.0, 340.0, 305.0, 460.0, 385.0, 290.0, 335.0, 480.0, 290.0, 350.0, 475.0, 480.0, 170.0, 305.0, 330.0, 155.0, 325.0, 300.0]

@@ -1,4 +1,5 @@
 import os
+import csv
 from meep import mpb
 import meep as mp
 import numpy as np
@@ -42,7 +43,7 @@ dpml = .5;
 # monitorheight = .8
 monitorheight = .6
 H = monitorheight + 2*dpml 	#height of cell
-resolution = 50
+resolution = 10 # 50
 
 Lr2 = 	2.00-a/2	# Position of reflection monitor2
 Ls = 	1.75-a/2	# Position of source
@@ -52,7 +53,7 @@ Lt = 	a/2-1.50	# Position of transmisison monitor
 
 only_fund = True
 
-if True:
+if False:
 	case = "AlN420"
 	wavelength = 0.4203
 	widths = [0, .09, .1, .11, .2]
@@ -103,6 +104,8 @@ else:
 
 f1 = open('notch-' + case + '.out', 'w')
 f2 = open('notch-' + case + '.txt', 'w')
+f3 = open('notch-' + case + '.csv', 'w')
+f4 = open('transpose-notch-' + case + '.csv', 'w')
 
 hu = min(hu, (H-h)/2)
 hl = min(hl, (H-h)/2)
@@ -127,7 +130,7 @@ geometry_lattice = mp.Lattice(size=mp.Vector3(0, monitorheight, 0))
 # 			mp.Block(mp.Vector3(mp.inf, h, mp.inf), center=mp.Vector3(0,0,0), material=core_material),
 # 			mp.Block(mp.Vector3(mp.inf, h, mp.inf), center=mp.Vector3(0,0,0), material=core_material)]
 
-geometrympb = [	mp.Block(mp.Vector3(mp.inf, monitorheight, 	mp.inf), center = mp.Vector3(0,0), 		material = default_material),
+geometrympb = [	mp.Block(mp.Vector3(mp.inf, monitorheight, 	mp.inf), center = mp.Vector3(0,0), 				material = default_material),
 				mp.Block(mp.Vector3(mp.inf, hu+h/2, 		mp.inf), center = mp.Vector3(0,  (hu+h/2)/2), 	material = upper_material),
 				mp.Block(mp.Vector3(mp.inf, hl+h/2, 		mp.inf), center = mp.Vector3(0, -(hl+h/2)/2), 	material = lower_material),
 				mp.Block(mp.Vector3(mp.inf, h, 				mp.inf), center = mp.Vector3(0, 0), 			material = core_material)]
@@ -141,7 +144,7 @@ ms = mpb.ModeSolver(
 
 band = 1;
 
-ms.find_k(
+k = ms.find_k(
 	# p              = mp.EVEN_Z,               # Polarization
 	p              = mp.ODD_Z,               # Polarization
 	omega          = fcen,              # Omega to find corresponding k
@@ -152,6 +155,12 @@ ms.find_k(
 	kmag_guess     = fcen * n_m,       # initial guess
 	kmag_min       = fcen * n_c,        # Minimum
 	kmag_max       = fcen * n_m)         # Maximum
+
+print(k)
+
+neff = k[0]/fcen;
+
+print(neff)
 
 E1 = np.squeeze(ms.get_efield(band, bloch_phase=False))
 H1 = np.squeeze(ms.get_hfield(band, bloch_phase=False))
@@ -261,8 +270,7 @@ def notch(w):
 			print("MODE TYPE: FIRST ORDER")
 
 		sources = [	mp.EigenModeSource(
-						mp.GaussianSource(	frequency = fcen,
-											fwidth = df),
+						mp.ContinuousSource(	frequency = fcen),
 											size = mp.Vector3(0,H),
 											center = mp.Vector3(Ls, 0),
 											eig_parity = eig_parity) ]
@@ -316,11 +324,11 @@ def notch(w):
 		su_fr = 	mp.FluxRegion(center=mp.Vector3(0, monitorheight/2),	size=mp.Vector3(a,0))	# Flux loss above the waveguide
 		sd_fr = 	mp.FluxRegion(center=mp.Vector3(0,-monitorheight/2), 	size=mp.Vector3(a,0))	# Flux loss below the waveguide
 
-		refl1 = sim.add_flux(fcen, df, nfreq, refl_fr1)
-		refl2 = sim.add_flux(fcen, df, nfreq, refl_fr2)
-		tran = 	sim.add_flux(fcen, df, nfreq, tran_fr)
-		su = 	sim.add_flux(fcen, df, nfreq, su_fr)
-		sd = 	sim.add_flux(fcen, df, nfreq, sd_fr)
+		# refl1 = sim.add_flux(fcen, df, nfreq, refl_fr1)
+		# refl2 = sim.add_flux(fcen, df, nfreq, refl_fr2)
+		# tran = 	sim.add_flux(fcen, df, nfreq, tran_fr)
+		# su = 	sim.add_flux(fcen, df, nfreq, su_fr)
+		# sd = 	sim.add_flux(fcen, df, nfreq, sd_fr)
 
 		# ------------------------ CODE FOR SEPARATING FUND AND FIRST ORDER MODE STARTS HERE ------------------------
 
@@ -347,15 +355,23 @@ def notch(w):
 					mp.at_end(get_refl_slice),
 					mp.at_end(get_tran_slice),
 					until=100)
+
+			refl1 = sim.add_flux(fcen, df, nfreq, refl_fr1)
+			refl2 = sim.add_flux(fcen, df, nfreq, refl_fr2)
+			tran = 	sim.add_flux(fcen, df, nfreq, tran_fr)
+			su = 	sim.add_flux(fcen, df, nfreq, su_fr)
+			sd = 	sim.add_flux(fcen, df, nfreq, sd_fr)
+
 			# sim.run(mp.at_every(wavelength / 20, mp.output_efield_z), until=wavelength)
 			# sim.run(mp.at_every(wavelength/20 , mp.output_png(mp.Ez, "-RZc bluered -A notch-out/notch-eps-000000000.h5 -a gray:.2")), until=19*wavelength/20)
 			sim.run(mp.at_every(wavelength/20 , mp.output_png(mp.Ez, "-RZc bluered -A notch-out/notch-eps-000000.00.h5 -a gray:.2")), until=19*wavelength/20)
-			sim.run(until_after_sources=mp.stop_when_fields_decayed(50, mp.Ez, mp.Vector3(), 1e-5))
+			sim.run(until = 50)
 		else:
-			sim.run(mp.at_beginning(mp.output_epsilon),
-					mp.at_time(100, get_refl_slice),
-					mp.at_time(100, get_tran_slice),
-					until_after_sources=mp.stop_when_fields_decayed(50, mp.Ez, mp.Vector3(), 1e-5))
+			sim.run(mp.at_end(get_refl_slice),
+					mp.at_end(get_tran_slice),
+					until=100)
+
+			sim.run(until_after_sources=mp.stop_when_fields_decayed(50, mp.Ez, mp.Vector3(), 1e-5))
 
 		os.system("h5topng notch-out/notch-eps-000000.00.h5; mv notch-out/notch-eps-000000.00.png " 	+ case + "-" + str(int(w*1000)) + "-" + str(mode) + "-eps.png")
 		os.system("cp notch-out/notch-ez-000100.00.png " 	+ case + "-" + str(int(w*1000)) + "-" + str(mode) + ".png")
@@ -374,11 +390,11 @@ def notch(w):
 
 		ep = mp.ODD_Z
 
-		coef_refl_fund, 	vgrp, kpoints_fund 	= 	sim.get_eigenmode_coefficients(refl1, [1], eig_parity=ep, 	eig_resolution=resolution, eig_tolerance=1e-7)
-		coef_refl_first, 	vgrp, kpoints_first =	sim.get_eigenmode_coefficients(refl1, [2], eig_parity=ep,	eig_resolution=resolution, eig_tolerance=1e-7)
+		#coef_refl_fund, 	vgrp, kpoints_fund 	= 	sim.get_eigenmode_coefficients(refl1, [1], eig_parity=ep, 	eig_resolution=resolution, eig_tolerance=1e-7)
+		#coef_refl_first, 	vgrp, kpoints_first =	sim.get_eigenmode_coefficients(refl1, [2], eig_parity=ep,	eig_resolution=resolution, eig_tolerance=1e-7)
 
-		coef_tran_fund, 	vgrp, kpoints_fund 	=	sim.get_eigenmode_coefficients(tran,  [1], eig_parity=ep, 	eig_resolution=resolution, eig_tolerance=1e-7)
-		coef_tran_first,	vgrp, kpoints_first = 	sim.get_eigenmode_coefficients(tran,  [2], eig_parity=ep, 	eig_resolution=resolution, eig_tolerance=1e-7)
+		#coef_tran_fund, 	vgrp, kpoints_fund 	=	sim.get_eigenmode_coefficients(tran,  [1], eig_parity=ep, 	eig_resolution=resolution, eig_tolerance=1e-7)
+		#coef_tran_first,	vgrp, kpoints_first = 	sim.get_eigenmode_coefficients(tran,  [2], eig_parity=ep, 	eig_resolution=resolution, eig_tolerance=1e-7)
 
 		# print(kpoints_fund)
 		# print(kpoints_first)
@@ -386,8 +402,11 @@ def notch(w):
 		# print(type(kpoints_fund[0]))
 		# print(dir(kpoints_fund[0]))
 
-		n_eff_fund = 	wavelength*kpoints_fund[0].x
-		n_eff_first = 	wavelength*kpoints_first[0].x
+		# n_eff_fund = 	wavelength*kpoints_fund[0].x
+		# n_eff_first = 	wavelength*kpoints_first[0].x
+
+		n_eff_fund = 	neff
+		n_eff_first = 	1
 
 		print(n_eff_fund)
 		print(n_eff_first)
@@ -406,18 +425,18 @@ def notch(w):
 
 		print("get_eigenmode_coefficients:\n")
 
-		print(coef_refl_fund)
-		print(coef_refl_first)
-		print(coef_tran_fund)
-		print(coef_tran_first)
+		#print(coef_refl_fund)
+		#print(coef_refl_first)
+		#print(coef_tran_fund)
+		#print(coef_tran_first)
 
 		print("\n")
 		# print(coef_refl_fund[0,0,:])
 
-		fund_refl_amp = 		coef_refl_fund[0,0,1];
-		first_order_refl_amp =	coef_refl_first[0,0,1];
-		fund_tran_amp =			coef_tran_fund[0,0,0];
-		first_order_tran_amp =	coef_tran_first[0,0,0];
+		#fund_refl_amp = 		coef_refl_fund[0,0,1];
+		#first_order_refl_amp =	coef_refl_first[0,0,1];
+		#fund_tran_amp =			coef_tran_fund[0,0,0];
+		#first_order_tran_amp =	coef_tran_first[0,0,0];
 
 		refl_val = refl_vals[0]
 		tran_val = tran_vals[0]
@@ -946,8 +965,104 @@ for i in range(len(Rs)):
 f2.write("%s\n" % (n_eff_funds))	# 31
 f2.write("%s\n" % (n_eff_firsts))	# 32
 
+
+#------------------------------------------------------------------------------
+#NEW CSV OUTPUT FILE
+
+CSV_writer = csv.writer(f3, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+
+def CSVme(value, phasecompensation):
+	# print("%s\n" % np.real(np.divide(value, phasecompensation)))
+	# print("%s\n" % np.imag(np.divide(value, phasecompensation)))
+	# print("%s\n" % (np.real(np.divide(value, phasecompensation))))
+	# print("%s\n" % (np.imag(np.divide(value, phasecompensation))))
+	CSV_writer.writerow(list(np.real(np.divide(value, phasecompensation))))		# 7
+	CSV_writer.writerow(list(np.imag(np.divide(value, phasecompensation))))		# 8
+
+CSV_writer.writerow(ws)			# 0
+CSV_writer.writerow(Rs)			# 1
+CSV_writer.writerow(Ts)			# 2
+CSV_writer.writerow(Ss)			# 3
+CSV_writer.writerow(Sus)			# 4
+CSV_writer.writerow(Sds)			# 5
+CSV_writer.writerow(norm_Sus)		# 6
+
+CSVme(r00s, p0r);
+#CSVme(r01s, p0r);
+CSVme(t00s, p0t);
+
+#CSVme(t01s, p0t);
+CSVme(sd0s, p0r);
+CSVme(su0s, p0r);
+'''
+CSVme(r10s, p1r);
+CSVme(r11s, p1r);
+CSVme(t10s, p1t);
+CSVme(t11s, p1t);
+CSVme(sd1s, p1r);
+CSVme(su1s, p1r);
+'''
+'''
+for i in range(len(Rs)):
+	print("Reflected Power Without Mode Separation: ", Rs[i])
+	print("Reflected Power With Mode Separation: ", r00s[i]**2 + r01s[i]**2)
+	print("Transmitted Power Without Mode Separation: ", Ts[i])
+	print("Transmitted Power With Mode Separation: ", t00s[i]**2 + t01s[i]**2)
+'''
+
+CSV_writer.writerow(n_eff_funds)	# 31
+#CSV_writer.writerow(n_eff_firsts)	# 32
+
+
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+#NEW TRANSPOSED CSV OUTPUT FILE
+
+master_matrix = np.zeros((15, 4))
+
+real_r00s_list = list(np.real(np.divide(r00s, p0r)))
+real_t00s_list = list(np.real(np.divide(t00s, p0t)))
+real_sd0s_list = list(np.real(np.divide(sd0s, p0r)))
+real_su0s_list = list(np.real(np.divide(su0s, p0r)))
+
+imag_r00s_list = list(np.imag(np.divide(r00s, p0r)))
+imag_t00s_list = list(np.imag(np.divide(t00s, p0t)))
+imag_sd0s_list = list(np.imag(np.divide(sd0s, p0r)))
+imag_su0s_list = list(np.imag(np.divide(su0s, p0r)))
+
+for col in range(4):
+	master_matrix[0][col] = ws[col]
+	master_matrix[1][col] = Rs[col]
+	master_matrix[2][col] = Ts[col]
+	master_matrix[3][col] = Ss[col]
+	master_matrix[4][col] = Sus[col]
+	master_matrix[5][col] = Sds[col]
+	master_matrix[6][col] = norm_Sus[col]
+	master_matrix[7][col] = real_r00s_list[col]
+	master_matrix[8][col] = imag_r00s_list[col]
+	master_matrix[9][col] = real_t00s_list[col]
+	master_matrix[10][col] = imag_t00s_list[col]
+	master_matrix[11][col] = real_sd0s_list[col]
+	master_matrix[12][col] = imag_sd0s_list[col]
+	master_matrix[13][col] = real_su0s_list[col]
+	master_matrix[14][col] = imag_su0s_list[col]
+
+master_matrix = np.transpose(master_matrix)
+
+CSV_writer = csv.writer(f4, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+
+for row in master_matrix:
+	CSV_writer.writerow(row)
+
+CSV_writer.writerow(n_eff_funds)	# 31
+
+#------------------------------------------------------------------------------
+
 f1.close()
 f2.close()
+f3.close()
+f4.close()
 
 plt.subplot(2, 1, 1)
 plt.plot(ws, Rs,'bo-',label='reflectance')

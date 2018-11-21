@@ -1,0 +1,135 @@
+--------------------------------------------------- 
+Notch Width: 0 nanometers 
+Reflection Percentage: 15.830609470240004
+Transmission Percentage: 59.62578538094099
+Total Loss Percentage: 24.543605148819008
+Percentage of Light Accounted For: 100.0
+Upper Loss Percentage: 1.6641103807732933
+Lower Loss Percentage: 1.6641103807732938
+Percentage of Total Loss Accounted For: 14.0
+Normalized Upper Loss Percentage: 12.271802574409504
+
+ 
+FUNDAMENTAL MODE 
+n_eff:   1.932215356503592
+Re(r00): 0.2356209412964938
+Im(r00): -0.2710246755940714
+Re(r01): 0.0
+Im(r01): 0.0
+Re(t00): -0.36868921086725726
+Im(t00): 0.5887156400099534
+Re(t01): 0.0
+Im(t01): 0.0
+Re(su0): 0.3503113268852366
+Im(su0): 0.0
+Re(sd0): 0.3503113268852366
+Im(sd0): 0.0
+
+--------------------------------------------------- 
+Notch Width: 0 nanometers 
+Reflection Percentage: 15.830608456117536
+Transmission Percentage: 59.62578268767976
+Total Loss Percentage: 24.543608856202695
+Percentage of Light Accounted For: 100.0
+Upper Loss Percentage: 1.664113759214337
+Lower Loss Percentage: 1.6641137592143367
+Percentage of Total Loss Accounted For: 14.0
+Normalized Upper Loss Percentage: 12.271804428101348
+
+ 
+FUNDAMENTAL MODE 
+n_eff:   1.932215356503592
+Re(r00): 0.23562091954539455
+Im(r00): -0.27102466013729665
+Re(r01): 0.0
+Im(r01): 0.0
+Re(t00): -0.36868919127558064
+Im(t00): 0.5887156338797088
+Re(t01): 0.0
+Im(t01): 0.0
+Re(su0): 0.3503113533430133
+Im(su0): 0.0
+Re(sd0): 0.3503113533430133
+Im(sd0): 0.0
+
+--------------------------------------------------- 
+Notch Width: 90.0 nanometers 
+Reflection Percentage: 25.601021586050738
+Transmission Percentage: 35.09686214999217
+Total Loss Percentage: 39.302116263957096
+Percentage of Light Accounted For: 100.0
+Upper Loss Percentage: 14.136113370043285
+Lower Loss Percentage: 5.490473740409993
+Percentage of Total Loss Accounted For: 50.0
+Normalized Upper Loss Percentage: 28.30747740619731
+
+ 
+FUNDAMENTAL MODE 
+n_eff:   1.932215356503592
+Re(r00): -0.0153300088950686
+Im(r00): -0.4532690115228106
+Re(r01): 0.0
+Im(r01): 0.0
+Re(t00): 0.15145141724469915
+Im(t00): 0.5033811209805908
+Re(t01): 0.0
+Im(t01): 0.0
+Re(su0): 0.5320477178430268
+Im(su0): 0.0
+Re(sd0): 0.3315816469251545
+Im(sd0): 0.0
+
+--------------------------------------------------- 
+Notch Width: 100.0 nanometers 
+Reflection Percentage: 26.01831410594934
+Transmission Percentage: 34.67381360425326
+Total Loss Percentage: 39.307872289797395
+Percentage of Light Accounted For: 100.0
+Upper Loss Percentage: 14.084492932881865
+Lower Loss Percentage: 5.509848693367918
+Percentage of Total Loss Accounted For: 50.0
+Normalized Upper Loss Percentage: 28.254659433445607
+
+ 
+FUNDAMENTAL MODE 
+n_eff:   1.932215356503592
+Re(r00): -0.05883176023329619
+Im(r00): -0.4533700652223875
+Re(r01): 0.0
+Im(r01): 0.0
+Re(t00): 0.1930842854247254
+Im(t00): 0.485796355910233
+Re(t01): 0.0
+Im(t01): 0.0
+Re(su0): 0.5315511210922765
+Im(su0): 0.0
+Re(sd0): 0.33246372518444456
+Im(sd0): 0.0
+
+--------------------------------------------------- 
+Notch Width: 110.0 nanometers 
+Reflection Percentage: 26.22757104771955
+Transmission Percentage: 34.45188769966451
+Total Loss Percentage: 39.320541252615925
+Percentage of Light Accounted For: 100.0
+Upper Loss Percentage: 14.059788749578757
+Lower Loss Percentage: 5.521138453326592
+Percentage of Total Loss Accounted For: 50.0
+Normalized Upper Loss Percentage: 28.23352019044576
+
+ 
+FUNDAMENTAL MODE 
+n_eff:   1.932215356503592
+Re(r00): -0.10202300856053831
+Im(r00): -0.44750669714382046
+Re(r01): 0.0
+Im(r01): 0.0
+Re(t00): 0.23558267696525548
+Im(t00): 0.46493779189637663
+Re(t01): 0.0
+Im(t01): 0.0
+Re(su0): 0.5313522390133099
+Im(su0): 0.0
+Re(sd0): 0.3329717865250773
+Im(sd0): 0.0
+
