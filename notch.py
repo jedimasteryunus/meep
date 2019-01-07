@@ -43,7 +43,7 @@ dpml = .5;
 # monitorheight = .8
 monitorheight = .6
 H = monitorheight + 2*dpml 	#height of cell
-resolution = 10 # 50
+resolution = 50 # 50
 
 Lr2 = 	2.00-a/2	# Position of reflection monitor2
 Ls = 	1.75-a/2	# Position of source
@@ -1072,7 +1072,7 @@ plt.plot(ws, Sus, 'co-', label='upper loss')
 plt.plot(ws, Sds, 'mo-', label='lower loss')
 plt.plot(ws, norm_Sus, 'ko-', label='normalized upper loss')
 plt.axis([0, 300.0, 0.0, 100.0])
-plt.xlabel("wavelength (nm)")
+plt.xlabel("notch width (nm)")
 plt.ylabel("percentage (%)")
 plt.legend(loc="center right")
 
@@ -1080,7 +1080,7 @@ plt.subplot(2, 1, 2)
 plt.plot(ws, list(np.angle(np.divide(r00s, p0r))),'bo-',label='reflectance')
 plt.plot(ws, list(np.angle(np.divide(t00s, p0t))),'ro-',label='transmittance')
 plt.axis([0, 300.0, -pi, pi])
-plt.xlabel("wavelength (nm)")
+plt.xlabel("notch width (nm)")
 plt.ylabel("Phase (rad)")
 plt.legend(loc="center right")
 
