@@ -240,16 +240,23 @@ def annealingTest(lengths):
 			# plt.plot(x, 100*(np.abs(s)**2)/dx,'bo-',label='Scatter')
 			# plt.plot(x, 1*(np.angle(s) + pi),'ro-',label='Phase')
 			# plt.plot(x, 100*(np.abs(E(x - final_X, W))**2)/dx/integral,'go-',label='Match')
-			
+
 			# print [X, gamma]
 		# print final_X;
 
 		# total_scatter_up =      np.sum(np.abs(s)**2);
 		# total_scatter_down =    np.sum(np.abs(sd)**2);
 
-		return [final_gamma, final_transmission, final_reflection, final_transmission_first, final_reflection_first, final_X, scatter_up, scatter_down] #, total_scatter_up, total_scatter_down]
+		return [final_gamma,
+				final_transmission,
+				final_reflection,
+				final_transmission_first,
+				final_reflection_first,
+				final_X, scatter_up,
+				scatter_down]
+				#, total_scatter_up, total_scatter_down]
 
-	def main(lengths): 
+	def main(lengths):
 		widths = 100 * np.ones(N)
 		amplitudes = getAmplitudes(widths, lengths)
 		#print(getOverlap(widths, lengths, amplitudes, w, z, N, False)[0])
@@ -258,8 +265,11 @@ def annealingTest(lengths):
 	return main(lengths)
 
 
-#TESTING: Note that every grating that is tested must have at least seven (7) notches. 
-lengths_list = [[143, 313, 328, 135, 132, 167, 165],[181, 152, 307, 100, 259, 100, 199],[177, 145, 113, 100, 259, 100, 100],[174, 145, 316, 100, 267, 100, 389],[160, 340, 299, 95, 281, 299, 280]]
-for lengths in lengths_list: 
+#TESTING: Note that every grating that is tested must have at least seven (7) notches.
+lengths_list = [[143, 313, 328, 135, 132, 167, 165],
+				[181, 152, 307, 100, 259, 100, 199],
+				[177, 145, 113, 100, 259, 100, 100],
+				[174, 145, 316, 100, 267, 100, 389],
+				[160, 340, 299, 95, 281, 299, 280]]
+for lengths in lengths_list:
 	print(annealingTest(lengths))
-
