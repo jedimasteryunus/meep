@@ -11,7 +11,7 @@ def annealingTest(lengths):
 
 	wavelength = 637
 	#wavelength = 420
-	n_eff = 2.2012
+	n_eff = 1.979
 
 	# N = 20
 	# z = 20e3
@@ -20,9 +20,9 @@ def annealingTest(lengths):
 	# z = 10e3
 	# NA = .150 #Numerical Aperture
 
-	N = 8
+	# N = 8
 	z = 2.5e3
-	NA = .300 #Numerical Aperture
+	NA = .25 #Numerical Aperture
 
 	w = wavelength / (pi * NA) #mode field diameter
 
@@ -257,6 +257,7 @@ def annealingTest(lengths):
 				#, total_scatter_up, total_scatter_down]
 
 	def main(lengths):
+		N = len(lengths)+1;
 		widths = 100 * np.ones(N)
 		amplitudes = getAmplitudes(widths, lengths)
 		#print(getOverlap(widths, lengths, amplitudes, w, z, N, False)[0])
@@ -270,6 +271,11 @@ lengths_list = [[143, 313, 328, 135, 132, 167, 165],
 				[181, 152, 307, 100, 259, 100, 199],
 				[177, 145, 113, 100, 259, 100, 100],
 				[174, 145, 316, 100, 267, 100, 389],
-				[160, 340, 299, 95, 281, 299, 280]]
+				[160, 340, 299, 95, 281, 299, 280],
+				250 * np.ones(20),
+				260 * np.ones(20),
+				270 * np.ones(20),
+				280 * np.ones(20),
+				290 * np.ones(20)]
 for lengths in lengths_list:
 	print(annealingTest(lengths))
