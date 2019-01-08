@@ -7,11 +7,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cProfile
 
-def annealingTest(lengths):
+def LengthToGamma(lengths):
 
 	wavelength = 637
 	#wavelength = 420
-	n_eff = 1.979
+	n_eff = 1.9790286464722768
 
 	# N = 20
 	# z = 20e3
@@ -240,6 +240,15 @@ def annealingTest(lengths):
 			# plt.plot(x, 100*(np.abs(s)**2)/dx,'bo-',label='Scatter')
 			# plt.plot(x, 1*(np.angle(s) + pi),'ro-',label='Phase')
 			# plt.plot(x, 100*(np.abs(E(x - final_X, W))**2)/dx/integral,'go-',label='Match')
+			plt.gcf().clear()
+			plt.plot(x, 500*(np.abs(s)**2),'bo-',label='Scatter')
+			plt.plot(x, 5000*(np.abs(s)**2)/sqrt(dx[i]),'co-',label='Scatter')
+			plt.plot(x, 1*(np.angle(s) + pi),'ro-',label='Phase')
+			plt.plot(x, 10*(np.abs(E(x - final_X, W, Z))**2),'go-',label='Match')
+			plt.plot(x, 1*(np.angle(E(x - final_X, W, Z)) + pi),'ko-',label='Match')
+			plt.plot(x, dx/100,'yo-',label='Match')
+			plt.draw()
+			plt.pause(.00001)
 
 			# print [X, gamma]
 		# print final_X;

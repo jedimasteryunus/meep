@@ -43,7 +43,7 @@ dpml = .5;
 # monitorheight = .8
 monitorheight = .6
 H = monitorheight + 2*dpml 	#height of cell
-resolution = 50 # 50
+resolution = int(input("Resolution: "))
 
 Lr2 = 	2.00-a/2	# Position of reflection monitor2
 Ls = 	1.75-a/2	# Position of source
