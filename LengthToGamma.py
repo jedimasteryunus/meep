@@ -190,6 +190,12 @@ def LengthToGamma(lengths):
 
 		gammav2 = True
 
+		plt.axis([0, 7000, 0.0, 20.0])
+		plt.xlabel("Position (nm)")
+		plt.ylabel("scatter (%)")
+		plt.ion()
+		plt.show()
+
 		for X in range(Wround, int(currentx) + sensitivity-Wround, sensitivity):
 			gamma = 0
 			integral = 0
@@ -215,7 +221,7 @@ def LengthToGamma(lengths):
 				final_X = X;
 
 		if outputScatter:
-			print(range(Wround, int(currentx) + sensitivity-Wround, sensitivity))
+			#print(range(Wround, int(currentx) + sensitivity-Wround, sensitivity))
 
 			gamma = 0
 			integral = 0
@@ -270,7 +276,7 @@ def LengthToGamma(lengths):
 		widths = 100 * np.ones(N)
 		amplitudes = getAmplitudes(widths, lengths)
 		#print(getOverlap(widths, lengths, amplitudes, w, z, N, False)[0])
-		return getOverlap(widths, lengths, amplitudes, w, z, N, False)[0]
+		return getOverlap(widths, lengths, amplitudes, w, z, N, True)[0]
 
 	return main(lengths)
 
@@ -287,4 +293,4 @@ lengths_list = [[143, 313, 328, 135, 132, 167, 165],
 				280 * np.ones(20),
 				290 * np.ones(20)]
 for lengths in lengths_list:
-	print(annealingTest(lengths))
+	print(LengthToGamma(lengths))
