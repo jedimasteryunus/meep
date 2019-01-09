@@ -7,7 +7,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cProfile
 
-def LengthToGamma(lengths):
+def LengthToGamma(lengths): #Note: Input lengths are in 10*nm units
+
+	lengths = [10 * length for length in lengths] #Conversion from 10*nm to nm (see note above)
 
 	wavelength = 637
 	#wavelength = 420
@@ -279,10 +281,12 @@ def LengthToGamma(lengths):
 		#print(getOverlap(widths, lengths, amplitudes, w, z, N, False)[0])
 		return getOverlap(widths, lengths, amplitudes, w, z, N, True)[0]
 
+	#print(lengths)
 	return main(lengths)
 
 '''
-#TESTING: Note that every grating that is tested must have at least seven (7) notches.
+#TESTING: Note that every grating that is tested must have at least seven (7) notches. 
+#NOTE: UNIT CONVERSION TO 10*nm REQUIRED FOR THIS TESTING SUITE
 lengths_list = [[143, 313, 328, 135, 132, 167, 165],
 				[181, 152, 307, 100, 259, 100, 199],
 				[177, 145, 113, 100, 259, 100, 100],

@@ -22,7 +22,7 @@ for x_val in x:
     for y_val in y:
         x_input = np.array([x_val,y_val])
         f_list.append(func(x_input))
-print(min(f_list),max(f_list))
+print("Min / Max: ", min(f_list),max(f_list))
 
 
 # In[3]:
@@ -30,16 +30,6 @@ print(min(f_list),max(f_list))
 
 from scipy import optimize
 np.random.seed(555)   # Seeded to allow replication.
-
-
-# In[4]:
-
-
-x0 = np.array([2., 2])
-minimizer_kwargs = {"method": "BFGS"}
-ret = optimize.basinhopping(f1, x0, minimizer_kwargs=minimizer_kwargs, niter=200)
-print("global minimum: x0 = {}, f(x0) = {}".format(ret.x, ret.fun))
-
 
 # In[5]:
 
@@ -60,7 +50,7 @@ da.x, da.fun
 
 
 import LengthToGamma as lg
-
+'''
 lengths_list = [[143, 313, 328, 135, 132, 167, 165],
                 [181, 152, 307, 100, 259, 100, 199],
                 [177, 145, 113, 100, 259, 100, 100],
@@ -74,21 +64,15 @@ lengths_list = [[143, 313, 328, 135, 132, 167, 165],
 
 for lengths in lengths_list:
     print(lg.LengthToGamma(lengths))
-
+'''
 def optGamma(lengths):
     return -lg.LengthToGamma(lengths)
 
 f1 = optGamma
 
-# In[8]:
-
-
-print(f1([143,313,328]))
-
-
 # In[15]:
 
-bounds = [(40,400),(40,400),(40,400)]
+bounds = [(4,40),(4,40),(4,40)]
 #bounds = [(40,400),(40,400),(40,400)]
 da = optimize.dual_annealing(f1,bounds=bounds,maxiter=1000)
 da.x, -da.fun
@@ -107,8 +91,9 @@ da.message
 
 
 vals = da.x.astype(int)
-print(vals)
-print(-f1(list(vals)))
+vals = [10 * val for val in vals] #Conversion from 10*nm to nm (see note in LengthToGamma function in LengthToGamma.py)
+print("Lengths Vector: ", vals)
+print("Corresponding Gamma: ", -f1(list(vals)))
 
 
 # In[ ]:
