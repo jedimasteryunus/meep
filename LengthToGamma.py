@@ -190,11 +190,12 @@ def LengthToGamma(lengths):
 
 		gammav2 = True
 
-		plt.axis([0, 7000, 0.0, 20.0])
-		plt.xlabel("Position (nm)")
-		plt.ylabel("scatter (%)")
-		plt.ion()
-		plt.show()
+		#plt.axis([0, 7000, 0.0, 20.0])
+		#plt.xlabel("Position (nm)")
+		#plt.ylabel("scatter (%)")
+		#plt.legend(loc="center right")
+		#plt.ion()
+		#plt.show()
 
 		for X in range(Wround, int(currentx) + sensitivity-Wround, sensitivity):
 			gamma = 0
@@ -246,15 +247,15 @@ def LengthToGamma(lengths):
 			# plt.plot(x, 100*(np.abs(s)**2)/dx,'bo-',label='Scatter')
 			# plt.plot(x, 1*(np.angle(s) + pi),'ro-',label='Phase')
 			# plt.plot(x, 100*(np.abs(E(x - final_X, W))**2)/dx/integral,'go-',label='Match')
-			plt.gcf().clear()
-			plt.plot(x, 500*(np.abs(s)**2),'bo-',label='Scatter')
-			plt.plot(x, 5000*(np.abs(s)**2)/sqrt(dx[i]),'co-',label='Scatter')
-			plt.plot(x, 1*(np.angle(s) + pi),'ro-',label='Phase')
-			plt.plot(x, 10*(np.abs(E(x - final_X, W, Z))**2),'go-',label='Match')
-			plt.plot(x, 1*(np.angle(E(x - final_X, W, Z)) + pi),'ko-',label='Match')
-			plt.plot(x, dx/100,'yo-',label='Match')
-			plt.draw()
-			plt.pause(.00001)
+			#plt.gcf().clear()
+			#plt.plot(x, 500*(np.abs(s)**2),'bo-',label='Scatter')
+			#plt.plot(x, 5000*(np.abs(s)**2)/sqrt(dx[i]),'co-',label='Scatter')
+			#plt.plot(x, 1*(np.angle(s) + pi),'ro-',label='Phase')
+			#plt.plot(x, 10*(np.abs(E(x - final_X, W, Z))**2),'go-',label='Match')
+			#plt.plot(x, 1*(np.angle(E(x - final_X, W, Z)) + pi),'ko-',label='Match')
+			#plt.plot(x, dx/100,'yo-',label='Match')
+			#plt.draw()
+			#plt.pause(.00001)
 
 			# print [X, gamma]
 		# print final_X;
@@ -280,7 +281,7 @@ def LengthToGamma(lengths):
 
 	return main(lengths)
 
-
+'''
 #TESTING: Note that every grating that is tested must have at least seven (7) notches.
 lengths_list = [[143, 313, 328, 135, 132, 167, 165],
 				[181, 152, 307, 100, 259, 100, 199],
@@ -294,3 +295,4 @@ lengths_list = [[143, 313, 328, 135, 132, 167, 165],
 				290 * np.ones(20)]
 for lengths in lengths_list:
 	print(LengthToGamma(lengths))
+'''
