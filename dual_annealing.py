@@ -72,7 +72,7 @@ f1 = optGamma
 
 # In[15]:
 
-bounds = [(4,40),(4,40),(4,40)]
+bounds = [(4,40),(4,40),(4,40),(4,40),(4,40),(4,40),(4,40),(4,40),(4,40),(4,40)]
 #bounds = [(40,400),(40,400),(40,400)]
 da = optimize.dual_annealing(f1,bounds=bounds,maxiter=1000)
 da.x, -da.fun
@@ -91,8 +91,8 @@ da.message
 
 
 vals = da.x.astype(int)
-vals = [10 * val for val in vals] #Conversion from 10*nm to nm (see note in LengthToGamma function in LengthToGamma.py)
-print("Lengths Vector: ", vals)
+nm_vals = [10 * val for val in vals] #Conversion from 10*nm to nm (see note in LengthToGamma function in LengthToGamma.py)
+print("Lengths Vector: ", nm_vals)
 print("Corresponding Gamma: ", -f1(list(vals)))
 
 

@@ -7,9 +7,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cProfile
 
-def LengthToGamma(lengths): #Note: Input lengths are in 10*nm units
+def LengthToGamma(input_lengths): #Note: Input lengths are in 10*nm units
 
-	lengths = [10 * length for length in lengths] #Conversion from 10*nm to nm (see note above)
+	lengths = [10 * length for length in input_lengths] #Conversion from 10*nm to nm (see note above)
 
 	wavelength = 637
 	#wavelength = 420
@@ -287,16 +287,19 @@ def LengthToGamma(lengths): #Note: Input lengths are in 10*nm units
 '''
 #TESTING: Note that every grating that is tested must have at least seven (7) notches. 
 #NOTE: UNIT CONVERSION TO 10*nm REQUIRED FOR THIS TESTING SUITE
-lengths_list = [[143, 313, 328, 135, 132, 167, 165],
-				[181, 152, 307, 100, 259, 100, 199],
-				[177, 145, 113, 100, 259, 100, 100],
-				[174, 145, 316, 100, 267, 100, 389],
-				[160, 340, 299, 95, 281, 299, 280],
-				250 * np.ones(20),
-				260 * np.ones(20),
-				270 * np.ones(20),
-				280 * np.ones(20),
-				290 * np.ones(20)]
-for lengths in lengths_list:
-	print(LengthToGamma(lengths))
+
+input_lengths_list = [[14.3, 31.3, 32.8, 13.5, 13.2, 16.7, 16.5],
+				[18.1, 15.2, 30.7, 10.0, 25.9, 10.0, 19.9],
+				[17.7, 14.5, 11.3, 10.0, 25.9, 10.0, 10.0],
+				[17.4, 14.5, 31.6, 10.0, 26.7, 10.0, 38.9],
+				[16.0, 34.0, 29.9, 9.5, 28.1, 29.9, 28.0],
+				25 * np.ones(20),
+				26 * np.ones(20),
+				27 * np.ones(20),
+				28 * np.ones(20),
+				29 * np.ones(20)]
+
+for input_lengths in input_lengths_list:
+	print(LengthToGamma(input_lengths))
 '''
+
