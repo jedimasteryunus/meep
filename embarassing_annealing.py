@@ -59,7 +59,8 @@ def main():
     lengths = og.init_len_list
 
     for length in lengths:
-        print(length, -og.gamma(lengths=length))
+        printed_length = [10 * elt for elt in length]
+        print(printed_length, -og.gamma(lengths=length))
 
     processors = os.cpu_count()
     print("Available Processors: {}".format(processors))
@@ -67,7 +68,10 @@ def main():
     args = og.args
     p = Pool(processes=processors)
     result = p.map(og.minimize, args)
-    print(notch_count, sorted(list(result), reverse=True))
+    output_result = []
+    for elt in result: 
+        output_result.append((elt[0], [10 * member for member in elt[1]]))
+    print(notch_count, sorted(output_result, reverse=True))
 
 
 if __name__ == '__main__':
