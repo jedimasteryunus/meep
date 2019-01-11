@@ -72,7 +72,7 @@ f1 = optGamma
 
 # In[15]:
 
-bounds = [(4,31),(4,31),(4,31),(4,31),(4,31),(4,31),(4,31),(4,31),(4,31),(4,31)]
+bounds = [(10, 56),(10, 56),(10, 56),(10, 56),(10, 56),(10, 56),(10, 56),(10, 56),(10, 56),(10, 56)]
 #bounds = [(40,400),(40,400),(40,400)]
 da = optimize.dual_annealing(f1,bounds=bounds,maxiter=1000)
 da.x, -da.fun
@@ -97,7 +97,3 @@ print("Corresponding Gamma: ", -f1(list(vals)))
 
 
 # In[ ]:
-
-
-
-
