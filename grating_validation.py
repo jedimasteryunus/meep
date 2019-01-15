@@ -22,6 +22,8 @@ def validation(dw, dl):
 	# print("NOTCH WIDTH: %s nanometers" % (w * 1000))
 	# print("#----------------------------------------")
 
+	#T = 5;
+	#T = 10;
 	#T = 20;
 	T = 40;
 	a = 16 						# length of cell
@@ -31,6 +33,7 @@ def validation(dw, dl):
 	# monitorheight = .8
 	monitorheight = .6
 	H = monitorheight + 2*dpml 	#height of cell
+	#resolution = 10
 	resolution = 50
 	H = a
 	sxy = H - 2*dpml
@@ -45,7 +48,9 @@ def validation(dw, dl):
 
 	only_fund = True
 
-	if False:
+	ALN420_bool = False
+
+	if ALN420_bool:
 		case = "AlN420"
 		wavelength = 0.4203
 		#widths = [0, .09, .1, .11, .2]
@@ -273,13 +278,35 @@ def validation(dw, dl):
 	r = 800
 	npts = 1000;
 
+	Su = 0
+
 	for n in range(npts):
 		# print(n);
 		ff = sim.get_farfield(nearfield, mp.Vector3(r*cos(2*pi*(n/npts)), r*sin(2*pi*(n/npts))))
+
+		Ex = ff[0]
+		Ey = ff[1]
+		Ez = ff[2]
+
+		Hx = ff[3]
+		Hy = ff[4]
+		Hz = ff[5]
+
+		Py=((Ez * Hx)-(Ex * Hz)).real;
+		Pz=((Ex * Hy)-(Ey * Hx)).real;
+		Pr=sqrt((Py ** 2)+(Pz ** 2));
+
+		Su += Pr
+
+		print("Pr: ", Pr)
+
 		f1.write("{}, {}, ".format(n,2*pi*n/npts))
 		f1.write(", ".join([str(f).strip('()').replace('j', 'i') for f in ff]))
 		f1.write("\n")
 		# print(n)
+
+	print("Power Scattered Upward: ", Su)
+
 	f1.close();
 
 print(sys.argv)
