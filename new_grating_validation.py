@@ -6,19 +6,6 @@ import matplotlib.pyplot as plt
 from math import pi, tan, sqrt, cos, sin
 import sys
 
-# print(f1)
-a = 16 						# length of cell
-h = 0.2 					# height of Waveguide
-dpml = .5;
-# monitorheight = .8
-monitorheight = .6
-H = monitorheight + 2*dpml 	#height of cell
-
-Lr2 = 	2.00-a/2	# Position of reflection monitor2
-Ls = 	1.75-a/2	# Position of source
-Lr1 = 	1.50-a/2	# Position of reflection monitor1
-Lt = 	a/2-1.50	# Position of transmisison monitor
-
 def validation(dw, dl):
 
 	name = "w=%snm-dl=%snm" % (int(dw), int(dl))
