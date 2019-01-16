@@ -33,7 +33,7 @@ def validation(dw, dl):
 	monitorheight = .6
 	H = monitorheight + 2*dpml 	#height of cell
 	#resolution = 10
-	resolution = 50
+	resolution = 10
 	H = a
 	sxy = H - 2*dpml
 	sxy2 = H - 3*dpml
@@ -303,6 +303,24 @@ def validation(dw, dl):
 
 	band = 1
 
+	k = ms.find_k(
+		# p              = mp.EVEN_Z,               # Polarization
+		p              = mp.ODD_Z,               # Polarization
+		omega          = fcen,              # Omega to find corresponding k
+		band_min       = band,                  # Minimum band index
+		band_max       = band,                  # Max band index
+		korig_and_kdir = mp.Vector3(1,0,0),      # K vector orientation
+		tol            = 1e-7,               # solver tolerance
+		kmag_guess     = fcen * n_m,       # initial guess
+		kmag_min       = fcen * n_c,        # Minimum
+		kmag_max       = fcen * n_m)         # Maximum
+
+	print(k)
+
+	neff = k[0]/fcen;
+
+	print(neff)
+
 	E1 = np.squeeze(ms.get_efield(band, bloch_phase=False))
 	H1 = np.squeeze(ms.get_hfield(band, bloch_phase=False))
 	# E2 = np.squeeze(ms.get_hfield(3, bloch_phase=False))
@@ -315,6 +333,9 @@ def validation(dw, dl):
 
 	E0 = np.abs(E1[:,2])
 	H0 = np.abs(H1[:,2])
+
+	refl_val = sim.get_array(center=mp.Vector3(Lr1,0), size=mp.Vector3(0,monitorheight-2/resolution), component=mp.Ez, cmplx=True)
+	tran_val = sim.get_array(center=mp.Vector3(Lt, 0), size=mp.Vector3(0,monitorheight-2/resolution), component=mp.Ez, cmplx=True)
 
 	fund_refl_amp = 			np.conj(np.dot(refl_val, E0) / np.dot(E0, E0))					# Conjugate becasue MEEP uses physics exp(kz-wt) rather than engineering exp(wt-kz)
 	first_order_refl_amp = 		0 # np.conj(np.dot(refl_val, E1[:,2]) / np.dot(E1[:,2], E1[:,2]))
@@ -335,6 +356,28 @@ def validation(dw, dl):
 	first_order_refl_ratio = 	0
 	fund_tran_ratio = 			np.abs(fund_tran_power 		/ (fund_tran_power + not_fund_tran_power))
 	first_order_tran_ratio = 	0
+
+	refl1_flux = 	mp.get_fluxes(refl1)
+	refl2_flux = 	mp.get_fluxes(refl2)
+	tran_flux = 	mp.get_fluxes(tran)
+	su_flux = 		mp.get_fluxes(su)
+	sd_flux = 		mp.get_fluxes(sd)
+
+	index = 0
+
+	R = 	-refl1_flux[index] 						/ (refl2_flux[index] - refl1_flux[index])
+	T = 	 tran_flux[index] 						/ (refl2_flux[index] - refl1_flux[index])
+	S = 	(refl2_flux[index] - tran_flux[index]) 	/ (refl2_flux[index] - refl1_flux[index])
+	Su = 	 su_flux[index] 						/ (refl2_flux[index] - refl1_flux[index])
+	Sd = 	-sd_flux[index] 						/ (refl2_flux[index] - refl1_flux[index])
+
+	print("Reflected Power: ", -R)
+	print("Transmitted Power: ", -T)
+	print("Scattered Power: ", +S)
+	print("UpScattered Power: ", -Su)
+	print("DownScattered Power: ", -Sd)
+
+	print("Total Power: ", -R-T-S)
 
 	pt = mp.Vector3(0,0)
 	# sim.run(until_after_sources=mp.stop_when_fields_decayed(50,mp.Ez,pt,1e-3))
@@ -371,9 +414,10 @@ def validation(dw, dl):
 		f1.write("\n")
 		# print(n)
 
-	print("Power Scattered Upward: ", Su)
-	print("Power Reflected: ", fund_refl_power)
-	print("Power Transmitted: ", fund_trans_power)
+	print("Power Scattered Upward (Farfield): ", Su)
+	print("Power Scattered Upward (Farfield, Normalized)", Su / (-R-T+S))
+	#print("Power Reflected: ", fund_refl_power.real)
+	#3print("Power Transmitted: ", fund_tran_power.real)
 
 	f1.close();
 
