@@ -186,9 +186,9 @@ def validation(dw, dl):
 	# lengths = [160, 340, 299, 95, 281, 299, 280];
 	# widths =  [50,  75,  100, 100, 100, 75, 50, 50];
 
-	input_lengths =  [30, 25, 30, 30, 22, 28, 18, 32, 16, 25]
+	input_lengths =   [31, 21, 34, 32, 17, 32, 15, 33, 15, 31, 15, 16, 32, 15, 16, 25]
 	lengths = [10 * length for length in input_lengths]
-	widths = 11 * [100]
+	widths = (len(input_lengths) + 1) * [100]
 
 	assert(len(lengths) + 1 == len(widths));
 

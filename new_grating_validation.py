@@ -185,9 +185,10 @@ def validation(dw, dl):
 	# lengths = [160, 340, 299, 95, 281, 299, 280];
 	# widths =  [50,  75,  100, 100, 100, 75, 50, 50];
 
-	input_lengths =  [30, 25, 30, 30, 22, 28, 18, 32, 16, 25]
+	input_lengths =  [12, 28, 24, 15, 16, 21, 25, 34, 18, 11, 12, 35, 19, 37, 13, 6]
+	num_lengths = len(input_lengths)
 	lengths = [10 * length for length in input_lengths]
-	widths = 11 * [100]
+	widths = (num_lengths + 1) * [100]
 
 	assert(len(lengths) + 1 == len(widths));
 
@@ -377,7 +378,7 @@ def validation(dw, dl):
 	print("UpScattered Power: ", -Su)
 	print("DownScattered Power: ", -Sd)
 
-	print("Total Power: ", -R-T-S)
+	print("Total Power: ", R+T+S)
 
 	pt = mp.Vector3(0,0)
 	# sim.run(until_after_sources=mp.stop_when_fields_decayed(50,mp.Ez,pt,1e-3))
