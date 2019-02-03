@@ -238,6 +238,13 @@ def validation(dw, dl):
 						sources = sources,
 						resolution = resolution)
 
+	nfreq = 1
+
+	refl_fr1 = 	mp.FluxRegion(center=mp.Vector3(Lr1,0), 	size=mp.Vector3(0,monitorheight))
+	refl_fr2 = 	mp.FluxRegion(center=mp.Vector3(Lr2,0), 	size=mp.Vector3(0,monitorheight))
+
+	refl1 = sim.add_flux(fcen, df, nfreq, refl_fr1)
+	refl2 = sim.add_flux(fcen, df, nfreq, refl_fr2)
 
 	if resolution <= 50:
 		epsform = "eps-000000.00"
@@ -253,8 +260,17 @@ def validation(dw, dl):
 			# mp.to_appended("ez", mp.at_every(0.6, mp.output_efield_z)),
 			until = T)
 
+	refl1_flux = mp.get_fluxes(refl1)
+	refl2_flux = mp.get_fluxes(refl2)
+
+	incident_flux = refl2_flux[0] - refl1_flux[0]
+
+	print("Incident Flux: ", incident_flux)
+
 	os.system("convert " + outputdir + "/grating_validation-ez-*.png gratingFull-" + name + ".gif");
 	os.system("rm " + outputdir + "/grating_validation-ez-*.png");
+
+	os.system("convert " + outputdir + "/grating_validation-ez-*.png " + outputdir + "grating_validation.gif")
 
 	# nearfield = sim.add_near2far(fcen, 0, 1,
 	# 	mp.Near2FarRegion(mp.Vector3(0,  0.5*sxy), size=mp.Vector3(sxy)),
@@ -298,7 +314,7 @@ def validation(dw, dl):
 
 		Su += Pr
 
-		print("Pr: ", Pr)
+		#print("Pr: ", Pr)
 
 		f1.write("{}, {}, ".format(n,2*pi*n/npts))
 		f1.write(", ".join([str(f).strip('()').replace('j', 'i') for f in ff]))
@@ -306,6 +322,7 @@ def validation(dw, dl):
 		# print(n)
 
 	print("Power Scattered Upward: ", Su)
+	print("Power Scattered Upward (Normalized): ", Su / incident_flux)
 
 	f1.close();
 
