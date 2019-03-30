@@ -39,11 +39,14 @@ def validation(dw, dl):
 	sxy = H - 2*dpml
 	sxy2 = H - 3*dpml
 	sxy2 = H
+	'''
+	#This code may have been causing the inciden flux bug.
 
 	Lr2 = 	2.00-a/2	# Position of reflection monitor2
 	Ls = 	1.75-a/2	# Position of source
 	Lr1 = 	1.50-a/2	# Position of reflection monitor1
 	Lt = 	a/2-1.50	# Position of transmisison monitor
+	'''
 	# monitorheight = 4*h
 
 	only_fund = True
@@ -209,12 +212,15 @@ def validation(dw, dl):
 	# w = .050
 	# x = 3*dpml - a/2;
 	# h2 =
+	x_list = []
 	for i in range(0, len(lengths)):
+		x_list.append(x)
 		geometry.append(mp.Block(mp.Vector3(widths[i]/1000., e*h),
 			center = mp.Vector3(x, h * (1 - e)/2),
 			material = default_material))
 		x += (widths[i+1] + lengths[i]) / 1000.
 		# grate_positions.append(x)
+
 
 	geometry.append(mp.Block(mp.Vector3(widths[len(widths)-1]/1000., e*h),
 		center = mp.Vector3(x, h * (1 - e)/2),
@@ -223,9 +229,14 @@ def validation(dw, dl):
 	# sources = [mp.EigenModeSource(mp.ContinuousSource(frequency = fcen),
 	# 							  size = mp.Vector3(0,H),
 	# 							  center = mp.Vector3(2*dpml-a/2, 0))]
+
+	Ls = -2*x #Position of source
+	Lr1 = -2*x - 0.25 #Position of reflection monitor 1
+	Lr2 = -2*x + 0.25 #Position of reflection monitor 2
+
 	sources = [ mp.EigenModeSource(mp.ContinuousSource(frequency = fcen),
 				size = mp.Vector3(0,H),
-				center = mp.Vector3(-2*x, 0))]
+				center = mp.Vector3(Ls, 0))]
 
 	# pml_layers = [mp.PML(0.2)]
 	pml_layers = [mp.Absorber(thickness=dpml)]
@@ -242,9 +253,11 @@ def validation(dw, dl):
 
 	refl_fr1 = 	mp.FluxRegion(center=mp.Vector3(Lr1,0), 	size=mp.Vector3(0,monitorheight))
 	refl_fr2 = 	mp.FluxRegion(center=mp.Vector3(Lr2,0), 	size=mp.Vector3(0,monitorheight))
+	su_fr = 	mp.FluxRegion(center=mp.Vector3(0, monitorheight/2),	size=mp.Vector3(a,0))
 
 	refl1 = sim.add_flux(fcen, df, nfreq, refl_fr1)
 	refl2 = sim.add_flux(fcen, df, nfreq, refl_fr2)
+	su = sim.add_flux(fcen, df, nfreq, su_fr)
 
 	if resolution <= 50:
 		epsform = "eps-000000.00"
@@ -262,10 +275,9 @@ def validation(dw, dl):
 
 	refl1_flux = mp.get_fluxes(refl1)
 	refl2_flux = mp.get_fluxes(refl2)
+	su_flux = mp.get_fluxes(su)
 
 	incident_flux = refl2_flux[0] - refl1_flux[0]
-
-	print("Incident Flux: ", incident_flux)
 
 	os.system("convert " + outputdir + "/grating_validation-ez-*.png gratingFull-" + name + ".gif");
 	os.system("rm " + outputdir + "/grating_validation-ez-*.png");
@@ -320,6 +332,14 @@ def validation(dw, dl):
 		f1.write(", ".join([str(f).strip('()').replace('j', 'i') for f in ff]))
 		f1.write("\n")
 		# print(n)
+
+	print("X List: ", x_list)
+	print("Position Comparison: ", Lr1, -2*x, Lr2)
+
+	print("Refl1 Flux: ", refl1_flux[0])
+	print("Refl2 Flux: ", refl2_flux[0])
+	print("Upward-Scattered Flux: ", su_flux[0])
+	print("Incident Flux: ", incident_flux)
 
 	print("Power Scattered Upward: ", Su)
 	print("Power Scattered Upward (Normalized): ", Su / incident_flux)
