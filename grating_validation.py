@@ -29,18 +29,38 @@ def validation(dw, dl):
 	a = 16 						# length of cell
 	# a = 20 						# length of cell
 	h = 0.4 					# height of Waveguide
-	dpml = 1;
 	# monitorheight = .8
-	monitorheight = .6
-	H = monitorheight + 2*dpml 	#height of cell
+	# monitorheight = .4
+	monitorheight = 3 * h
+
+	only_fund = True
+
+	ALN420_bool = False
+
+	farfield_bool = False
+
+	if farfield_bool:
+		dpml = 1;
+		H = a #height of cell
+	else:
+		dpml = 3 * h;
+		H = monitorheight + 2 * dpml 	#height of cell
+
 	#resolution = 10
 	resolution = 50
-	H = a
+
+	'''
 	sxy = H - 2*dpml
-	sxy2 = H - 3*dpml
+	# sxy2 = H - 3*dpml
 	sxy2 = H
 	'''
-	#This code may have been causing the inciden flux bug.
+
+	sxy = a - 2*dpml
+	# sxy2 = a - 3*dpml
+	sxy2 = a
+
+	'''
+	#This code may have been causing the incident flux bug.
 
 	Lr2 = 	2.00-a/2	# Position of reflection monitor2
 	Ls = 	1.75-a/2	# Position of source
@@ -48,10 +68,6 @@ def validation(dw, dl):
 	Lt = 	a/2-1.50	# Position of transmisison monitor
 	'''
 	# monitorheight = 4*h
-
-	only_fund = True
-
-	ALN420_bool = False
 
 	if ALN420_bool:
 		case = "AlN420"
@@ -231,11 +247,13 @@ def validation(dw, dl):
 	# 							  center = mp.Vector3(2*dpml-a/2, 0))]
 
 	Ls = -2*x #Position of source
-	Lr1 = -2*x - 0.25 #Position of reflection monitor 1
-	Lr2 = -2*x + 0.25 #Position of reflection monitor 2
+	Lr1 = -2*x - 1.25 #Position of reflection monitor 1
+	Lr2 = -2*x + 1.25 #Position of reflection monitor 2
+	Lt = -Lr2 #Position of transmission monitor
+	scatter_monitor_size = 2 * Lt
 
 	sources = [ mp.EigenModeSource(mp.ContinuousSource(frequency = fcen),
-				size = mp.Vector3(0,H),
+				size = mp.Vector3(0, H),
 				center = mp.Vector3(Ls, 0))]
 
 	# pml_layers = [mp.PML(0.2)]
@@ -253,11 +271,15 @@ def validation(dw, dl):
 
 	refl_fr1 = 	mp.FluxRegion(center=mp.Vector3(Lr1,0), 	size=mp.Vector3(0,monitorheight))
 	refl_fr2 = 	mp.FluxRegion(center=mp.Vector3(Lr2,0), 	size=mp.Vector3(0,monitorheight))
-	su_fr = 	mp.FluxRegion(center=mp.Vector3(0, monitorheight/2),	size=mp.Vector3(a,0))
+	tran_fr = 	mp.FluxRegion(center=mp.Vector3(Lt,0), 	    size=mp.Vector3(0,monitorheight))
+	su_fr = 	mp.FluxRegion(center=mp.Vector3(0, monitorheight/2),	size=mp.Vector3(scatter_monitor_size,0))
+	sd_fr = 	mp.FluxRegion(center=mp.Vector3(0, -monitorheight/2),	size=mp.Vector3(scatter_monitor_size,0))
 
 	refl1 = sim.add_flux(fcen, df, nfreq, refl_fr1)
 	refl2 = sim.add_flux(fcen, df, nfreq, refl_fr2)
+	tran = sim.add_flux(fcen, df, nfreq, tran_fr)
 	su = sim.add_flux(fcen, df, nfreq, su_fr)
+	sd = sim.add_flux(fcen, df, nfreq, sd_fr)
 
 	if resolution <= 50:
 		epsform = "eps-000000.00"
@@ -275,7 +297,9 @@ def validation(dw, dl):
 
 	refl1_flux = mp.get_fluxes(refl1)
 	refl2_flux = mp.get_fluxes(refl2)
+	tran_flux = mp.get_fluxes(tran)
 	su_flux = mp.get_fluxes(su)
+	sd_flux = mp.get_fluxes(sd)
 
 	incident_flux = refl2_flux[0] - refl1_flux[0]
 
@@ -306,43 +330,50 @@ def validation(dw, dl):
 	r = 800
 	npts = 1000;
 
-	Su = 0
+	if farfield_bool:
+		Su = 0
 
-	for n in range(npts):
-		# print(n);
-		ff = sim.get_farfield(nearfield, mp.Vector3(r*cos(2*pi*(n/npts)), r*sin(2*pi*(n/npts))))
+		for n in range(npts):
+			# print(n);
+			ff = sim.get_farfield(nearfield, mp.Vector3(r*cos(2*pi*(n/npts)), r*sin(2*pi*(n/npts))))
 
-		Ex = ff[0]
-		Ey = ff[1]
-		Ez = ff[2]
+			Ex = ff[0]
+			Ey = ff[1]
+			Ez = ff[2]
 
-		Hx = ff[3]
-		Hy = ff[4]
-		Hz = ff[5]
+			Hx = ff[3]
+			Hy = ff[4]
+			Hz = ff[5]
 
-		Py=((Ez * Hx)-(Ex * Hz)).real;
-		Pz=((Ex * Hy)-(Ey * Hx)).real;
-		Pr=sqrt((Py ** 2)+(Pz ** 2));
+			Py=((Ez * Hx)-(Ex * Hz)).real;
+			Pz=((Ex * Hy)-(Ey * Hx)).real;
+			Pr=sqrt((Py ** 2)+(Pz ** 2));
 
-		Su += Pr
+			Su += Pr
 
-		#print("Pr: ", Pr)
+			#print("Pr: ", Pr)
 
-		f1.write("{}, {}, ".format(n,2*pi*n/npts))
-		f1.write(", ".join([str(f).strip('()').replace('j', 'i') for f in ff]))
-		f1.write("\n")
-		# print(n)
+			f1.write("{}, {}, ".format(n,2*pi*n/npts))
+			f1.write(", ".join([str(f).strip('()').replace('j', 'i') for f in ff]))
+			f1.write("\n")
+			# print(n)
 
 	print("X List: ", x_list)
-	print("Position Comparison: ", Lr1, -2*x, Lr2)
+	print("Position Comparison:", "Lr1 = %s," % (Lr1), "Lr1 = %s," % (-2*x), "Lr2 = %s," % (Lr2))
 
 	print("Refl1 Flux: ", refl1_flux[0])
 	print("Refl2 Flux: ", refl2_flux[0])
+	print("Tran Flux: ", tran_flux[0])
 	print("Upward-Scattered Flux: ", su_flux[0])
+	print("Downward-Scattered Flux: ", sd_flux[0])
+
+	print("Sanity Check: ", refl2_flux[0] + tran_flux[0] + su_flux[0] + sd_flux[0])
+
 	print("Incident Flux: ", incident_flux)
 
-	print("Power Scattered Upward: ", Su)
-	print("Power Scattered Upward (Normalized): ", Su / incident_flux)
+	if farfield_bool:
+		print("Power Scattered Upward: ", Su)
+		print("Power Scattered Upward (Normalized): ", Su / incident_flux)
 
 	f1.close();
 
