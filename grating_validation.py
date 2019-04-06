@@ -205,7 +205,7 @@ def validation(dw, dl):
 	# lengths = [160, 340, 299, 95, 281, 299, 280];
 	# widths =  [50,  75,  100, 100, 100, 75, 50, 50];
 
-	input_lengths =   [31, 21, 34, 32, 17, 32, 15, 33, 15, 31, 15, 16, 32, 15, 16, 25]
+	input_lengths =   [31, 20, 36, 32, 15, 4, 31, 16, 32, 16, 32, 16, 16, 16, 32, 16, 32, 32, 32, 9]
 	lengths = [10 * length for length in input_lengths]
 	widths = (len(input_lengths) + 1) * [100]
 
@@ -368,7 +368,15 @@ def validation(dw, dl):
 			# print(n)
 
 	print("X List: ", x_list)
-	print("Position Comparison:", "Lr1 = %s," % (Lr1), "Lr1 = %s," % (-2*x), "Lr2 = %s," % (Lr2))
+	print("Position Comparison:", "Lr1 = %s," % (Lr1), "-2x = %s," % (-2*x), "Lr2 = %s," % (Lr2), "Lt = %s," % (Lt))
+
+	left_notch_boundary = x_list[0] - widths[0] / 2000.;
+	right_notch_boundary = x_list[-1] + widths[-1] / 2000.;
+	print("Left Notch Boundary: ", left_notch_boundary);
+	print("Right Notch Boundary: ", right_notch_boundary);
+
+	assert(Lr2 < left_notch_boundary);
+	assert(Lt > right_notch_boundary);
 
 	print("Refl1 Flux: ", refl1_flux[0])
 	print("Refl2 Flux: ", refl2_flux[0])
@@ -376,13 +384,20 @@ def validation(dw, dl):
 	print("Upward-Scattered Flux: ", su_flux[0])
 	print("Downward-Scattered Flux: ", sd_flux[0])
 
-	print("Sanity Check: ", refl2_flux[0] - tran_flux[0] + su_flux[0] - sd_flux[0])
+	print("Gauss' Law of Magnetism Sanity Check: ", su_flux[0] - sd_flux[0] - refl2_flux[0] + tran_flux[0])
 
 	print("Incident Flux: ", incident_flux)
 
+	print("Power Scattered Upward: ", su_flux[0])
+	print("Power Scattered Upward (Normalized): ", su_flux[0] / incident_flux)
+
+	print("Grating Efficiency: %s Percent" % (100 * su_flux[0] / incident_flux))
+
 	if farfield_bool:
-		print("Power Scattered Upward: ", Su)
-		print("Power Scattered Upward (Normalized): ", Su / incident_flux)
+		print("Power Scattered Upward (Farfield): ", Su)
+		print("Power Scattered Upward (Farfield, Normalized): ", Su / incident_flux)
+
+		print("Grating Efficiency (Farfield): %s Percent" % (100 * su_flux[0] / incident_flux))
 
 	f1.close();
 
