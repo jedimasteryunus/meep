@@ -384,7 +384,7 @@ def validation(dw, dl):
 	print("Upward-Scattered Flux: ", su_flux[0])
 	print("Downward-Scattered Flux: ", sd_flux[0])
 
-	print("Gauss' Law of Magnetism Sanity Check: ", su_flux[0] - sd_flux[0] - refl2_flux[0] + tran_flux[0])
+	print("Gauss' Law for Magnetism Sanity Check: ", su_flux[0] - sd_flux[0] - refl2_flux[0] + tran_flux[0])
 
 	print("Incident Flux: ", incident_flux)
 
