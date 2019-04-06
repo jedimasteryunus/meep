@@ -275,12 +275,6 @@ def validation(dw, dl):
 	su_fr = 	mp.FluxRegion(center=mp.Vector3(0, monitorheight/2),	size=mp.Vector3(scatter_monitor_size,0))
 	sd_fr = 	mp.FluxRegion(center=mp.Vector3(0, -monitorheight/2),	size=mp.Vector3(scatter_monitor_size,0))
 
-	refl1 = sim.add_flux(fcen, df, nfreq, refl_fr1)
-	refl2 = sim.add_flux(fcen, df, nfreq, refl_fr2)
-	tran = sim.add_flux(fcen, df, nfreq, tran_fr)
-	su = sim.add_flux(fcen, df, nfreq, su_fr)
-	sd = sim.add_flux(fcen, df, nfreq, sd_fr)
-
 	if resolution <= 50:
 		epsform = "eps-000000.00"
 	else:
@@ -295,14 +289,6 @@ def validation(dw, dl):
 			# mp.to_appended("ez", mp.at_every(0.6, mp.output_efield_z)),
 			until = T)
 
-	refl1_flux = mp.get_fluxes(refl1)
-	refl2_flux = mp.get_fluxes(refl2)
-	tran_flux = mp.get_fluxes(tran)
-	su_flux = mp.get_fluxes(su)
-	sd_flux = mp.get_fluxes(sd)
-
-	incident_flux = refl2_flux[0] - refl1_flux[0]
-
 	os.system("convert " + outputdir + "/grating_validation-ez-*.png gratingFull-" + name + ".gif");
 	os.system("rm " + outputdir + "/grating_validation-ez-*.png");
 
@@ -314,13 +300,36 @@ def validation(dw, dl):
 	# 	mp.Near2FarRegion(mp.Vector3( 0.5*sxy), size=mp.Vector3(0,sxy)),
 	# 	mp.Near2FarRegion(mp.Vector3(-0.5*sxy), size=mp.Vector3(0,sxy), weight=-1.0))
 
+	refl1 = sim.add_flux(fcen, df, nfreq, refl_fr1)
+	refl2 = sim.add_flux(fcen, df, nfreq, refl_fr2)
+	tran = sim.add_flux(fcen, df, nfreq, tran_fr)
+	su = sim.add_flux(fcen, df, nfreq, su_fr)
+	sd = sim.add_flux(fcen, df, nfreq, sd_fr)
+
 	nearfield = sim.add_near2far(fcen, 0, 1,
-		mp.Near2FarRegion(mp.Vector3(0,  	 	0.5*sxy), size=mp.Vector3(sxy)))#,
+		mp.Near2FarRegion(mp.Vector3(0, 0.5*sxy), size=mp.Vector3(sxy)))#,
 			# mp.Near2FarRegion(mp.Vector3(-0.5*sxy, 	0.3*sxy), size=mp.Vector3(0, 0.4*sxy), weight=-1.0),
 		# mp.Near2FarRegion(mp.Vector3(0.5*sxy, 	0.3*sxy), size=mp.Vector3(0, 0.4*sxy)))
+	'''
+	refl1_flux = mp.get_fluxes(refl1)
+	refl2_flux = mp.get_fluxes(refl2)
+	tran_flux = mp.get_fluxes(tran)
+	su_flux = mp.get_fluxes(su)
+	sd_flux = mp.get_fluxes(sd)
+
+	incident_flux = refl2_flux[0] - refl1_flux[0]
+	'''
 
 	sim.run(mp.at_every(wavelength/20 , mp.output_png(mp.Ez, "-RZc bluered -A " + outputdir + "/grating_validation-" + epsform + ".h5 -a gray:.2")), until=19*wavelength/20)
 	sim.run(until = 19*wavelength)
+
+	refl1_flux = mp.get_fluxes(refl1)
+	refl2_flux = mp.get_fluxes(refl2)
+	tran_flux = mp.get_fluxes(tran)
+	su_flux = mp.get_fluxes(su)
+	sd_flux = mp.get_fluxes(sd)
+
+	incident_flux = refl2_flux[0] - refl1_flux[0]
 
 	pt = mp.Vector3(0,0)
 	# sim.run(until_after_sources=mp.stop_when_fields_decayed(50,mp.Ez,pt,1e-3))
@@ -367,7 +376,7 @@ def validation(dw, dl):
 	print("Upward-Scattered Flux: ", su_flux[0])
 	print("Downward-Scattered Flux: ", sd_flux[0])
 
-	print("Sanity Check: ", refl2_flux[0] + tran_flux[0] + su_flux[0] + sd_flux[0])
+	print("Sanity Check: ", refl2_flux[0] - tran_flux[0] + su_flux[0] - sd_flux[0])
 
 	print("Incident Flux: ", incident_flux)
 
