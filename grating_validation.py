@@ -206,8 +206,9 @@ def validation(dw, dl):
 	# widths =  [50,  75,  100, 100, 100, 75, 50, 50];
 
 	input_lengths =   [31, 20, 36, 32, 15, 4, 31, 16, 32, 16, 32, 16, 16, 16, 32, 16, 32, 32, 32, 9]
+	num_notches = len(input_lengths)
 	lengths = [10 * length for length in input_lengths]
-	widths = (len(input_lengths) + 1) * [100]
+	widths = (num_notches + 1) * [100]
 
 	assert(len(lengths) + 1 == len(widths));
 
@@ -366,6 +367,8 @@ def validation(dw, dl):
 			f1.write(", ".join([str(f).strip('()').replace('j', 'i') for f in ff]))
 			f1.write("\n")
 			# print(n)
+
+	print("Number of Notches: ", num_notches)
 
 	print("X List: ", x_list)
 	print("Position Comparison:", "Lr1 = %s," % (Lr1), "-2x = %s," % (-2*x), "Lr2 = %s," % (Lr2), "Lt = %s," % (Lt))
