@@ -26,8 +26,8 @@ def validation(dw, dl):
 	#T = 10;
 	#T = 20;
 	T = 40;
-	a = 16 						# length of cell
-	# a = 20 						# length of cell
+	#a = 16 						# length of cell
+	a = 20 						# length of cell
 	h = 0.4 					# height of Waveguide
 	# monitorheight = .8
 	# monitorheight = .4
