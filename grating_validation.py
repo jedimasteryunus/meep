@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from math import pi, tan, sqrt, cos, sin
 import sys
+import operator
+import time
 
 # print(f1)
 
@@ -27,7 +29,8 @@ def validation(dw, dl):
 	#T = 20;
 	T = 40;
 	#a = 16 						# length of cell
-	a = 20 						# length of cell
+	#a = 20 						# length of cell
+	a = 24							# length of cell
 	h = 0.4 					# height of Waveguide
 	# monitorheight = .8
 	# monitorheight = .4
@@ -253,6 +256,8 @@ def validation(dw, dl):
 	Lt = -Lr2 #Position of transmission monitor
 	scatter_monitor_size = 2 * Lt
 
+	assert(Lr1 > - a / 2 + dpml) #Make sure that nothing we care about is sitting inside the PML
+
 	sources = [ mp.EigenModeSource(mp.ContinuousSource(frequency = fcen),
 				size = mp.Vector3(0, H),
 				center = mp.Vector3(Ls, 0))]
@@ -368,6 +373,8 @@ def validation(dw, dl):
 			f1.write("\n")
 			# print(n)
 
+	sim.reset_meep()
+
 	print("Number of Notches: ", num_notches)
 
 	print("X List: ", x_list)
@@ -400,18 +407,42 @@ def validation(dw, dl):
 		print("Power Scattered Upward (Farfield): ", Su)
 		print("Power Scattered Upward (Farfield, Normalized): ", Su / incident_flux)
 
-		print("Grating Efficiency (Farfield): %s Percent" % (100 * su_flux[0] / incident_flux))
+		print("Grating Efficiency (Farfield): %s Percent" % (100 * Su / incident_flux))
+
+		return 100 * Su / incident_flux
+
+	return 100 * su_flux[0] / incident_flux
 
 	f1.close();
 
+def sweep(dw_lower_bound, dw_upper_bound, dl_lower_bound, dl_upper_bound):
+	start = time.time()
+	efficiency_dict = dict()
+	for dw in range(dw_lower_bound, dw_upper_bound, 10):
+		for dl in range(dl_lower_bound, dl_upper_bound, 10):
+			efficiency_dict[(dw, dl)] = validation(dw, dl)
+	sorted_efficiency_dict = sorted(efficiency_dict.items(), key=operator.itemgetter(1), reverse = True)
+	print("Sorted Efficiency Dictionary: ", sorted_efficiency_dict)
+	end = time.time()
+	runtime = end - start
+	print("Total Runtime: %s seconds" % (runtime))
+
 print(sys.argv)
 print(len(sys.argv))
+
+dw_lower_bound = -10 #Note: This bound is inclusive
+dw_upper_bound = 30 #Note: This bound is exclusive
+dl_lower_bound = dw_lower_bound #Note: This bound is inclusive
+dl_upper_bound = dw_upper_bound #Note: This bound is exclusive
 
 if len(sys.argv) > 2:
 	print(int(sys.argv[1]))
 	print(int(sys.argv[2]))
 	validation(int(sys.argv[1]), int(sys.argv[2]));
 elif len(sys.argv) > 1:
-	validation(int(sys.argv[1]), 0);
+	if sys.argv[1] == "sweep":
+		sweep(dw_lower_bound, dw_upper_bound, dl_lower_bound, dl_upper_bound)
+	else:
+		validation(int(sys.argv[1]), 0);
 else:
 	validation(0, 0);
