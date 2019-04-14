@@ -208,9 +208,10 @@ def validation(dw, dl):
 	# lengths = [160, 340, 299, 95, 281, 299, 280];
 	# widths =  [50,  75,  100, 100, 100, 75, 50, 50];
 
-	input_lengths =   [31, 20, 36, 32, 15, 4, 31, 16, 32, 16, 32, 16, 16, 16, 32, 16, 32, 32, 32, 9]
+	input_lengths =   [310, 200, 360, 320, 150, 40, 310, 160, 320, 160, 320, 160, 160, 160, 320, 160, 320, 320, 320, 90]
 	num_notches = len(input_lengths)
-	lengths = [10 * length for length in input_lengths]
+	lengths = input_lengths
+	#lengths = [10 * length for length in input_lengths]
 	widths = (num_notches + 1) * [100]
 
 	assert(len(lengths) + 1 == len(widths));
@@ -272,6 +273,7 @@ def validation(dw, dl):
 						geometry = geometry,
 						sources = sources,
 						resolution = resolution)
+	sim.reset_meep()
 
 	nfreq = 1
 
@@ -306,6 +308,7 @@ def validation(dw, dl):
 	# 	mp.Near2FarRegion(mp.Vector3( 0.5*sxy), size=mp.Vector3(0,sxy)),
 	# 	mp.Near2FarRegion(mp.Vector3(-0.5*sxy), size=mp.Vector3(0,sxy), weight=-1.0))
 
+	#Delete after printing output
 	refl1 = sim.add_flux(fcen, df, nfreq, refl_fr1)
 	refl2 = sim.add_flux(fcen, df, nfreq, refl_fr2)
 	tran = sim.add_flux(fcen, df, nfreq, tran_fr)
@@ -329,6 +332,7 @@ def validation(dw, dl):
 	sim.run(mp.at_every(wavelength/20 , mp.output_png(mp.Ez, "-RZc bluered -A " + outputdir + "/grating_validation-" + epsform + ".h5 -a gray:.2")), until=19*wavelength/20)
 	sim.run(until = 19*wavelength)
 
+	#Delete after printing output
 	refl1_flux = mp.get_fluxes(refl1)
 	refl2_flux = mp.get_fluxes(refl2)
 	tran_flux = mp.get_fluxes(tran)
@@ -409,11 +413,43 @@ def validation(dw, dl):
 
 		print("Grating Efficiency (Farfield): %s Percent" % (100 * Su / incident_flux))
 
-		return 100 * Su / incident_flux
+		f1.close();
 
-	return 100 * su_flux[0] / incident_flux
+		result = 100 * Su / incident_flux
+
+		#Memory cleanup for future validation runs
+		del refl1
+		del refl1_flux
+		del refl2
+		del refl2_flux
+		del tran
+		del tran_flux
+		del su
+		del su_flux
+		del sd
+		del sd_flux
+		del incident_flux
+
+		return result
 
 	f1.close();
+
+	result = 100 * su_flux[0] / incident_flux
+
+	#Memory cleanup for future validation runs
+	del refl1
+	del refl1_flux
+	del refl2
+	del refl2_flux
+	del tran
+	del tran_flux
+	del su
+	del su_flux
+	del sd
+	del sd_flux
+	del incident_flux
+
+	return result
 
 def sweep(dw_lower_bound, dw_upper_bound, dl_lower_bound, dl_upper_bound):
 	start = time.time()
@@ -430,10 +466,12 @@ def sweep(dw_lower_bound, dw_upper_bound, dl_lower_bound, dl_upper_bound):
 print(sys.argv)
 print(len(sys.argv))
 
-dw_lower_bound = -10 #Note: This bound is inclusive
+dw_lower_bound = 0 #Note: This bound is inclusive
 dw_upper_bound = 30 #Note: This bound is exclusive
 dl_lower_bound = dw_lower_bound #Note: This bound is inclusive
 dl_upper_bound = dw_upper_bound #Note: This bound is exclusive
+#dl_lower_bound = -10 #Note: This bound is inclusive
+#dl_upper_bound = 30 #Note: This bound is exclusive
 
 if len(sys.argv) > 2:
 	print(int(sys.argv[1]))
