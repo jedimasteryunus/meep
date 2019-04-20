@@ -1,0 +1,132 @@
+\documentclass[10pt, letter, oneside,graphicx]{article}
+%\documentclass[12pt, letter, oneside,graphicx]{article}
+\usepackage[bindingoffset=0.2in,left=1in,right=1in,top=1in,bottom=1in,footskip=.25in]{geometry}
+\special{papersize=8.5in,11in}
+\usepackage{graphicx}
+\graphicspath{{fig/}}
+\usepackage{tikz}
+\usetikzlibrary{automata,positioning,arrows.meta}
+\usepackage{overpic}
+\usepackage{skak}
+%\usepackage{mathabx}
+%\usepackage{wasysym}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{pifont}
+\usepackage{yfonts}
+\usepackage{wrapfig}
+\usepackage[font=footnotesize,labelfont=bf]{caption}
+\usepackage{float}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{multicol}
+\usepackage{xcolor}
+\usepackage{fancybox}
+
+\usepackage{pgfplots}
+
+\usepackage{physics}
+%\usepackage{memoir}
+
+%\linespread{2}
+
+\bibliographystyle{abbrv}
+
+\begin{document}
+We have an infinite slab with height $z = h$ and index $n_0$ cladded with index $n_1 < n_0$. We want to solve for the effective index $n_{eff}$ of infinite slab mode with wavelength $\lambda$. In particular, we want to find the height $h_0$ at which the infinite slab becomes multimode, i.e. the point at which the first order mode becomes bound.
+
+We begin with the electromagnetic wave equation:
+\begin{align*}
+\left(\nabla^2 - \frac{n^2}{c^2}\frac{\partial^2}{\partial t^2}\right) \vec E = 0.
+\end{align*}
+We assume a TE mode propagating in the $\hat x$ direction, and aim to solve the boundary conditions for the only non-zero component -- the $E_y$ component -- of the electric field. We assume a solution in each region $j$ -- 0, the core and 1, the cladding -- will be the ansatz:
+\begin{align*}
+E_y^{(j)}(x,z,t) = \exp(i(\omega t - k_xx - k_z^{(j)}z))
+\end{align*}
+where $k_x = 2\pi n_{eff}/\lambda = n_{eff}\omega/c$ defines the spacial rate of propagation of the mode and $k_z^{(j)}$ defines the vertical shape of the mode in each region $j$. Inserting our ansatz into the wave equation, we can solve for $k_z^{(j)}$:
+\begin{align*}
+(k_x)^2 + (k_z^{(j)})^2 - \frac{n_j^2}{c^2}\omega^2 &= 0 \implies \\
+k_z^{(j)} &= \sqrt{ \frac{n_j^2}{c^2}\omega^2 - k_x^2 } \implies \\
+k_z^{(j)} &= \frac{\omega}{c}\sqrt{ n_j^2 - n_{eff}^2 } = \frac{2\pi}{\lambda}\sqrt{ n_j^2 - n_{eff}^2 }.
+\end{align*}
+For a bound mode, we want the core $k_z^{(0)}$ to be real (i.e. sinusoidal) and the cladding $k_z^{(1)}$ to be imaginary (i.e. decaying exponential). Notice that this puts a bound on $n_{eff}$, that
+\begin{align*}
+n_1 < n_{eff} < n_0,
+\end{align*}
+as for $n_{eff} > n_0$, our mode would be unbound (sinusoids everywhere), and for $n_{eff} < n_1$, our mode would be unphysical (exponentials everywhere). For now, we define $k_z^{(j)}$ to be real:
+\begin{align*}
+k_z^{(j)} &= \left| \frac{2\pi}{\lambda}\sqrt{ n_j^2 - n_{eff}^2 } \right|.
+\end{align*}
+Next, we can separate our ansatz into the parts dependent on $z$---the mode profile $E_y^{(j)}(z)$---and the parts dependent on $x$ and $t$---containing the wave-nature of this system:
+\begin{align*}
+E_y^{(j)}(x,z,t) = E_y^{(j)}(z)\exp(i(\omega t - k_xx))
+\end{align*}
+From our bound on $n_{eff}$, we immediately see the form of the mode profile in both regions:
+\begin{align*}
+E_y^{(0)}(z) &= 
+\left\{
+\begin{array}{ll}
+A_e\cos(k_z^{(0)}z), & \text{(fundamental)}, \\
+A_o\sin(k_z^{(0)}z), & \text{(first order)},
+\end{array}
+\right. \\
+E_y^{(1)}(z) &= B\exp(-k_z^{(1)}(|z| - h/2)).
+\end{align*}
+Next, we must match boundary conditions. For TE modes, we must have continuity in the electric field over the boundary. We must also have continuity in the magnetic displacement field, which has two components: one proportional to the electric field (already satisfies continuity), and one proportional to the derivative of the electric field. This means that we must have the stronger condition of differentiability in the electric field over the boundary.
+For the fundamental mode, we have:
+\begin{align*}
+\left. \frac{dE_y^{(0)}}{dz} \right|_{h/2} = -k_z^{(0)}A_e\sin(k_z^{(0)}h/2) &= -k_z^{(1)}B = \left. \frac{dE_y^{(1)}}{dz} \right|_{h/2}, \\
+E_y^{(0)}(h/2) = A_e\cos(k_z^{(0)}h/2) &= B = E_y^{(1)}(h/2) \implies \\
+k_z^{(0)}\tan(k_z^{(0)}h/2) &= k_z^{(1)}.
+\end{align*}
+Similarly, for the first order mode, we have:
+\begin{align*}
+-k_z^{(0)}\cot(k_z^{(0)}h/2) = -k_z^{(0)}\tan(\pi/2 + k_z^{(0)}h/2) &= k_z^{(1)}.
+\end{align*}
+Using our previous results, this forms conditions on $n_{eff}$:
+\begin{align*}
+\sqrt{ n_0^2 - n_{eff}^2 }\tan(\frac{\pi h}{\lambda}\sqrt{ n_0^2 - n_{eff}^2 }) &= \sqrt{ n_{eff}^2 - n_1^2 } \text{ (fundamental)}, \\
+\sqrt{ n_0^2 - n_{eff}^2 }\tan(\frac{\pi h}{\lambda}\sqrt{ n_0^2 - n_{eff}^2 } - \frac{\pi}{2}) &= \sqrt{ n_{eff}^2 - n_1^2 } \text{ (first order)}.
+\end{align*}
+Note that the above functions are not (generally) analytically solvable, and finding $n_{eff}$ from $h$ must (generally) be done numerically.
+The cutoff condition for the first order mode will occur when $n_{eff} = n_1$. At that point,
+\begin{align*}
+\tan(\frac{\pi h_{cut}}{\lambda}\sqrt{ n_0^2 - n_1^2 } - \frac{\pi}{2}) &= 0 \implies \\
+\frac{\pi h_{cut}}{\lambda}\sqrt{ n_0^2 - n_1^2 } &= \frac{\pi}{2} \implies \\
+h_{cut} &= \frac{\lambda}{2\sqrt{ n_0^2 - n_1^2 }},
+\end{align*}
+which is the cutoff height $h_{cut}$ for the first order mode.
+
+Now, we want to use our results to calculate the cutoff height and effective indices in the below situations, with $n_1 = 1$.
+\begin{center}
+\begin{tabular}{rcccccc}
+%\textbf{Case} & GaAs: 930nm, $n_0=3.5$ & Diamond: 637nm, $n_0=2.417$ \\
+&&&&& $n_{eff}$  \\
+\textbf{Case} & $\lambda$ (nm) & $n_0$ & $h_{cut}$ (nm) & @160nm & @200nm & @240nm \\
+\hline\\
+GaAs 		& 930 	& 3.5	& 138 & 2.980 & 3.117 & 3.206 \\
+%GaAs 		& 940 	& 3.5	& --- & 2.973 & --- & --- \\
+Diamond 	& 637 	& 2.417 & 145 & 2.077 & 2.164 & 2.222 \\
+\end{tabular}
+\end{center}
+
+%Next, we also have that
+%\begin{align*}
+%\left( \frac{2\pi}{\lambda}n_0 \right)^2 - \left( k_z^{(0)} \right)^2 &= \left( \frac{2\pi}{\lambda}n_{eff} \right)^2 = \left( \frac{2\pi}{\lambda}n_1 \right)^2 - \left( k_z^{(1)} \right)^2 \implies \\
+%k_z^{(1)} &= \sqrt{ \left( \frac{2\pi}{\lambda} \right)^2 \left( n_1^2 - n_0^2 \right) + \left( k_z^{(0)} \right)^2 }
+%\end{align*}
+
+%For the first order TE mode, our cutoff condition is when the first antinode $z_0 = \pi/2k_z^{(0)}$ is equal to the half-height $z_h = h/2$ of the structure. When $z_h < z_0$, the derivative at $z_0$ has the same sign as the intensity at $z_0$, and cannot be matched with a decaying exponential.
+
+\end{document}
+
+
+
+
+
+
+
+
+
