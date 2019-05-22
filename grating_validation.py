@@ -40,7 +40,7 @@ def validation(dw, dl):
 
 	ALN420_bool = False
 
-	farfield_bool = False
+	farfield_bool = True
 
 	if farfield_bool:
 		dpml = 1;
@@ -292,15 +292,20 @@ def validation(dw, dl):
 
 	sim.use_output_directory(outputdir)
 	# sim.use_output_directory()
+
+	#Simulation run for TRANSIENT state
 	sim.run(mp.at_beginning(mp.output_epsilon),
 			mp.at_every(1, mp.output_png(mp.Ez, "-RZc bluered -A " + outputdir + "/grating_validation-" + epsform + ".h5 -a gray:.2")),
 			# mp.to_appended("ez", mp.at_every(0.6, mp.output_efield_z)),
 			until = T)
 
-	os.system("convert " + outputdir + "/grating_validation-ez-*.png gratingFull-" + name + ".gif");
-	os.system("rm " + outputdir + "/grating_validation-ez-*.png");
+	#sim.run(mp.at_beginning(mp.output_epsilon),
+			# mp.at_every(wavelength/20, mp.output_png(mp.Ez, "-RZc bluered -A " + outputdir + "/grating_validation-" + epsform + ".h5 -a gray:.2")),
+			# mp.to_appended("ez", mp.at_every(0.6, mp.output_efield_z)),
+			# until = T)
 
-	os.system("convert " + outputdir + "/grating_validation-ez-*.png " + outputdir + "grating_validation.gif")
+	os.system("convert " + outputdir + "/grating_validation-ez-*.png " + outputdir + "-N=" + str(num_notches) + "-TRANSIENT.gif")
+	os.system("rm " + outputdir + "/grating_validation-ez-*.png");
 
 	# nearfield = sim.add_near2far(fcen, 0, 1,
 	# 	mp.Near2FarRegion(mp.Vector3(0,  0.5*sxy), size=mp.Vector3(sxy)),
@@ -329,8 +334,18 @@ def validation(dw, dl):
 	incident_flux = refl2_flux[0] - refl1_flux[0]
 	'''
 
-	sim.run(mp.at_every(wavelength/20 , mp.output_png(mp.Ez, "-RZc bluered -A " + outputdir + "/grating_validation-" + epsform + ".h5 -a gray:.2")), until=19*wavelength/20)
+	old_refl1_flux = mp.get_fluxes(refl1)
+	old_refl2_flux = mp.get_fluxes(refl2)
+	old_tran_flux = mp.get_fluxes(tran)
+	old_su_flux = mp.get_fluxes(su)
+	old_sd_flux = mp.get_fluxes(sd)
+
+	#Simulation run for STEADY state
+	sim.run(mp.at_every(1 , mp.output_png(mp.Ez, "-RZc bluered -A " + outputdir + "/grating_validation-" + epsform + ".h5 -a gray:.2")), until=19*wavelength/20)
 	sim.run(until = 19*wavelength)
+
+	#sim.run(mp.at_every(wavelength/20 , mp.output_png(mp.Ez, "-RZc bluered -A " + outputdir + "/grating_validation-" + epsform + ".h5 -a gray:.2")), until=19*wavelength/20)
+	#sim.run(until = 19*wavelength)
 
 	#Delete after printing output
 	refl1_flux = mp.get_fluxes(refl1)
@@ -344,7 +359,8 @@ def validation(dw, dl):
 	pt = mp.Vector3(0,0)
 	# sim.run(until_after_sources=mp.stop_when_fields_decayed(50,mp.Ez,pt,1e-3))
 
-	os.system("convert " + outputdir + "/grating_validation-ez-*.png grating-" + name + ".gif");
+	os.system("convert " + outputdir + "/grating_validation-ez-*.png " + outputdir + "-N=" + str(num_notches) + "-STEADYSTATE.gif")
+	os.system("rm " + outputdir + "/grating_validation-ez-*.png");
 
 	r = 800
 	npts = 1000;
@@ -393,10 +409,15 @@ def validation(dw, dl):
 	assert(Lt > right_notch_boundary);
 
 	print("Refl1 Flux: ", refl1_flux[0])
+	print("Old Refl1 Flux: ", old_refl1_flux[0])
 	print("Refl2 Flux: ", refl2_flux[0])
+	print("Old Refl2 Flux: ", old_refl2_flux[0])
 	print("Tran Flux: ", tran_flux[0])
+	print("Old Tran Flux: ", old_tran_flux[0])
 	print("Upward-Scattered Flux: ", su_flux[0])
+	print("Old Upward-Scattered Flux: ", old_su_flux[0])
 	print("Downward-Scattered Flux: ", sd_flux[0])
+	print("Old Downward-Scattered Flux: ", old_sd_flux[0])
 
 	print("Gauss' Law for Magnetism Sanity Check: ", su_flux[0] - sd_flux[0] - refl2_flux[0] + tran_flux[0])
 
@@ -417,19 +438,6 @@ def validation(dw, dl):
 
 		result = 100 * Su / incident_flux
 
-		#Memory cleanup for future validation runs
-		del refl1
-		del refl1_flux
-		del refl2
-		del refl2_flux
-		del tran
-		del tran_flux
-		del su
-		del su_flux
-		del sd
-		del sd_flux
-		del incident_flux
-
 		return result
 
 	f1.close();
@@ -437,14 +445,25 @@ def validation(dw, dl):
 	result = 100 * su_flux[0] / incident_flux
 
 	#Memory cleanup for future validation runs
+	del sim
+	del sources
+	del input_lengths
+	del num_notches
+	del widths
+	del lengths
+	del refl_fr1
 	del refl1
 	del refl1_flux
+	del refl_fr2
 	del refl2
 	del refl2_flux
+	del tran_fr
 	del tran
 	del tran_flux
+	del su_fr
 	del su
 	del su_flux
+	del sd_fr
 	del sd
 	del sd_flux
 	del incident_flux
@@ -466,11 +485,11 @@ def sweep(dw_lower_bound, dw_upper_bound, dl_lower_bound, dl_upper_bound):
 print(sys.argv)
 print(len(sys.argv))
 
-dw_lower_bound = 0 #Note: This bound is inclusive
+dw_lower_bound = -10 #Note: This bound is inclusive
 dw_upper_bound = 30 #Note: This bound is exclusive
 dl_lower_bound = dw_lower_bound #Note: This bound is inclusive
 dl_upper_bound = dw_upper_bound #Note: This bound is exclusive
-#dl_lower_bound = -10 #Note: This bound is inclusive
+#dl_lower_bound = 0 #Note: This bound is inclusive
 #dl_upper_bound = 30 #Note: This bound is exclusive
 
 if len(sys.argv) > 2:
