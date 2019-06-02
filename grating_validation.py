@@ -40,7 +40,7 @@ def validation(dw, dl):
 
 	ALN420_bool = False
 
-	farfield_bool = True
+	farfield_bool = False
 
 	if farfield_bool:
 		dpml = 1;
@@ -304,7 +304,12 @@ def validation(dw, dl):
 			# mp.to_appended("ez", mp.at_every(0.6, mp.output_efield_z)),
 			# until = T)
 
-	os.system("convert " + outputdir + "/grating_validation-ez-*.png " + outputdir + "-N=" + str(num_notches) + "-TRANSIENT.gif")
+	if farfield_bool:
+		os.system("convert " + outputdir + "/grating_validation-ez-*.png " + outputdir + "-N=" + str(num_notches) + "-FarfieldTransient.gif")
+	else:
+		os.system("convert " + outputdir + "/grating_validation-ez-*.png " + outputdir + "-N=" + str(num_notches) + "-NearfieldTransient.gif")
+
+
 	os.system("rm " + outputdir + "/grating_validation-ez-*.png");
 
 	# nearfield = sim.add_near2far(fcen, 0, 1,
@@ -359,7 +364,11 @@ def validation(dw, dl):
 	pt = mp.Vector3(0,0)
 	# sim.run(until_after_sources=mp.stop_when_fields_decayed(50,mp.Ez,pt,1e-3))
 
-	os.system("convert " + outputdir + "/grating_validation-ez-*.png " + outputdir + "-N=" + str(num_notches) + "-STEADYSTATE.gif")
+	if farfield_bool:
+		os.system("convert " + outputdir + "/grating_validation-ez-*.png " + outputdir + "-N=" + str(num_notches) + "-FarfieldSteadyState.gif")
+	else:
+		os.system("convert " + outputdir + "/grating_validation-ez-*.png " + outputdir + "-N=" + str(num_notches) + "-NearfieldSteadyState.gif")
+
 	os.system("rm " + outputdir + "/grating_validation-ez-*.png");
 
 	r = 800
