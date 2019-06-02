@@ -210,8 +210,8 @@ def validation(dw, dl):
 
 	input_lengths =   [310, 200, 360, 320, 150, 40, 310, 160, 320, 160, 320, 160, 160, 160, 320, 160, 320, 320, 320, 90]
 	num_notches = len(input_lengths)
-	lengths = input_lengths
-	#lengths = [10 * length for length in input_lengths]
+	#lengths = input_lengths
+	lengths = [10 * length for length in input_lengths]
 	widths = (num_notches + 1) * [100]
 
 	assert(len(lengths) + 1 == len(widths));
