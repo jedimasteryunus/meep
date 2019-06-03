@@ -9,16 +9,15 @@ import time
 
 # print(f1)
 
-def validation(dw, dl):
+def validation(dw, dl, farfield_bool):
 
-	name = "w=%snm-dl=%snm" % (int(dw), int(dl))
+	name = "dw=%snm-dl=%snm" % (int(dw), int(dl))
 	print(name);
 
 	outputdir = "grating_validation-out-" + name;
 	print(outputdir);
 
-	os.system("rm -r " + outputdir + "/")
-	f1 = open('grating_validation-' + name + '.out', 'w')
+	#os.system("rm -r " + outputdir + "/")
 
 	# print("#----------------------------------------")
 	# print("NOTCH WIDTH: %s nanometers" % (w * 1000))
@@ -40,12 +39,12 @@ def validation(dw, dl):
 
 	ALN420_bool = False
 
-	farfield_bool = False
-
 	if farfield_bool:
+		f1 = open('grating_validation-Farfield.out', 'w')
 		dpml = 1;
 		H = a #height of cell
 	else:
+		f1 = open('grating_validation-Nearfield.out', 'w')
 		dpml = 3 * h;
 		H = monitorheight + 2 * dpml 	#height of cell
 
@@ -208,7 +207,7 @@ def validation(dw, dl):
 	# lengths = [160, 340, 299, 95, 281, 299, 280];
 	# widths =  [50,  75,  100, 100, 100, 75, 50, 50];
 
-	input_lengths =   [310, 200, 360, 320, 150, 40, 310, 160, 320, 160, 320, 160, 160, 160, 320, 160, 320, 320, 320, 90]
+	input_lengths =   [31, 20, 36, 32, 15, 4, 31, 16, 32, 16, 32, 16, 16, 16, 32, 16, 32, 32, 32, 9]
 	num_notches = len(input_lengths)
 	#lengths = input_lengths
 	lengths = [10 * length for length in input_lengths]
@@ -305,9 +304,9 @@ def validation(dw, dl):
 			# until = T)
 
 	if farfield_bool:
-		os.system("convert " + outputdir + "/grating_validation-ez-*.png " + outputdir + "-N=" + str(num_notches) + "-FarfieldTransient.gif")
+		os.system("convert " + outputdir + "/grating_validation-ez-*.png " + outputdir + "/N=" + str(num_notches) + "-FarfieldTransient.gif")
 	else:
-		os.system("convert " + outputdir + "/grating_validation-ez-*.png " + outputdir + "-N=" + str(num_notches) + "-NearfieldTransient.gif")
+		os.system("convert " + outputdir + "/grating_validation-ez-*.png " + outputdir + "/N=" + str(num_notches) + "-NearfieldTransient.gif")
 
 
 	os.system("rm " + outputdir + "/grating_validation-ez-*.png");
@@ -365,9 +364,9 @@ def validation(dw, dl):
 	# sim.run(until_after_sources=mp.stop_when_fields_decayed(50,mp.Ez,pt,1e-3))
 
 	if farfield_bool:
-		os.system("convert " + outputdir + "/grating_validation-ez-*.png " + outputdir + "-N=" + str(num_notches) + "-FarfieldSteadyState.gif")
+		os.system("convert " + outputdir + "/grating_validation-ez-*.png " + outputdir + "/N=" + str(num_notches) + "-FarfieldSteadyState.gif")
 	else:
-		os.system("convert " + outputdir + "/grating_validation-ez-*.png " + outputdir + "-N=" + str(num_notches) + "-NearfieldSteadyState.gif")
+		os.system("convert " + outputdir + "/grating_validation-ez-*.png " + outputdir + "/N=" + str(num_notches) + "-NearfieldSteadyState.gif")
 
 	os.system("rm " + outputdir + "/grating_validation-ez-*.png");
 
@@ -479,12 +478,12 @@ def validation(dw, dl):
 
 	return result
 
-def sweep(dw_lower_bound, dw_upper_bound, dl_lower_bound, dl_upper_bound):
+def sweep(dw_lower_bound, dw_upper_bound, dl_lower_bound, dl_upper_bound, farfield_bool):
 	start = time.time()
 	efficiency_dict = dict()
 	for dw in range(dw_lower_bound, dw_upper_bound, 10):
 		for dl in range(dl_lower_bound, dl_upper_bound, 10):
-			efficiency_dict[(dw, dl)] = validation(dw, dl)
+			efficiency_dict[(dw, dl)] = validation(dw, dl, farfield_bool)
 	sorted_efficiency_dict = sorted(efficiency_dict.items(), key=operator.itemgetter(1), reverse = True)
 	print("Sorted Efficiency Dictionary: ", sorted_efficiency_dict)
 	end = time.time()
@@ -501,14 +500,50 @@ dl_upper_bound = dw_upper_bound #Note: This bound is exclusive
 #dl_lower_bound = 0 #Note: This bound is inclusive
 #dl_upper_bound = 30 #Note: This bound is exclusive
 
-if len(sys.argv) > 2:
-	print(int(sys.argv[1]))
-	print(int(sys.argv[2]))
-	validation(int(sys.argv[1]), int(sys.argv[2]));
-elif len(sys.argv) > 1:
-	if sys.argv[1] == "sweep":
-		sweep(dw_lower_bound, dw_upper_bound, dl_lower_bound, dl_upper_bound)
+try:
+	assert(sys.argv[-1] == "nearfield" or sys.argv[-1] == "farfield")
+except:
+	print("WARNING: You did not specify whether to run a nearfield simulation or a farfield simulation.")
+	quit()
+
+
+if len(sys.argv) > 3:
+	dw = int(sys.argv[1])
+	dl = int(sys.argv[2])
+	farfield = sys.argv[3]
+
+	if farfield == "farfield":
+		farfield_bool = True
 	else:
-		validation(int(sys.argv[1]), 0);
+		farfield_bool = False
+
+	print(dw)
+	print(dl)
+	print(farfield_bool)
+
+	validation(dw, dl, farfield_bool);
+
+elif len(sys.argv) > 2:
+
+	farfield = sys.argv[2]
+
+	if farfield == "farfield":
+		farfield_bool = True
+	else:
+		farfield_bool = False
+
+	if sys.argv[1] == "sweep":
+		sweep(dw_lower_bound, dw_upper_bound, dl_lower_bound, dl_upper_bound, farfield_bool)
+	else:
+		validation(int(sys.argv[1]), 0, farfield_bool);
+
 else:
-	validation(0, 0);
+
+	farfield = sys.argv[1]
+
+	if farfield == "farfield":
+		farfield_bool = True
+	else:
+		farfield_bool = False
+
+	validation(0, 0, farfield_bool);
